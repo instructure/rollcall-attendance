@@ -1,0 +1,66 @@
+<section class="student-detail-display" style="position: relative; z-index: 50;">
+  <h3 tabindex="0"><%= formatted_student_name %></h3>
+  <div class="row-box clearfix">
+    <div class="block-box one-third first-box">
+      <ul class="unstyled-list fineprint pinch-line-height">
+        <li>Present: <strong class='stats-presences'></strong></li>
+        <li>Late: <strong class='stats-tardies'></strong></li>
+        <li>Absent: <strong class='stats-absences'></strong></li>
+      </ul>
+
+      <ul class="unstyled-list fineprint pinch-line-height badge-stats"></ul>
+      <p class="fineprint last pinch-line-height"><a role="button" href="#" class="undecorated-link" id="add-custom-toggle" aria-label="Add badge"><strong>+ Add badge</strong></a></p>
+      <p class="fineprint pinch-line-height"><a role="button" href="#" class="undecorated-link icon icon-edit manage-badges" aria-label="Manage badges"><strong>Manage badges</strong></a></p>
+    
+      <ul class="unstyled-list">
+        <li>Attendance: <strong class='stats-attendance_grade'></strong></li>
+<!--         <li>Class grade: <strong>80%</strong></li> -->
+      </ul>
+    </div>
+    <div class="block-box two-thirds last-box">
+      <h5 class="last"><%= class_date %></h5>
+      <ul class="unstyled-list clearfix detail-attendance-toggle">
+        <li id="attendance-toggle-present" class="toggle-present">
+          <a role="button" href="#" class="replace-text" aria-label="Mark as present"><span></span>Present</a>
+        </li>
+        <li id="attendance-toggle-absent" class="toggle-absent">
+          <a role="button" href="#" class="replace-text" aria-label="Mark as absent"><span></span>Absent</a>
+        </li>
+        <li id="attendance-toggle-late" class="toggle-late">
+          <a role="button" href="#" class="replace-text" aria-label="Mark as late"><span></span>Late</a>
+        </li>
+        <li id="attendance-toggle-unmarked" class="toggle-unmarked">
+          <a role="button" href="#" class="replace-text" aria-label="Unmark student"><span></span>Unmarked</a>
+        </li>
+      </ul>
+
+      <div class="row-box clearfix">
+        <div class="block-box two-thirds first-box">
+          <p class="fineprint last pinch-line-height"><%= first_name %> is <strong class='attendance-label'><%= attendance %></strong></p>
+        </div>
+        <div class="block-box one-third last-box">
+          <!-- only appears for absent and late -->
+<!--      <form class="first">
+            <div class="form-input clearfix last">
+              <div class="checkbox-input last">
+                <label class="fineprint">
+                  <input type="checkbox" />Excuse
+                </label>
+              </div>
+            </div>
+          </form>
+ -->          <!-- end only appears for absent and late -->
+        </div>
+      </div>
+      
+      <div class="row-box custom-cat-toggle badge-list"></div>
+      
+      
+    </div>
+  </div>
+<!--   <footer class="fineprint">
+    <a href="#" class="icon icon-email icon-larger"><span class="default-color">Message <%= first_name %></span></a>&nbsp;&nbsp;&nbsp;
+    <a href="#" class="icon icon-pie-chart icon-larger"><span class="default-color">View <%= first_name %>'s stats</span></a>
+  </footer>
+ -->
+</section>

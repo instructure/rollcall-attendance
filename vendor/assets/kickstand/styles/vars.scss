@@ -1,0 +1,28 @@
+/*
+For all -- or certain sections -- of the app, you might want to center your content and set a min and/or max width.
+
+Notes:
+  - To make a classic, fixed width layout, set the $app-maxwidth and $app-minwidth vars to the same value.
+  - The defaults of "none" (maxwidth) and "0" (minwidth) will give you 100% width (full-screen layout).
+*/
+$app-maxwidth: none;
+$app-minwidth: 700px;
+
+/* Set the spacing-width variable to maintain consistent horizontal and vertical spacing between layout and typographic elements, where possible */
+$spacing-width: 15px;
+
+/* Set the base font size for app. This will be the font size of most elements, unless otherwise specified */
+$base-fontsize: 14px;
+
+/* Use the corner-width variable and corner-radius mixin to maintain a consistent border-radius across the app */
+$corner-width: 4px;
+@mixin corner-radius { -moz-border-radius: $corner-width; -webkit-border-radius: $corner-width; border-radius: $corner-width; }
+
+/* Use the stock-transition variable to keep your link :hover transitions consistent */
+@mixin stock-transition {
+  -moz-transition: all linear 0.2s;
+  -webkit-transition: all linear 0.2s;
+  -o-transition: all linear 0.2s;
+  -ms-transition: all linear 0.2s;
+  transition: all linear 0.2s;
+}

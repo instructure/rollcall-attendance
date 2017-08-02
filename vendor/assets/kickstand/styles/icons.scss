@@ -1,0 +1,80 @@
+/* =========================================
+   Style sheet for icon font(s), if you so choose
+   http://css-tricks.com/examples/IconFont/
+   ========================================= */
+
+.icon {
+
+  &:before, &:after {
+    font-family: $icon-font;
+    text-transform: none !important;
+    display: inline-block;
+  }
+
+  &:before {
+    margin-right: 3px;
+  }
+
+  &:after {
+    margin-left: 3px;
+  }
+
+}
+
+.icon-larger:before, .icon-larger:after {
+  font-size: large;
+}
+
+/* If you're using an icon without any accompanying text, the i element is the Boostrap-approved method of doing this */
+i.icon {
+  display: inline-block;
+  font-style: normal !important;
+  width: 18px; height: 18px; line-height: 18px;
+
+  &:before, &:after {
+    margin-right: 0; margin-left: 0;
+    display: inline-block;
+    vertical-align: middle;
+    text-rendering: optimizeLegibility;
+    font-size: 18px;
+  }
+}
+
+a.icon {
+  text-decoration: none;
+}
+
+/*
+Note - these classes are specific to the Modern Pictograms font; change the font, and you'll need to re-map the classes to the correct letters
+To see the entire font specimen for the Modern Pictograms icon font: http://thedesignoffice.org/project/modern-pictograms/
+*/
+.icon-pencil:before { content: "e "; }
+.icon-layout:before { content: "3"; }
+.icon-paragraph:before { content: "Z"; }
+.icon-eye:before { content: "E"; }
+.icon-camera:before { content: "A"; }
+.icon-list:before { content: "4"; }
+.icon-bird:before { content: "t"; }
+.icon-email:before { content: "m"; vertical-align: baseline }
+.icon-facebook-a:before { content: "F"; }
+.icon-facebook-b:before { content: "G"; }
+.icon-twitter-a:before { content: "T"; }
+.icon-twitter-b:before { content: "U"; }
+.icon-left-arrow:before { content: "<"; }
+.icon-right-arrow:after { content: ">"; }
+.icon-radio-tower:before { content: "`" }
+.icon-alert:before { content: "! " }
+.icon-user-m:before { content: "f" }
+.icon-add:before { content: "+" }
+.icon-info:before { content: "= " }
+.icon-thumbsup:before { content: "l " }
+.icon-edit:before { content: "r" }
+.icon-megaphone:before { content: "Y " }
+.icon-question:before { content: "? " }
+.icon-globe:before { content: "w " }
+.icon-delete:before { content: "X " }
+.icon-modal:before { content: "o" }
+.icon-user:before { content: "f" }
+.icon-move:before { content: "v" }
+.icon-bar:before { content: "7" }
+.icon-pie-chart:before { content: "8"; vertical-align: baseline }

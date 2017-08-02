@@ -1,0 +1,17 @@
+/* icon font */
+@font-face {
+ font-family: 'ModernPictogramsNormal';
+ src: asset-url('modernpics-webfont.eot');
+ src: asset-url('modernpics-webfont.eot?#iefix') format('embedded-opentype'),
+      asset-url('modernpics-webfont.woff') format('woff'),
+      asset-url('modernpics-webfont.ttf') format('truetype'),
+      asset-url('modernpics-webfont.svg#ModernPictogramsNormal') format('svg');
+ font-weight: normal;
+ font-style: normal;
+}
+
+/* font variables */
+$headline-font: 'Helvetica Neue', Arial, sans-serif;
+$subheadline-font: 'Helvetica Neue', Arial, sans-serif;
+$bodycopy-font: 'Helvetica Neue', Arial, sans-serif;
+$icon-font: 'ModernPictogramsNormal';

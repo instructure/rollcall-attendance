@@ -1,0 +1,15 @@
+version: '2'
+services:
+  web:
+    volumes:
+      - .:/usr/src/app
+    environment:
+      CANVAS_STATSD_HOST: graphite.docker
+      CANVAS_STATSD_PORT: 8125
+      CANVAS_STATSD_NAMESPACE: rollcall.development
+      CANVAS_STATSD_APPEND_HOSTNAME: 'false'
+    env_file: .env
+  work:
+    volumes:
+      - .:/usr/src/app
+    env_file: .env

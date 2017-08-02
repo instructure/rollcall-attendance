@@ -1,0 +1,37 @@
+img {
+
+  max-width: 100%;
+  display: block;
+  margin: 0 auto; /* Default is to center the image. Use the float classes below to override this. */
+
+  &.left {
+    margin: 0 $spacing-width $spacing-width 0;
+  }
+
+  &.right {
+    margin: 0 0 $spacing-width $spacing-width;
+  }
+
+}
+
+
+figure {
+
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  padding: $spacing-width / 2 0;
+  line-height: 1.6;
+  position: relative;
+
+  img {
+    margin: 0 auto;
+  }
+
+  figcaption {
+    padding: $spacing-width / 2 0 0;
+    font-size: small;
+    font-style: italic;
+    text-align: center;
+  }
+
+}

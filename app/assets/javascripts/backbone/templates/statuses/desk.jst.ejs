@@ -1,0 +1,13 @@
+<div class="no-select btn icon icon-move student-unseated">
+  <%= formatted_student_name %>
+</div>
+
+<div class="student-seated">
+  <a href="#" class="no-select student-attendance-display student-toggle">
+    <% if(student.avatar_url != undefined) { %>
+      <img src="<%= student.avatar_url %>" class="student-pic" alt="<%= student.name %>" />
+    <% } %>
+    <div class="student-status replace-text"><%= attendance || 'unmarked' %></div>
+  </a>
+  <a href="#" class="no-select btn classroom-modal-display classroom-modal-toggle" title="Click to view more options for this student"><%= formatted_student_name %><span></span></a>
+</div>

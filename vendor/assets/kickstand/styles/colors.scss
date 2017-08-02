@@ -1,0 +1,205 @@
+/* =========================================
+   Set up your colors for use across the app
+   Grab some preset text and background color
+   styles if you need 'em
+   ========================================= */
+
+/* Color of text on default dark background */
+$lightest-color: #fff;
+
+/* Default font color */
+$bodycopy-color: #444;
+
+/* Default light colored background */
+$lightbg-color: #f0f0f0;
+
+/* Default dark colored background */
+$darkbg-color: #333;
+
+/* For those classic 1px gray borders (or whatever other color you feel like!) */
+$border-color: #ddd;
+
+/* Attendance/main colors */
+$default-color: #454545;
+$present-color: #a8cb38;
+$late-color: #ffa804;
+$absent-color: #ee2d2d;
+
+
+/* Attendance/main color tints */
+$default-color-lightest: lighten($default-color, 42%);
+$default-color-light: lighten($default-color, 14%);
+$default-color-dark: darken($default-color, 6%);
+$default-color-darkest: darken($default-color, 12%);
+
+$present-color-lightest: lighten($present-color, 36%);
+$present-color-light: lighten($present-color, 12%);
+$present-color-dark: darken($present-color, 6%);
+$present-color-darkest: darken($present-color, 10%);
+
+$late-color-lightest: lighten($late-color, 35%);
+$late-color-light: lighten($late-color, 10%);
+$late-color-dark: darken($late-color, 5%);
+$late-color-darkest: darken($late-color, 10%);
+
+$absent-color-lightest: lighten($absent-color, 40%);
+$absent-color-light: lighten($absent-color, 8%);
+$absent-color-dark: darken($absent-color, 5%);
+$absent-color-darkest: darken($absent-color, 20%);
+
+
+/* Gradient mixins made from the color presets above */
+@mixin default-gradient {
+  background: image-url('bg-default-grad.png') repeat-x left bottom $default-color-light;
+  background: -moz-linear-gradient(top, $default-color-light 0%, $default-color 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$default-color-light), color-stop(100%,$default-color)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $default-color-light 0%,$default-color 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $default-color-light 0%,$default-color 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $default-color-light 0%,$default-color 100%); /* IE10+ */
+  background: linear-gradient(top, $default-color-light 0%,$default-color 100%); /* W3C */
+}
+
+@mixin default-gradient-rev {
+  background: image-url('bg-default-grad-rev.png') repeat-x left bottom $default-color-light;
+  background: -moz-linear-gradient(top, $default-color 0%, $default-color-light 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$default-color), color-stop(100%,$default-color-light)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $default-color 0%,$default-color-light 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $default-color 0%,$default-color-light 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $default-color 0%,$default-color-light 100%); /* IE10+ */
+  background: linear-gradient(top, $default-color 0%,$default-color-light 100%); /* W3C */
+}
+
+@mixin present-gradient {
+  background: image-url('bg-present-grad.png') repeat-x left bottom $present-color-light;
+  background: -moz-linear-gradient(top, $present-color-light 0%, $present-color 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$present-color-light), color-stop(100%,$present-color)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $present-color-light 0%,$present-color 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $present-color-light 0%,$present-color 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $present-color-light 0%,$present-color 100%); /* IE10+ */
+  background: linear-gradient(top, $present-color-light 0%,$present-color 100%); /* W3C */
+}
+
+@mixin present-gradient-rev {
+  background: image-url('bg-present-grad-rev.png') repeat-x left bottom $present-color-light;
+  background: -moz-linear-gradient(top, $present-color 0%, $present-color-light 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$present-color), color-stop(100%,$present-color-light)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $present-color 0%,$present-color-light 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $present-color 0%,$present-color-light 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $present-color 0%,$present-color-light 100%); /* IE10+ */
+  background: linear-gradient(top, $present-color 0%,$present-color-light 100%); /* W3C */
+}
+
+@mixin late-gradient {
+  background: image-url('bg-late-grad.png') repeat-x left bottom $late-color-light;
+  background: -moz-linear-gradient(top, $late-color-light 0%, $late-color-dark 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$late-color-light), color-stop(100%,$late-color-dark)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $late-color-light 0%, $late-color-dark 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $late-color-light 0%, $late-color-dark 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $late-color-light 0%, $late-color-dark 100%); /* IE10+ */
+  background: linear-gradient(top, $late-color-light 0%, $late-color-dark 100%); /* W3C */
+}
+
+@mixin late-gradient-rev {
+  background: image-url('bg-late-grad-rev.png') repeat-x left bottom $late-color-light;
+  background: -moz-linear-gradient(top, $late-color 0%, $late-color-light 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$late-color), color-stop(100%,$late-color-light)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $late-color 0%, $late-color-light 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $late-color 0%, $late-color-light 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $late-color 0%, $late-color-light 100%); /* IE10+ */
+  background: linear-gradient(top, $late-color 0%, $late-color-light 100%); /* W3C */
+
+}
+
+@mixin absent-gradient {
+  background: image-url('bg-absent-grad.png') repeat-x left bottom $absent-color-light;
+  background: -moz-linear-gradient(top, $absent-color-light 0%, $absent-color 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$absent-color-light),  color-stop(100%,$absent-color)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $absent-color-light 0%, $absent-color 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $absent-color-light 0%, $absent-color 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $absent-color-light 0%, $absent-color 100%); /* IE10+ */
+  background: linear-gradient(top, $absent-color-light 0%, $absent-color 100%); /* W3C */
+}
+
+@mixin absent-gradient-rev {
+  background: image-url('bg-absent-grad-rev.png') repeat-x left bottom $absent-color-light;
+  background: -moz-linear-gradient(top, $absent-color 0%, $absent-color-light 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$absent-color),  color-stop(100%,$absent-color-light)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $absent-color 0%, $absent-color-light 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $absent-color 0%, $absent-color-light 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $absent-color 0%, $absent-color-light 100%); /* IE10+ */
+  background: linear-gradient(top, $absent-color 0%, $absent-color-light 100%); /* W3C */
+}
+
+@mixin subtle-gradient {
+  background: image-url('bg-subtle-grad.png') repeat-x left bottom $lightest-color;
+  background: -moz-linear-gradient(top, $lightest-color 0%, $lightbg-color 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$lightest-color), color-stop(100%,$lightbg-color)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $lightest-color 0%,$lightbg-color 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $lightest-color 0%,$lightbg-color 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $lightest-color 0%,$lightbg-color 100%); /* IE10+ */
+  background: linear-gradient(top, $lightest-color 0%,$lightbg-color 100%); /* W3C */
+}
+
+@mixin subtle-gradient-rev {
+  background: image-url('bg-subtle-grad-rev.png') repeat-x left top $lightest-color;
+  background: -moz-linear-gradient(top, $lightbg-color 0%, $lightest-color 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$lightbg-color), color-stop(100%,$lightest-color)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $lightbg-color 0%,$lightest-color 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $lightbg-color 0%,$lightest-color 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $lightbg-color 0%,$lightest-color 100%); /* IE10+ */
+  background: linear-gradient(top, $lightbg-color 0%,$lightest-color 100%); /* W3C */
+}
+
+/* Text color classes */
+.default-color { color: $default-color-dark; }
+.light-text-color { color: $lightest-color; }
+.present-color { color: $present-color; }
+.present-color-light { color: $present-color-light; }
+.late-color { color: $late-color; }
+.absent-color { color: $absent-color; }
+
+
+/* Background color classes */
+.lightest-bg { background-color: $lightest-color; }
+.light-bg { background-color: $lightbg-color; }
+.dark-bg { background-color: $darkbg-color; }
+
+.present-color-bg { background-color: $present-color; }
+.present-color-dark-bg { background-color: $present-color-dark; }
+.present-color-darkest-bg { background-color: $present-color-darkest; }
+.present-color-light-bg { background-color: $present-color-light; }
+.present-color-lightest-bg { background-color: $present-color-lightest; }
+.present-color-grad { @include present-gradient }
+
+.late-color-bg { background-color: $late-color; }
+.late-color-dark-bg { background-color: $late-color-dark; }
+.late-color-darkest-bg { background-color: $late-color-darkest; }
+.late-color-light-bg { background-color: $late-color-light; }
+.late-color-lightest-bg { background-color: $late-color-lightest; }
+.late-color-grad { @include late-gradient }
+
+.absent-color-bg { background-color: $absent-color; }
+.absent-color-dark-bg { background-color: $absent-color-dark; }
+.absent-color-darkest-bg { background-color: $absent-color-darkest; }
+.absent-color-light-bg { background-color: $absent-color-light; }
+.absent-color-lightest-bg { background-color: $absent-color-lightest; }
+.absent-color-grad { @include absent-gradient }
+
+
+/* Box shadow mixins, if needed */
+@mixin box-shadow-med {
+  -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+@mixin box-shadow-large {
+  -moz-box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Text shadow mixins, if needed */
+@mixin subtle-textshadow {
+  text-shadow: 0 1px 0 $lightest-color;
+}

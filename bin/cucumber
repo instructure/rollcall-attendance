@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Starting cucumber suite..."
+xvfb-run bundle exec cucumber

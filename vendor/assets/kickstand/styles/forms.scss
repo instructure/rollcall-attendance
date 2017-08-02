@@ -1,0 +1,166 @@
+form {
+  margin: $spacing-width 0;
+}
+
+legend {
+  font-size: large;
+  font-weight: bold;
+  padding: $spacing-width / 2 0;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: $spacing-width / 3;
+}
+
+select {
+  height: 36px;
+  display: block;
+  background: $lightest-color;
+  color: $bodycopy-color;
+  border: 1px solid $border-color;
+}
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+  border: 1px solid $border-color;
+  padding: $spacing-width / 2;
+  background-color: $lightest-color;
+  color: lighten( $bodycopy-color, 5% );
+  width: 100%;
+  border-radius: $corner-width;
+  -webkit-box-shadow: inset 0 1px 2px lighten( $border-color, 5% );
+  -moz-box-shadow: inset 0 1px 2px lighten( $border-color, 5% );
+  box-shadow: inset 0 1px 2px lighten( $border-color, 5% );
+
+  &:focus {
+    color: $bodycopy-color;
+    font-style: normal;
+    border-color: $present-color-light;
+    outline: none;
+  }
+
+  &.error {
+    border-color: $absent-color-darkest;
+  }
+
+  &.hasDatepicker {
+    background-image: image-url('bg-calendar.png');
+    background-position: right bottom;
+    background-repeat: no-repeat;
+
+    /* Retina display */
+    @media (min--moz-device-pixel-ratio: 1.5),
+         (-o-min-device-pixel-ratio: 3/2),
+         (-webkit-min-device-pixel-ratio: 1.5),
+         (min-device-pixel-ratio: 1.5),
+         (min-resolution: 1.5dppx) {
+      background-image: image-url('bg-calendar@2x.png');
+      background-size: 37px 31px;
+    }
+
+  }
+
+}
+
+.ie7 {
+  input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+    width: 75%;
+  }
+}
+
+.form-input {
+  margin: 0 0 $spacing-width / 2;
+  clear: both;
+
+  .error-message {
+    color: $absent-color-darkest;
+    font-size: $base-fontsize - 2;
+    padding: 5px 0;
+  }
+
+}
+
+.checkbox-input {
+  clear: both;
+  margin: 0 0 $spacing-width / 4;
+  white-space:nowrap;
+}
+
+.radio-input {
+  display: inline;
+  float: left;
+  margin-right: $spacing-width;
+}
+
+.checkbox-input label, .radio-input label  {
+  display: inline;
+  font-weight: normal;
+  font-size: small;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+
+@mixin make-form-compact {
+  /*
+  Creates a form where the labels and inputs are laid out in the same row
+  Decided to only make this available for tablets and up, as it looks a bit scrunched on a smartphone
+  */
+
+  form.compact-form {
+
+    label {
+      float: left;
+      width: 20%;
+      display: inline;
+      text-align: right;
+      padding-right: $spacing-width;
+    }
+
+    input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+      width: 80%;
+      padding-right: 0;
+    }
+
+    select {
+      width: 80%;
+    }
+
+    .checkbox-input label, .radio-input label  {
+      width: auto;
+      padding-right: 0;
+    }
+
+    .checkbox-group {
+      width: 80%;
+      display: inline;
+      float: left;
+      clear: none;
+    }
+
+  }
+
+
+}
+
+@media only screen and (min-width: 600px) { @include make-form-compact; }
+
+/* For IE8 and below, who will ignore the above media query */
+.oldie { @include make-form-compact; }
+.ie7 {
+  form.compact-form {
+
+    label {
+      text-align: left;
+    }
+
+    input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+      width: 70%;
+    }
+  }
+}

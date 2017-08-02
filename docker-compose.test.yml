@@ -1,0 +1,7 @@
+version: '2'
+services:
+  web:
+    environment:
+      RAILS_ENV: test
+      CANVAS_KEY: '101'
+      CANVAS_SECRET: 'secret'

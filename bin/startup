@@ -1,0 +1,10 @@
+#!/bin/bash
+
+## Boot the app
+if [ "$ROLLCALL_ROLE" == "worker" ]; then
+  echo "Starting worker"
+  exec bundle exec rake resque:work
+else
+  echo "Starting web server"
+  exec /usr/src/entrypoint
+fi

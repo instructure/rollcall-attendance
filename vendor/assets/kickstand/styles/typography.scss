@@ -1,0 +1,128 @@
+/* =========================================
+   Styles for type and basic links
+   ========================================= */
+
+::-moz-selection { background: $present-color; color: $lightest-color; text-shadow: none; }
+::selection { background: $present-color; color: $lightest-color; text-shadow: none; }
+
+a, a:visited {
+  color: darken( $present-color-dark, 3% );
+  outline: 0;
+}
+
+a:hover, a:focus {
+  color: $bodycopy-color;
+}
+
+a:active {
+  color: $present-color-light;
+}
+
+h1 {
+  font-family: $headline-font;
+  font-size: $base-fontsize + 22;
+  margin: 0 0 $spacing-width;
+  font-weight: normal;
+  line-height: 1;
+}
+
+h2 {
+  font-family: $headline-font;
+  font-size: $base-fontsize + 16;
+  margin: 0 0 $spacing-width;
+  font-weight: normal;
+}
+
+h3 {
+  font-size: $base-fontsize + 6;
+  margin: 0 0 $spacing-width;
+  font-weight: normal;
+}
+
+h4 {
+  font-size: $base-fontsize + 4;
+  margin: 0 0 $spacing-width;
+}
+
+h5 {
+  font-size: $base-fontsize;
+  margin: 0 0 $spacing-width;
+  font-weight: bold;
+}
+
+p, ul, ol, dl, blockquote {
+  line-height: 1.6;
+  margin: 0 0 $spacing-width;
+}
+
+ul, ol {
+  padding-left: $spacing-width;
+}
+
+ul li, ol li, dd {
+  margin: 0 0 $spacing-width / 4;
+}
+
+ul {
+  list-style: disc outside none;
+}
+
+ul li ul {
+  list-style-type: circle;
+}
+
+ol {
+  list-style: decimal outside none;
+}
+
+ol li ol {
+  list-style-type: lower-alpha;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  font-style: italic;
+  margin-left: $spacing-width / 2;
+}
+
+aside {
+  display: inline;
+  font-size: small;
+  font-style: italic;
+}
+
+blockquote, q, em, cite, dfn, i, cite, var, address {
+  font-style: italic;
+}
+
+blockquote {
+  margin: $spacing-width;
+  border-left: $spacing-width / 2 solid $lightbg-color;
+  padding-left: $spacing-width;
+
+  footer {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+  }
+
+}
+
+pre, tt, code, kbd, samp, var {
+  font-family: "Courier New", Courier, monospace;
+}
+
+code, pre {
+  font-size: small;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+strong {
+  font-weight: bold;
+}

@@ -1,0 +1,22 @@
+/* =========================================
+   Styles for the document root
+   ========================================= */
+
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  /* forces scrollbar to always be there   */
+  overflow-y: scroll;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  -webkit-font-smoothing: subpixel-antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased; font-smoothing: antialiased;
+  background: $lightest-color;
+  height: 100%;
+}

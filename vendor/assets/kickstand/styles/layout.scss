@@ -1,0 +1,102 @@
+.row-box { /* contains floated .block-boxes */
+  clear: both; 
+  margin-bottom: 0;
+  
+  &.data-report-row {
+    padding-left: $spacing-width + 9;
+  }
+  
+}
+
+.block-box { /* the basic container for floated content - in default smartphone view, it's viewed at 100% width and thus needs a bottom margin */
+  margin-bottom: $spacing-width / 2;
+}
+
+.content-box { /* use anywhere you want to divide content vertically */
+  margin: $spacing-width 0;
+  clear: both;
+  position: relative;
+}
+
+.pad-box { /* adds consistent padding to a box of content */
+  padding: $spacing-width;
+}
+
+.pad-box-mini { /* adds consistent padding to a box of content */
+  padding: $spacing-width - 10;
+}
+
+.corner-box { /* use anywhere you want rounded corners */
+  border-radius: $corner-width * 4;
+}
+
+.corner-box-mini { /* use anywhere you want rounded corners */
+  border-radius: $corner-width;
+}
+
+.shadow-box { /* use anywhere you want drop shadow*/
+  @include box-shadow-med;
+}
+
+.border-box {
+  border: 1px solid $border-color;
+}
+
+.bottom-rule-box { /* clearly divide content with a bottom border */
+  border-bottom: 1px dotted $border-color;
+  padding-bottom: $spacing-width / 2;
+}
+
+.center-box { /* quickly center all the text in your content box */
+  text-align: center;
+}
+
+section {
+  margin-bottom: $spacing-width / 2;
+}
+  
+.row-box, section {
+  margin-bottom: $spacing-width;
+}
+
+.content-box { /* use anywhere you want to divide content vertically */
+  margin: $spacing-width * 2 0;
+}
+
+/* Responsive centered layout - this is the default grid */
+.wrap-box { min-width: $app-minwidth; max-width: $app-maxwidth; margin: 0 auto; }
+.block-box { 
+  float: left; 
+  margin-bottom: 0; 
+  padding-left: $spacing-width / 2; 
+  padding-right: $spacing-width / 2; 
+}
+.first-box { padding-left: 0; }
+.last-box { padding-right: 0; }
+.one-eighth { width: 12.5%; }
+.one-fifth { width: 20%; }
+.one-quarter { width: 25%; }
+.one-third { 
+    width: 33.3%;
+    &:last-of-type {
+      width: 33.4%;
+    }
+  }
+.one-half { width: 50%; }
+.two-thirds { width: 66.6%; }
+.three-quarters { width: 75%; }
+
+.block-box {
+  padding-left: $spacing-width; 
+  padding-right: $spacing-width;
+}
+
+.first-box { padding-left: 0; }
+.last-box { padding-right: 0; }
+
+
+.ie7 {
+  .block-box {
+    padding: 0;
+  }
+}

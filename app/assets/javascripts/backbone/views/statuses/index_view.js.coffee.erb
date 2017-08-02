@@ -1,0 +1,139 @@
+#
+# Copyright (C) 2014 - present Instructure, Inc.
+#
+# This file is part of Rollcall.
+#
+# Rollcall is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, version 3 of the License.
+#
+# Rollcall is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+InstructureRollcall.Views.Statuses ||= {}
+
+class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
+  template: JST["backbone/templates/statuses/index"]
+
+  events:
+    'click #previous-day': 'previousDay'
+    'click #next-day': 'nextDay'
+
+  initialize: () ->
+    @statuses = @options.statuses
+    @sectionId = @options.sectionId
+    @courseId = @options.courseId
+    @courseConfig = @options.courseConfig
+    @bindViewToggles()
+    @listenForSectionChange()
+    @statuses.bind 'reset', @resetList
+
+  bindViewToggles: ->
+    $("#show-list a").click(@showListView)
+    $("#show-class a").click(@showClassView)
+
+  listenForSectionChange: ->
+    $('#section_select').on 'change', ->
+      sid = $(this).find(":selected").val()
+      window.location = '/sections/' + sid
+
+  showListView: (event) =>
+    event.preventDefault() if event?
+    @switchView('list')
+
+  showClassView: (event) =>
+    event.preventDefault() if event?
+    @switchView('class')
+
+  switchView: (view) =>
+    $("ul.list-class-toggle li").removeClass("active-toggle")
+
+    if view == 'class'
+      @classView = new InstructureRollcall.Views.Statuses.ClassView(indexView: this)
+      @subView = @classView
+      $("#show-class").addClass("active-toggle").attr("aria-selected", true)
+      $("#show-list").attr("aria-selected", false)
+    else
+      @listView = new InstructureRollcall.Views.Statuses.ListView(indexView: this)
+      @subView = @listView
+      $("#show-list").addClass("active-toggle").attr("aria-selected", true)
+      $("#show-class").attr("aria-selected", false)
+
+
+    @$("#subview-container").html(@subView.render().el)
+
+    if view?
+      @courseConfig.set('view_preference', view)
+      @courseConfig.save()
+
+  attachDetailsView: (newDetailsView) ->
+    @detachDetailsView(@detailsView) if @detailsView?
+    @detailsView = newDetailsView
+    @$('#student-details').html(@detailsView.render().el).css('padding-top', @detailsView.statusView.topPosition())
+    @detailsView.enableClickAway()
+    @$('#student-list').addClass('details-open')
+    @detailsView.statusView.setClass()
+    @$(".student-detail-display h3").focus()
+
+  detachDetailsView: (detailsView) ->
+    detailsView.statusView.detailsView = null
+    @detailsView = null
+    @$('#student-details').html('')
+    @$('#student-list').removeClass('details-open')
+    @$('#student-list li').removeClass('details-active')
+    
+  goToDate: (date) ->
+    @classDate = date
+    @resetClassDate()
+
+  previousDay: (event) ->
+    event.preventDefault()
+    @goToDate @classDate.previous().day()
+
+  nextDay: (event) ->
+    event.preventDefault()
+    @goToDate @classDate.next().day()
+
+  resetList: => @subView.addAll()
+
+  initializeCalendar: ->
+    @$("#datepicker").datepicker
+      buttonImage: "<%= asset_path('icon-calendar.png') %>"
+      buttonImageOnly: true
+      buttonText: "Open calendar"
+      showOn: 'both'
+      onSelect: (dateText, inst) =>
+        @classDate = Date.parse(dateText)
+        @resetClassDate()
+        @$("#statuses").focus()
+
+    @$('.ui-datepicker-trigger').attr('tabindex', '0').keypress ->
+      $(this).click()
+      $("#ui-datepicker-div").attr('tabindex', '0').focus()
+
+  resetClassDate: ->
+    @$("#student-list").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box" alt="Loading" />'
+    @$("#date").html(@prettyClassDate())
+
+    @statuses.fetch
+      data:
+        section_id: @sectionId
+        class_date: @classDate.toString("yyyy-MM-dd")
+
+  prettyClassDate: ->
+    day = @classDate.toString("ddd")
+    date = @classDate.toString("MMM dd")
+    "#{day} <strong>#{date}</strong>"
+
+  render: =>
+    $(@el).html(@template())
+    @initializeCalendar()
+    @switchView(@courseConfig.get('view_preference'))
+    @goToDate(Date.today())
+
+    return this

@@ -1,0 +1,30 @@
+<h1>Edit status</h1>
+
+<form id="edit-status" name="status">
+  <div class="field">
+    <label for="student_id"> student_id:</label>
+    <input type="text" name="student_id" id="student_id" value="<%= student_id %>" >
+  </div>
+
+  <div class="field">
+    <label for="present"> present:</label>
+    <input type="text" name="present" id="present" value="<%= present %>" >
+  </div>
+
+  <div class="field">
+    <label for="late"> late:</label>
+    <input type="text" name="late" id="late" value="<%= late %>" >
+  </div>
+
+  <div class="field">
+    <label for="class_date"> class_date:</label>
+    <input type="text" name="class_date" id="class_date" value="<%= class_date %>" >
+  </div>
+
+  <div class="actions">
+    <input type="submit" value="Update Status" />
+  </div>
+
+</form>
+
+<a href="#/index">Back</a>

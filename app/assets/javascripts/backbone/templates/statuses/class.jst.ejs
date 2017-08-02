@@ -1,0 +1,52 @@
+<div class="block-box one-half last-box" id="student-details" style="display: none;"></div>
+
+<section class="content-box clearfix last first" id="class-view-container">
+  
+  <div class="clearfix classroom-control-bar">
+    
+    <div class="clearfix secondary-controls">
+      <div class="classroom-scale-container">
+        <div id="classroom-slider"></div>
+      </div>
+      <div class="attendance-selector">
+        <a role="button" href="#" class="btn btn-dark-bg" id="mark-all-present"><span>Mark all present</span></a>
+        <a role="button" href="#" class="btn btn-dark-bg" id="unmark-all"><span>Unmark all</span></a>
+      </div>
+    </div>
+
+    <div class="primary-controls">
+      <a role="button" href="#" class="header-tab header-tab-dark icon icon-user" id="take-attendance-toggle">Take attendance</a>
+      <a role="button" href="#" class="header-tab header-tab-dark icon icon-move active-toggle" id="move-students-toggle">Edit seating chart</a>
+    </div>
+        
+  </div>  
+  
+  <div class="clearfix grid-container">
+  
+    <div class="unassigned-list-container">
+      
+      <div title="Click to hide this notice" class="fineprint center-box user-message message-deletable icon icon-info" id="classroom-instructions"><strong>To create your seating chart, drag students onto the grid</strong></div>
+
+      <div class="no-select unassigned-list">
+        <div class="fineprint center-box user-message message-actionable message-drag-drop icon icon-move" id="unassigned-instructions"><strong>Remove students from the seating chart by dragging them here</strong></div>
+      </div>
+
+    </div>
+  
+    <div class="classroom-container small-grid">
+      <% for(var row=0; row < 25; row++) { %>
+        <div class="clearfix classroom-row">
+          <% for(var col=0; col < 25; col++) { %>
+            <div class="classroom-seat" id="seat-<%= row %>-<%= col %>" data-row="<%= row %>" data-col="<%= col %>"></div>
+          <% } %>
+        </div>
+      <% } %>
+
+    </div>
+  
+  </div>
+  
+</section>
+
+<script>
+</script>

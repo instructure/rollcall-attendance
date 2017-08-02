@@ -1,0 +1,50 @@
+<%
+# Copyright (C) 2014 - present Instructure, Inc.
+#
+# This file is part of Rollcall.
+#
+# Rollcall is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, version 3 of the License.
+#
+# Rollcall is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+%>
+<header id="app-header">
+  <div class="block-box one-half first-box">
+    <h1 class="light-text-color"><%= link_to "Roll Call", root_path %></h1>
+  </div>
+  <div class="block-box one-half last-box clearfix">
+
+    <% if controller_name == 'sections' %>
+      <div class="block-box three-quarters first-box">
+        <ul class="unstyled-list list-class-toggle" role="tablist">
+          <li id="show-class" role="tab">
+            <a role="button" href="#" class="undecorated-link no-select" title="switch to seating chart" tabindex="0">Class</a>
+          </li>
+          <li id="show-list" class="active-toggle" role="tab">
+            <a role="button" href="#" class="undecorated-link no-select" title="switch to list of students" tabindex="0">List</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="block-box one-quarter last-box">
+        <div class="right rollcall-dropdown settings-dropdown arrow-right-side">
+          <a role="button" id="settings-dropdown-toggle" href="#" title="Roll Call settings and reporting" class="replace-text rollcall-dropdown-toggle" aria-haspopup="true">Settings</a>
+          <div class="rollcall-dropdown-list visuallyhidden">
+            <ul class="unstyled-list" role="menubar">
+              <li role="menuitem" tabindex="0"><a href="#" id="settings-toggle">Roll Call Settings</a></li>
+              <li role="menuitem" tabindex="-1"><%= link_to "Attendance Report", new_report_path(course_id: course_id) %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</header>

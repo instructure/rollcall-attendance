@@ -1,0 +1,42 @@
+<%
+# Copyright (C) 2014 - present Instructure, Inc.
+#
+# This file is part of Rollcall.
+#
+# Rollcall is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, version 3 of the License.
+#
+# Rollcall is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+%>
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="oldie ie6"><![endif]-->
+<!--[if IE 7]><html class="oldie ie7"><![endif]-->
+<!--[if IE 8]><html class="oldie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html><!--<![endif]-->
+<head>
+  <title>Roll Call Attendance Tool</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+  <script>
+    ENV = <%= js_env.to_json.html_safe %>;
+  </script>
+
+  <div class="wrap-box" role="application">
+    <%= yield %>
+  </div>
+
+</body>
+</html>

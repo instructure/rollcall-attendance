@@ -1,0 +1,120 @@
+.student-header {
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 26px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 1.8em;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #222;
+}
+
+.loading-icon {
+  padding-top: 100px;
+}
+
+.student-chart {
+  width: 400px;
+  height: 220px;
+  margin-left: -50px;
+}
+
+.student-chart-title {
+  position: absolute;
+  top: 135px;
+  left: 118px;
+  text-align: center;
+}
+
+.student-chart-title-header {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.total-days {
+  margin-top: 50px;
+  font-size: 16px;
+}
+
+.attendance-totals {
+  height: 220px;
+  padding-left: 15px;
+}
+
+.attendance-days-count {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.attendance-bullet {
+  margin-bottom: 7px;
+}
+
+.submission-grade-container {
+  margin-top: 40px;
+  margin-left: 30px;
+}
+
+.submission-grade {
+  font-weight: bold;
+  font-size: 48px;
+  margin-bottom: -10px;
+}
+
+.student-table {
+  width: 100%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.student-table thead tr {
+  text-align: left;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.student-table tbody tr {
+  border-top-style: solid;
+  border-top-width: 1px;
+  line-height: 2.5;
+}
+
+.student-table tbody tr td:first-child {
+  padding-left: 5px;
+}
+
+@media (min-width: 840px) {
+  .col-2 {
+    width: 16.67%;
+    float: left;
+    min-width: 160px;
+  }
+
+  .col-3 {
+    width: 25%;
+    float: left;
+    min-width: 250px;
+  }
+
+  .col-8 {
+    width: 66.67%;
+    float: left;
+  }
+}
+
+@media (max-width: 840px) {
+  .col-2 {
+    width: 25%;
+    float: left;
+  }
+
+  .col-3 {
+    width: 37%;
+    float: left;
+  }
+
+  .col-8 {
+    width: 98%;
+    float: left;
+  }
+}

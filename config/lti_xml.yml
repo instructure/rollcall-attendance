@@ -1,0 +1,22 @@
+default: &default
+  tool_title: 'Roll Call Attendance Tracker'
+  tool_description: 'A very handy tool for creating seating charts and keeping track of attendance.'
+  tool_id: 'rollcall'
+
+  privacy_level: 'public'
+
+  account_navigation:
+    text: 'Attendance'
+    visibility: 'admins'
+  course_navigation:
+    text: 'Attendance'
+    visibility: 'admins'
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

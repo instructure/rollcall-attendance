@@ -1,0 +1,11 @@
+log/*
+.git
+.bundle/*
+node_modules/*
+tmp/*
+Dockerfile
+docker-compose.yml
+docker-compose.test.yml
+docker-compose.override.yml
+build.sh
+.dockerignore

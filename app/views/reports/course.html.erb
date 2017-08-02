@@ -1,0 +1,78 @@
+<%
+# Copyright (C) 2014 - present Instructure, Inc.
+#
+# This file is part of Rollcall.
+#
+# Rollcall is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, version 3 of the License.
+#
+# Rollcall is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+%>
+<%= render "sections/header", course_id: @course.id %>
+
+<div class="pad-box">
+  <% if notice %>
+    <div class="alert-notification"><i class="icon icon-info"></i><%= notice %></div>
+  <% end %>
+  <h2>Export Attendance Data: <strong><%= @course.name %></strong></h2>
+  <%= form_for @report do |form| %>
+    <%= form.hidden_field :course_id %>
+
+    <% if flash[:error] %>
+      <div class="alert-error">
+        <i class="icon icon-alert"></i> <strong>Ooops!</strong>
+        <%= flash[:error] %>
+      </div>
+    <% end %>
+
+    <h3><strong>1. Filter your data</strong> <aside>(optional)</aside></h3>
+    <div data-date-range-picker class="row-box data-report-row clearfix">
+      <div class="block-box one-third first-box">
+        <div class="form-input">
+          <% errors = form.object.errors.messages[:start_date] %>
+          <%= form.label :start_date %>
+          <%= form.text_field :start_date, "data-date-range-picker-from" => true, :class => errors.blank? ? "" : "error" %>
+          <% if errors.present? %>
+            <div class="error-message"><i class="icon icon-alert"></i> <%= errors.join("<br />").html_safe %></div>
+          <% end %>
+          <% errors = nil %>
+        </div>
+      </div>
+      <div class="block-box one-third">
+        <div class="form-input">
+          <% errors = form.object.errors.messages[:end_date] %>
+          <%= form.label :end_date %>
+          <%= form.text_field :end_date, "data-date-range-picker-to" => true, :class => errors.blank? ? "" : "error" %>
+          <% if errors.present? %>
+            <div class="error-message"><i class="icon icon-alert"></i> <%= errors.join("<br />").html_safe %></div>
+          <% end %>
+          <% errors = nil %>
+        </div>
+      </div>
+      <div class="block-box one-third last-box">
+        <div class="form-input">
+          <%= form.label :sis_student_id, "SIS Student ID" %>
+          <%= form.text_field :sis_student_id %>
+        </div>
+      </div>
+    </div>
+
+    <h3><strong>2. Tell us where we should send the report</strong></h3>
+    <div class="row-box data-report-row clearfix">
+      <div class="form-input">
+        <%= form.email_field :email %>
+      </div>
+    </div>
+
+    <div class="row-box right clearfix">
+      <%= submit_tag "Run report", class: "btn" %>
+    </div>
+  <% end %>
+</div>

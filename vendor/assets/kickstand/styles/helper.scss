@@ -1,0 +1,49 @@
+/* Special, presentational helper classes for gettin' stuff done */
+
+.first { margin-top: 0; }
+.last { margin-bottom: 0; }
+
+.left { float: left; }
+.right { float: right; }
+
+.hide { display: none; }
+
+/* Prevents text elements from being highlighted - useful for js/jquery click events */
+.no-select { -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -o-user-select: none; user-select: none; }
+
+/* Make text slightly smaller than its default */
+.fineprint { font-size: small; }
+
+/* Make text slightly larger than its default */
+.largeprint { font-size: large; }
+
+/*
+Generic class for replacing text with a background image. Note: Need to add width and height on a per-element basis.
+http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement
+(I added the display: block as it seems like it's always needed in this situation.)
+*/
+.replace-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+}
+
+.undecorated-link {
+  text-decoration: none;
+}
+
+.pinch-line-height {
+  line-height: 1.3;
+}
+
+.unstyled-list {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+
+  li {
+    margin: 0;
+  }
+
+}

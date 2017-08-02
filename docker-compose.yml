@@ -1,0 +1,62 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.3
+    environment:
+      POSTGRES_PASSWORD: rollcall
+      POSTGRES_USER: postgres
+
+  redis:
+    image: redis:2.6
+
+  fakes3:
+    image: lphoward/fake-s3
+    ports:
+      - "4569:4569"
+    environment:
+      VIRTUAL_HOST: .fakes3.docker
+      VIRTUAL_PORT: 4569
+
+  web:
+    build:
+      context: .
+      args:
+        dev_build: 'true'
+    links:
+      - db
+      - redis
+      - fakes3
+    environment: &ENV
+      RAILS_ENV: development
+      ROLLCALL_ROLE: 'web'
+      VIRTUAL_HOST: rollcall.docker
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: rollcall
+      DATABASE_ADDRESS: db
+      DATABASE_PORT: 5432
+      # SENTRY_DSN: 'https://foo:bar@sentry.insops.net/35'
+      SECRET_KEY_BASE: 'GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC'
+      RESQUE_USER: 'admin'
+      RESQUE_PASS: 'changeme'
+      AWS_ACCESS_KEY_ID: '123'
+      AWS_SECRET_ACCESS_KEY: 'scret'
+      AWS_USE_SSL: 'false'
+      AWS_S3_URL: 'fakes3.docker'
+      AWS_S3_PORT: 4569
+      REDIS_URL: 'redis://redis:6379'
+      LTI_KEY: '12345'
+      LTI_SECRET: 'secret'
+      LTI_REQUIRE_CANVAS: 'true'
+
+  work:
+    build:
+      context: .
+      args:
+        dev_build: 'true'
+    links:
+      - db
+      - redis
+    environment:
+      <<: *ENV
+      ROLLCALL_ROLE: 'worker'
+      QUEUE: "*"

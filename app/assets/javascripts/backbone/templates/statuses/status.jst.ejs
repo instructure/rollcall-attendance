@@ -1,0 +1,13 @@
+<% if(student.avatar_url != undefined) { %>
+  <img class="student-pic" width="50" height="50" src="<%= student.avatar_url %>" alt="<%= student.name %>">
+<% } %>
+
+<a role="button" href="#" tabindex="0" class="student-toggle" title="Click to toggle attendance">
+  <div class="student-name"><%= formatted_student_name %></div>
+  <!-- <div class="student-badges">
+    <div class="badge-display" data-icon="j" data-color="#color" title="[BADGE NAME]"></div>
+    <div class="badge-display" data-icon="Y" data-color="#color" title="[BADGE NAME]"></div>
+  </div> -->
+  <div class="replace-text student-status" tabindex="-1"><%= attendance || 'unmarked' %></div>
+</a>
+<a role="button" href="#" class="btn btn-mini icon icon-right-arrow student-detail-toggle-link" aria-label="Click to view more information about <%= student.name %>">More</a>

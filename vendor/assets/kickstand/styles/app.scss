@@ -1,0 +1,1594 @@
+/* =========================================
+   Styles specific to the app
+   ========================================= */
+
+/* Buttons */
+.btn, a.btn {
+  @include corner-radius;
+  @include subtle-gradient;
+  @include subtle-textshadow;
+  padding: 6px 7px;
+  border: 1px solid $border-color;
+  -moz-background-clip: padding; -webkit-background-clip: padding; background-clip: padding-box;
+  text-decoration: none;
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+  *zoom: 1;
+  line-height: 1;
+  color: $bodycopy-color;
+  -moz-box-shadow: inset 0 -1px 0 $lightest-color;
+  -webkit-box-shadow: inset 0 -1px 0 $lightest-color;
+  box-shadow: inset 0 -1px 0 $lightest-color;
+  @include stock-transition;
+  text-transform: uppercase;
+  font-size: $base-fontsize - 2;
+  -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -o-user-select: none; user-select: none;
+
+  &:hover {
+    -moz-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.6 ), inset 0 0 $spacing-width $lightest-color;
+    -webkit-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.6 ), inset 0 0 $spacing-width $lightest-color;
+    box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.6 ), inset 0 0 $spacing-width $lightest-color;
+  }
+
+  &:active {
+    @include subtle-gradient-rev;
+  }
+
+  &.btn-mini {
+    font-size: $base-fontsize - 4;
+    padding: 4px 6px 3px;
+    text-shadow: none;
+  }
+
+  &.btn-large {
+    font-size: $base-fontsize + 2;
+    padding: 6px 10px;
+    text-shadow: none;
+  }
+
+  span {
+    /* for background image icons when the icon font's not cutting it... */
+    padding-left: 16px;
+  }
+
+  &.btn-default {
+    @include default-gradient;
+    border-color: $bodycopy-color;
+    text-shadow: 0 -1px 0 rgba( 0,0,0,0.7 );
+    -moz-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.3 );
+    -webkit-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.3 );
+    box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.3 );
+    color: $lightest-color;
+
+    &:active {
+      @include default-gradient-rev;
+    }
+
+  }
+
+  &.btn-dark-bg {
+    border-color: $default-color-dark;
+  }
+
+  &.btn-present {
+    @include present-gradient;
+    border-color: $present-color-dark;
+    text-shadow: 0 1px 0 rgba( $lightest-color, 0.6 );
+    color: darken( $bodycopy-color, 10% );
+    -moz-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+    -webkit-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+    box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+
+    &:hover {
+      box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 ), inset 0 0 $spacing-width rgba( $lightest-color, 0.5 );
+    }
+
+    &:active {
+      @include present-gradient-rev;
+    }
+
+  }
+
+  &.btn-absent {
+    @include absent-gradient;
+    border-color: $absent-color-dark;
+    text-shadow: none;
+    color: $lightest-color;
+    -moz-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+    -webkit-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+    box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 );
+
+    &:hover {
+      -moz-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 ), inset 0 0 $spacing-width rgba( $lightest-color, 0.5 );
+      -webkit-box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 ), inset 0 0 $spacing-width rgba( $lightest-color, 0.5 );
+      box-shadow: inset 0 -1px 0 rgba( $lightest-color, 0.5 ), inset 0 0 $spacing-width rgba( $lightest-color, 0.5 );
+    }
+
+    &:active {
+      @include absent-gradient-rev;
+    }
+
+  }
+
+}
+
+#mark-all-present span {
+  background: image-url('icon-checkmark-small.png') no-repeat 0 3px;
+  padding-left: 15px;
+
+  /* Retina display */
+  @media (min--moz-device-pixel-ratio: 1.5),
+       (-o-min-device-pixel-ratio: 3/2),
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-device-pixel-ratio: 1.5),
+       (min-resolution: 1.5dppx) {
+    background-image: image-url('icon-checkmark-small@2x.png');
+    background-size: 11px 8px;
+  }
+
+}
+
+#unmark-all span {
+  background: image-url('icon-undo-small.png') no-repeat 0 2px;
+
+  /* Retina display */
+  @media (min--moz-device-pixel-ratio: 1.5),
+       (-o-min-device-pixel-ratio: 3/2),
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-device-pixel-ratio: 1.5),
+       (min-resolution: 1.5dppx) {
+    background-image: image-url('icon-undo-small@2x.png');
+    background-size: 10px 11px;
+  }
+
+}
+
+.user-message {
+  background-color: $late-color-lightest;
+  @include corner-radius;
+  @include subtle-textshadow;
+  padding: 10px;
+  border: 1px solid $late-color;
+  margin: $spacing-width - 5 $spacing-width - 5;
+
+  &:hover {
+    background-color: lighten( $late-color-lightest, 5% );
+  }
+
+  &:before {
+    color: $late-color-darkest;
+    font-size: $base-fontsize;
+  }
+
+}
+
+.message-actionable {
+  background-color: $present-color-lightest;
+  border-color: $present-color;
+
+  &:hover {
+    background-color: lighten( $present-color-lightest, 5% );
+  }
+
+  &:before {
+    color: $present-color-darkest;
+  }
+
+}
+
+.message-deletable {
+  cursor: pointer;
+}
+
+.message-drag-drop {
+  border-style: dashed;
+}
+
+#classroom-instructions {
+  display: none;
+}
+
+/* LIST VIEW */
+
+/* --- App header --- */
+#app-header {
+  height: 50px;
+  @include default-gradient;
+  border-top: 1px solid lighten( $bodycopy-color, 5% );
+  -moz-box-shadow: inset 0 1px 0 rgba( $lightest-color, 0.3 );
+  -webkit-box-shadow: inset 0 1px 0 rgba( $lightest-color, 0.3 );
+  box-shadow: inset 0 1px 0 rgba( $lightest-color, 0.3 );
+
+  h1 {
+    font-size: 24px;
+    padding: 12px 0 2px 42px;
+    margin: 0 0 0 $spacing-width;
+    background: image-url('bg-megaphone.png') no-repeat 0 13px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+    font-weight: 300;
+
+    a { text-decoration: none; color: white; }
+
+    /* Retina display */
+    @media (min--moz-device-pixel-ratio: 1.5),
+       (-o-min-device-pixel-ratio: 3/2),
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-device-pixel-ratio: 1.5),
+       (min-resolution: 1.5dppx) {
+      background-image: image-url('bg-megaphone@2x.png');
+      background-size: 33px 24px;
+    }
+
+  }
+
+  .settings-dropdown {
+    margin: $spacing-width - 3 $spacing-width 0 0;
+  }
+
+}
+
+
+/* --- Settings modal --- */
+
+.rollcall-dropdown {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  z-index: 40;
+}
+
+.rollcall-dropdown-toggle {
+  width: 40px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  border: 1px solid transparent;
+
+  .settings-dropdown & {
+    background-image: image-url('bg-settings.png');
+    /* Retina display */
+    @media (min--moz-device-pixel-ratio: 1.5),
+         (-o-min-device-pixel-ratio: 3/2),
+         (-webkit-min-device-pixel-ratio: 1.5),
+         (min-device-pixel-ratio: 1.5),
+         (min-resolution: 1.5dppx) {
+      background-image: image-url('bg-settings@2x.png');
+      background-size: 31px 18px;
+    }
+  }
+
+  &:hover {
+    background-color: lighten($darkbg-color, 8%);
+    -moz-border-radius: $corner-width;
+    -webkit-border-radius: $corner-width;
+    border-radius: $corner-width;
+  }
+
+  &.active {
+    background-color: lighten($darkbg-color, 5%);
+    -moz-border-radius: $corner-width;
+    -webkit-border-radius: $corner-width;
+    border-radius: $corner-width;
+    border-color: $darkbg-color;
+    -moz-box-shadow: inset 0 1px 0 darken($darkbg-color, 5%);
+    -webkit-box-shadow: inset 0 1px 0 darken($darkbg-color, 5%);
+    box-shadow: inset 0 1px 0 darken($darkbg-color, 5%);
+
+    &:hover { background-color: lighten($darkbg-color, 5%); }
+  }
+
+}
+
+.rollcall-dropdown-list {
+  position: absolute;
+  z-index: 100 !important;
+  top: 10px;
+  width: 180px;
+  font-size: $base-fontsize - 1;
+  left: 50%;
+  margin-left: -80px;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.15s ease-out;
+  -moz-transform: translateY(0);
+  -moz-transition: -moz-transform 0.15s ease-out;
+  -ms-transform: translateY(0);
+  -ms-transition: -ms-transform 0.15s ease-out;
+  transform: translateY(0);
+  transition: transform 0.15s ease-out;
+
+  &.active {
+    -webkit-transform: translate3d(0, 20px, 0);
+    -moz-transform: translateY(20px);
+    -ms-transform: translateY(20px);
+    transform: translateY(20px);
+    z-index: 100 !important;
+  }
+
+  .arrow-right-side & {
+    right: 0; left: auto;
+    margin-left: 0;
+  }
+
+  .arrow-left-side & {
+    right: auto; left: 0;
+    margin-left: 0;
+  }
+
+  ul {
+    margin: 0; padding: 0;
+    @include subtle-gradient;
+    position: relative;
+    border-radius: $corner-width;
+    box-shadow: 0 5px 5px rgba( black, 0.3 );
+    border: 1px solid $lightest-color;
+
+    &:after {
+	bottom: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(51, 51, 51, 0);
+	border-bottom-color: $lightest-color;
+	border-width: 8px;
+	left: 50%;
+	margin-left: -8px;
+    }
+
+    .arrow-right-side & {
+      &:after { left: 90%; }
+    }
+
+    .arrow-left-side & {
+      &:after { left: 10%; }
+    }
+
+  }
+
+  li {
+
+    &:first-of-type a {
+      -webkit-border-top-left-radius: $corner-width;
+      -webkit-border-top-right-radius: $corner-width;
+      -moz-border-radius-topleft: $corner-width;
+      -moz-border-radius-topright: $corner-width;
+      border-top-left-radius: $corner-width;
+      border-top-right-radius: $corner-width;
+    }
+
+    &:last-of-type a {
+      -webkit-border-bottom-left-radius: $corner-width;
+      -webkit-border-bottom-right-radius: $corner-width;
+      -moz-border-radius-bottomleft: $corner-width;
+      -moz-border-radius-bottomright: $corner-width;
+      border-bottom-left-radius: $corner-width;
+      border-bottom-right-radius: $corner-width;
+    }
+
+  }
+
+  a {
+    padding: $spacing-width/2;
+    font-weight: bold;
+    text-decoration: none;
+    color: $lightest-color;
+    display: block;
+    line-height: 1;
+    color: $bodycopy-color;
+
+    &:hover {
+      @include present-gradient;
+      color: $darkbg-color;
+    }
+  }
+
+}
+
+#lateness-percentage-slider {
+  margin-top: 5px;
+}
+
+#lateness-percentage {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+  color: $late-color-darkest;
+}
+
+
+/* --- Tabs that toggle btw Class and List views --- */
+
+@mixin active-tab {
+  @include subtle-gradient-rev;
+  color: $bodycopy-color;
+  border-color: rgba(0,0,0,0.9);
+  -moz-box-shadow: inset 0 1px 0 $lightest-color;
+  -webkit-box-shadow: inset 0 1px 0 $lightest-color;
+  box-shadow: inset 0 1px 0 $lightest-color;
+  -webkit-border-top-left-radius: $corner-width;
+  -webkit-border-top-right-radius: $corner-width;
+  -moz-border-radius-topleft: $corner-width;
+  -moz-border-radius-topright: $corner-width;
+  border-top-left-radius: $corner-width;
+  border-top-right-radius: $corner-width;
+  text-shadow: none;
+}
+
+.list-class-toggle {
+
+  li {
+    float: right;
+    border: 1px solid transparent;
+    border-bottom: none;
+    position: relative;
+    top: 14px;
+    margin-left: 5px;
+
+    a {
+      text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+      color: $lightest-color;
+      line-height: 35px;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 0 10px 0 37px;
+      display: block;
+      font-size: $base-fontsize + 2;
+      background: image-url('sprite-view-toggle.png') no-repeat 10px 0;
+      @include stock-transition;
+
+      /* Retina display */
+      @media (min--moz-device-pixel-ratio: 1.5),
+           (-o-min-device-pixel-ratio: 3/2),
+           (-webkit-min-device-pixel-ratio: 1.5),
+           (min-device-pixel-ratio: 1.5),
+           (min-resolution: 1.5dppx) {
+        background-image: image-url('sprite-view-toggle@2x.png');
+        background-size: 19px 140px;
+      }
+
+    }
+
+    &:hover {
+      a { color: $present-color-light; }
+    }
+
+    &.active-toggle {
+      @include active-tab;
+
+      .ie9 & { background-size: 1px 31px; }
+
+      a {
+        text-shadow: none;
+        color: $bodycopy-color;
+      }
+
+    }
+
+    &#show-class {
+
+      a { background-position: 10px -70px; }
+
+      &.active-toggle {
+
+        a { background-position: 10px -105px; }
+
+      }
+
+    }
+
+    &#show-list {
+
+      &.active-toggle {
+
+        a { background-position: 10px -35px; }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+/* --- Secondary navigation area --- */
+#app-secondary {
+  height: 65px;
+}
+
+.sections-select {
+  border-bottom: 1px solid $border-color;
+  position: absolute;
+  left: 0;
+  top: 50px;
+  margin: 0;
+  width: 100%;
+  height: 50px;
+
+  select {
+    display: inline-block;
+    margin: 6px 0 0 10px;
+  }
+}
+
+.sections-list {
+  border-bottom: 1px solid $border-color;
+  margin: $spacing-width 0;
+
+  &.sections-list-class {
+    position: absolute;
+    left: 0;
+    top: 65px;
+    margin: 0;
+    width: 100%;
+  }
+
+  li {
+    float: left;
+    margin: 0 0 0 $spacing-width/4;
+    z-index: 10;
+    position: relative;
+    top: 2px;
+
+    &:first-of-type {
+      margin-left: $spacing-width;
+    }
+
+    a {
+      color: $bodycopy-color;
+      display: block;
+      padding: 7px;
+      line-height: 1;
+      text-decoration: none;
+      border: 1px solid $border-color;
+      border-bottom: none;
+      -webkit-border-top-left-radius: $corner-width;
+      -webkit-border-top-right-radius: $corner-width;
+      -moz-border-radius-topleft: $corner-width;
+      -moz-border-radius-topright: $corner-width;
+      border-top-left-radius: $corner-width;
+      border-top-right-radius: $corner-width;
+    }
+
+    &.active-section {
+      top: 1px;
+
+      a {
+        @include subtle-gradient-rev;
+        -moz-box-shadow: inset 0 1px 0 $lightest-color;
+        -webkit-box-shadow: inset 0 1px 0 $lightest-color;
+        box-shadow: inset 0 1px 0 $lightest-color;
+        font-weight: bold;
+        padding: 8px 7px;
+
+        .ie9 & { background-size: 1px 25px; }
+
+      }
+
+    }
+
+  }
+
+}
+
+.attendance-selector {
+  margin: 0 0 $spacing-width $spacing-width;
+}
+
+/* --- Datepicker at top right --- */
+.date-picker {
+  position: absolute;
+  right: 60px;
+  top: 57px;
+  font-size: $base-fontsize + 4;
+}
+
+.date-picker-date {
+  text-transform: uppercase;
+  display: inline-block;
+  width: 120px;
+  text-align: center;
+}
+
+a.date-picker-arrow {
+  font-size: $base-fontsize + 10;
+  color: $bodycopy-color;
+
+  &:hover {
+    color: $present-color;
+  }
+
+}
+
+.ui-datepicker-trigger {
+  width: 26px;
+  height: 29px;
+  position: absolute;
+  right: 15px;
+  top: 59px;
+  background: image-url('icon-calendar.png') no-repeat;
+
+  /* Retina display */
+  @media (min--moz-device-pixel-ratio: 1.5),
+       (-o-min-device-pixel-ratio: 3/2),
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-device-pixel-ratio: 1.5),
+       (min-resolution: 1.5dppx) {
+    background-image: image-url('icon-calendar@2x.png');
+    background-size: 26px 29px;
+  }
+
+}
+
+#ui-datepicker-div {
+  position: absolute;
+  right: 50px;
+  top: 10px;
+  z-index: 40;
+}
+
+
+/* Present, late, absent and unmarked notification buttons that appear in both List and Class views */
+
+.student-status {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  background: image-url('sprite-status-buttons.png') no-repeat;
+
+  /* Retina display */
+  @media (min--moz-device-pixel-ratio: 1.5),
+     (-o-min-device-pixel-ratio: 3/2),
+     (-webkit-min-device-pixel-ratio: 1.5),
+     (min-device-pixel-ratio: 1.5),
+     (min-resolution: 1.5dppx) {
+    background-image: image-url('sprite-status-buttons@2x.png');
+    background-size: 60px 120px;
+  }
+
+}
+
+.present {
+  .student-status { background-position: 0 -30px; }
+}
+
+.late {
+  .student-status { background-position: 0 -60px; }
+
+  &.excused {
+    .student-status { background-position: -30px -60px; }
+  }
+}
+
+.absent {
+  .student-status { background-position: 0 -90px; }
+
+  &.excused {
+    .student-status { background-position: -30px -90px; }
+  }
+}
+
+
+
+/* --- Main list of students --- */
+
+ol.student-list-display {
+  margin: 0 0 0 $spacing-width;
+
+  a.student-toggle {
+    display: block;
+    height: 49px;
+    @include subtle-gradient;
+    color: $bodycopy-color;
+    border: 1px solid $lightest-color;
+    -moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 10;
+    text-decoration: none;
+    padding-left: 50px;
+
+    &:active {
+      @include subtle-gradient-rev;
+    }
+
+  }
+
+  .student-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+  }
+
+  .student-name {
+    padding: 5px 0 0;
+    @include subtle-textshadow;
+    line-height: 1.3;
+  }
+
+  .student-status {
+    top: 10px;
+    left: 6px;
+    height: 30px;
+    width: 30px;
+    z-index: 20;
+  }
+
+  .student-detail-toggle-link {
+    position: absolute;
+    top: 14px;
+    right: 0;
+    z-index: 30;
+    border-right: none;
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-bottomright: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    -moz-box-shadow: inset 1px -1px 0 rgba( $lightest-color, 0.6 );
+    -webkit-box-shadow: inset 1px -1px 0 rgba( $lightest-color, 0.6 );
+    box-shadow: inset 1px -1px 0 rgba( $lightest-color, 0.6 );
+  }
+
+  li {
+    position: relative;
+    clear: left;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    height: 50px;
+    overflow: hidden;
+    margin: 0;
+    background-clip: padding-box;
+
+    &:first-of-type {
+      -webkit-border-top-left-radius: $corner-width;
+      -webkit-border-top-right-radius: $corner-width;
+      -moz-border-radius-topleft: $corner-width;
+      -moz-border-radius-topright: $corner-width;
+      border-top-left-radius: $corner-width;
+      border-top-right-radius: $corner-width;
+    }
+
+    &:last-of-type {
+      -webkit-border-bottom-left-radius: $corner-width;
+      -webkit-border-bottom-right-radius: $corner-width;
+      -moz-border-radius-bottomleft: $corner-width;
+      -moz-border-radius-bottomright: $corner-width;
+      border-bottom-left-radius: $corner-width;
+      border-bottom-right-radius: $corner-width;
+      border-bottom: 1px solid $border-color;
+      height: 51px;
+
+    }
+
+    &.has-avatar {
+      .student-pic { display: block; }
+      a.student-toggle { margin-left: 50px; }
+    }
+
+
+
+
+  }
+
+  &.details-open {
+    li {
+      opacity: 0.4;
+
+      &:hover {
+        opacity: 1.0;
+      }
+
+    }
+
+    li.details-active {
+      opacity: 1.0;
+      z-index: 50;
+    }
+  }
+}
+
+#click-away {
+  /* Note: This div stops other students from being toggled while another student's detail view is open */
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 100px;
+  left: 0;
+  z-index: 40;
+}
+
+/* --- Individual student detail view --- */
+.student-detail-display {
+
+  padding-right: $spacing-width;
+
+  h3 {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 3px;
+  }
+
+  footer {
+    border-top: 1px solid $border-color;
+    padding-top: 3px;
+
+    a {
+      white-space:nowrap;
+    }
+
+  }
+
+}
+
+
+.detail-attendance-toggle {
+  overflow: hidden;
+  @include corner-radius;
+  border: 1px solid $border-color;
+  background-clip: padding-box;
+  margin: $spacing-width - 10 0;
+
+  a {
+    height: 37px;
+    width: 100%;
+    border: 1px solid rgba( $lightest-color, 1 );
+    position: relative;
+
+    &:hover {
+      -moz-box-shadow: inset 0 0 $spacing-width $lightest-color;
+      -webkit-box-shadow: inset 0 0 $spacing-width $lightest-color;
+      box-shadow: inset 0 0 $spacing-width $lightest-color;
+    }
+
+    span {
+      width: 25px;
+      height: 25px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -13px 0 0 -12px;
+      display: block;
+      background: image-url('sprite-detail-buttons.png') no-repeat;
+
+      /* Retina display */
+      @media (min--moz-device-pixel-ratio: 1.5),
+       (-o-min-device-pixel-ratio: 3/2),
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-device-pixel-ratio: 1.5),
+       (min-resolution: 1.5dppx) {
+        background-image: image-url('sprite-detail-buttons@2x.png');
+        background-size: 100px 75px;
+      }
+
+    }
+
+  }
+
+  li {
+    float: left;
+    @include subtle-gradient;
+    margin: 0;
+    width: 25%;
+    border-right: 1px solid $border-color;
+    overflow: hidden;
+
+    &:last-of-type {
+      border-right: none;
+
+      a {
+        -webkit-border-top-right-radius: $corner-width;
+        -webkit-border-bottom-right-radius: $corner-width;
+        -moz-border-radius-topright: $corner-width;
+        -moz-border-radius-bottomright: $corner-width;
+        border-top-right-radius: $corner-width;
+        border-bottom-right-radius: $corner-width;
+      }
+
+    }
+
+    &:first-of-type {
+      a {
+        -webkit-border-top-left-radius: $corner-width;
+        -webkit-border-bottom-left-radius: $corner-width;
+        -moz-border-radius-topleft: $corner-width;
+        -moz-border-radius-bottomleft: $corner-width;
+        border-top-left-radius: $corner-width;
+        border-bottom-left-radius: $corner-width;
+      }
+    }
+
+    &#attendance-toggle-absent {
+      span {
+        background-position: -25px 0;
+      }
+    }
+
+    &#attendance-toggle-late {
+      span {
+        background-position: -50px 0;
+      }
+    }
+
+    &#attendance-toggle-unmarked {
+      span {
+        background-position: -75px 0;
+      }
+    }
+
+    &.active-toggle {
+
+      a {
+        -moz-box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
+        -webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
+        box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
+      }
+      span { margin-top: -12px; }
+
+      &#attendance-toggle-present {
+        a { @include present-gradient-rev; }
+        span { background-position: 0 -25px; }
+      }
+
+      &#attendance-toggle-absent {
+        a { @include absent-gradient-rev; }
+        span { background-position: -25px -25px; }
+
+        &.excused {
+          span { background-position: -25px -50px; }
+        }
+      }
+
+      &#attendance-toggle-late {
+        a { @include late-gradient-rev; }
+        span { background-position: -50px -25px; }
+
+        &.excused {
+          span { background-position: -50px -50px; }
+        }
+      }
+
+      &#attendance-toggle-unmarked {
+        a { @include default-gradient-rev; }
+        span { background-position: -75px -25px; }
+      }
+
+
+    }
+
+  }
+
+}
+
+.oldie .detail-attendance-toggle {
+  a.replace-text {
+    text-indent: -9999px;
+    font-size: 4px;
+    outline: none;
+  }
+}
+
+/* --- Create badges modal --- */
+.custom-cat-option {
+  float: left;
+  width: 25%;
+  cursor: pointer;
+  position: relative;
+  @include subtle-gradient;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.1;
+  @include subtle-textshadow;
+
+  &:hover, &.chosen {
+    @include box-shadow-med;
+    @include corner-radius;
+    -moz-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+    z-index: 10;
+    opacity: 1 !important;
+    background: $lightest-color;
+  }
+
+  &.chosen {
+    z-index: 5;
+    border: 1px solid $lightest-color;
+  }
+
+  &.not-chosen { opacity: 0.2; }
+
+}
+
+.option-icon {
+  height: 45px;
+  padding: 5px;
+  font-size: $base-fontsize - 4;
+
+
+  &:hover, &.chosen {
+    color: $bodycopy-color;
+  }
+
+  &:before {
+    content: attr(data-icon);
+    font-family: $icon-font;
+    font-size: 32px;
+    display: block;
+    text-transform: none;
+    text-align: center;
+  }
+
+  &.default-color { color: $bodycopy-color !important; }
+
+}
+
+.option-color {
+  height: 30px;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+
+/* --- Manage badges modal --- */
+
+.manage-badge-list {
+
+  li {
+    margin: 0 0 2px;
+    overflow: hidden;
+    position: relative;
+
+    a.edit-badge {
+      display: block;
+      padding: 7px 80px 7px 7px;
+
+      &:before {
+        content: attr(data-icon);
+        font-family: $icon-font;
+        font-size: 16px;
+        display: inline-block;
+        margin-right: 3px;
+        text-transform: none;
+      }
+
+    }
+
+    a.delete-badge {
+      position: absolute;
+      top: 7px; right: 5px;
+      color: $absent-color-dark;
+    }
+
+  }
+
+}
+
+
+/* --- Badges display on student list --- */
+
+.badge-display {
+  float: left;
+  margin-right: 3px;
+
+  &:before {
+    content: attr(data-icon);
+    font-family: $icon-font;
+    font-size: 16px;
+    display: inline-block;
+    text-transform: none;
+    line-height: 1;
+  }
+
+}
+
+
+/* --- Badges display/toggle in Detail view --- */
+
+.btn-cat-toggle, a.btn-cat-toggle {
+  padding: 4px 5px 3px;
+  margin: 0 2px 5px 0;
+
+  &:before {
+    content: attr(data-icon);
+    font-family: $icon-font;
+    font-size: 16px;
+    display: inline-block;
+    margin-right: 3px;
+    text-transform: none;
+  }
+
+  &.chosen {
+    color: $lightest-color;
+    text-shadow: none;
+    -moz-box-shadow: none;-webkit-box-shadow: none;box-shadow: none;
+    border-color: transparent;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+  }
+}
+
+/* New Class view */
+
+#class-view-container {
+  height: 100%;
+
+  .user-message {
+    margin: 0;
+    border: none;
+    -moz-border-radius: 0;-webkit-border-radius: 0;border-radius: 0;
+  }
+}
+
+.classroom-scale-container {
+  width: 140px;
+  padding: 8px 18px;
+  float: left;
+  margin-right: $spacing-width + 5;
+  background: image-url('bg-class-slider.png') no-repeat 0 50%;
+
+  @media (min--moz-device-pixel-ratio: 1.5),
+  (-o-min-device-pixel-ratio: 3/2),
+  (-webkit-min-device-pixel-ratio: 1.5),
+  (min-device-pixel-ratio: 1.5),
+  (min-resolution: 1.5dppx) {
+    background-image: image-url('bg-class-slider@2x.png');
+    background-size: 140px 7px;
+  }
+
+}
+
+.unassigned-list-container {
+  width: 200px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  float: left;
+  max-height: 400px;
+}
+
+.unassigned-list {
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  background: $present-color-lightest;
+  -moz-transition: background 0.15s linear;
+  -webkit-transition: background 0.15s linear;
+  -o-transition: background 0.15s linear;
+  -ms-transition: background 0.15s linear;
+  transition: background 0.15s linear;
+
+  .user-message { background: none; }
+
+  #unassigned-instructions {
+    padding: 10px 15px;
+    text-align: center;
+  }
+
+  .student-dragged {
+    opacity: 0.7;
+  }
+
+  .student-seated { display: none; }
+
+  .student-desk:last-of-type .student-unseated {
+    border: none;
+  }
+
+  &.unassigned-hover {
+    background: lighten( $present-color-lightest, 5% );
+
+    #unassigned-instructions:before {
+      content: "+";
+    }
+
+  }
+
+}
+
+
+.student-unseated {
+  display: block;
+  border: none;
+  border-bottom: 1px solid $border-color;
+  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+  cursor: move;
+  text-transform: none;
+
+  &:before {
+    margin-right: 1px;
+    font-size: $base-fontsize;
+  }
+
+  &:hover {
+
+    &:before {
+      color: $present-color-darkest;
+    }
+
+  }
+
+}
+
+.grid-container {
+  width: 2001px;
+  position: relative;
+  left: -200px;
+  -moz-transition: left 0.15s ease-in-out;
+  -webkit-transition: left 0.15s ease-in-out;
+  -o-transition: left 0.15s ease-in-out;
+  -ms-transition: left 0.15s ease-in-out;
+  transition: left 0.15s ease-in-out;
+
+  &.list-open {
+    left: 0;
+  }
+
+}
+
+.classroom-container {
+  float: left;
+  border-bottom: 1px solid $border-color;
+  border-right: 1px solid $border-color;
+  width: 1800px;
+  height: 1800px;
+  -webkit-overflow-scrolling: touch;
+
+  .student-unseated { display: none; }
+}
+
+.oldie .classroom-container {
+  position: relative;
+
+  &.list-open {
+    left: 200px;
+  }
+
+}
+
+.classroom-row {
+  clear: both;
+  height: 4%;
+}
+
+.classroom-student {
+  cursor: move;
+}
+
+.classroom-control-bar {
+  @include default-gradient;
+  padding: 5px 10px 4px;
+  position: relative;
+  text-align: right;
+
+  .attendance-selector {
+    margin: 0;
+    width: 270px;
+    float: left;
+    text-align: left;
+  }
+
+  .ui-slider-horizontal {
+    background: $default-color;
+    border-color: $default-color-light;
+    border-top-color: $default-color-dark;
+  }
+
+}
+
+.primary-controls {
+  position: absolute;
+  bottom: 0; right: 5px;
+}
+
+.secondary-controls {
+  width: 60%;
+}
+
+.classroom-seat {
+  float: left;
+  width: 4%;
+  height: 100%;
+  border-left:solid 1px $border-color;
+  border-top: solid 1px $border-color;
+  overflow: hidden;
+
+  .student-desk {
+    height: 100%;
+
+    .student-seated {
+      width: 90%;
+      height: 90%;
+      margin: 5%;
+
+      a.student-attendance-display {
+        cursor: move;
+        display: block;
+        @include default-gradient;
+        height: 60%;
+        position: relative;
+        -webkit-border-top-left-radius: $corner-width;
+        -webkit-border-top-right-radius: $corner-width;
+        -moz-border-radius-topleft: $corner-width;
+        -moz-border-radius-topright: $corner-width;
+        border-top-left-radius: $corner-width;
+        border-top-right-radius: $corner-width;
+        border: 1px solid darken( $default-color, 3% );
+        border-bottom: 0;
+        -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+        -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+
+        .student-status {
+          left: 50%;
+          margin-left: -12px;
+          top: 50%;
+          margin-top: -12px;
+          background: image-url('sprite-detail-buttons.png') no-repeat right bottom;
+          width: 25px;
+          height: 25px;
+
+          @media (min--moz-device-pixel-ratio: 1.5),
+          (-o-min-device-pixel-ratio: 3/2),
+          (-webkit-min-device-pixel-ratio: 1.5),
+          (min-device-pixel-ratio: 1.5),
+          (min-resolution: 1.5dppx) {
+            background-image: image-url('sprite-detail-buttons@2x.png');
+            background-size: 100px 75px;
+          }
+
+
+        }
+
+      }
+
+      a.student-toggle {
+        cursor: pointer;
+        .student-status { background-position: -75px -25px; }
+      }
+
+      a.classroom-modal-display {
+        cursor: move;
+        display: block;
+        text-transform: none;
+        overflow: hidden;
+        -webkit-border-top-left-radius: 0;
+        -webkit-border-top-right-radius: 0;
+        -moz-border-radius-topleft: 0;
+        -moz-border-radius-topright: 0;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        font-size: 11px;
+        position: relative;
+        height: 40%;
+        padding: 5px;
+
+        span {
+          display: none;
+        }
+
+        strong {
+          display: block;
+        }
+
+      }
+
+      a.classroom-modal-toggle {
+        cursor: pointer;
+        padding-top: 8px;
+
+        span {
+          display: block;
+          width: 0;
+          height: 0;
+          border-top: 6px solid #666;
+          border-left: 6px solid transparent;
+          -moz-box-shadow: 0 -1px 0 $lightest-color;
+          -webkit-box-shadow: 0 -1px 0 $lightest-color;
+          box-shadow: 0 -1px 0 $lightest-color;
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          padding: 0;
+        }
+
+        &:hover {
+
+          span {
+            top: 1px;
+            right: 1px;
+            border-top-width: 7px;
+            border-left-width: 7px;
+          }
+
+        }
+
+      }
+
+    }
+
+    &.has-avatar {
+
+      img.student-pic {
+        margin: 0;
+        position: absolute;
+        top: 5px; left: 5px;
+        width: 40px; height: 40px;
+        -moz-border-radius: $corner-width/2;
+        -webkit-border-radius: $corner-width/2;
+        border-radius: $corner-width/2;
+        border-bottom: 1px solid rgba(255,255,255,0.5);
+      }
+
+      a.student-attendance-display .student-status {
+        left: auto;
+        margin-left: 0;
+        right: 10px;
+      }
+
+    }
+
+    &.present {
+      a.student-toggle {
+        @include present-gradient;
+        border-color: $present-color-darkest;
+        .student-status { background-position: 0 -25px; }
+      }
+    }
+
+    &.late {
+      a.student-toggle {
+        @include late-gradient;
+        border-color: $late-color-darkest;
+        .student-status { background-position: -50px -25px; }
+      }
+    }
+
+    &.absent {
+      a.student-toggle {
+        @include absent-gradient;
+        border-color: $absent-color-darkest;
+        .student-status { background-position: -25px -25px; }
+      }
+    }
+
+    &.student-dragged {
+      opacity: 0.7;
+    }
+
+    &.ui-draggable-dragging {
+      height: 80px;
+      width: 80px;
+
+      a.student-attendance-display .student-status {
+        right: 1px;
+      }
+
+      img.student-pic {
+        left: 2px;
+      }
+
+    }
+
+  }
+
+}
+
+.small-grid .classroom-seat .student-desk .student-seated {
+
+  a.student-attendance-display {
+
+    .student-status {
+      right: 2px;
+    }
+
+    img.student-pic {
+      width: 30px; height: 30px;
+      top: 3px; left: 3px;
+    }
+
+  }
+
+  a.classroom-modal-display {
+    padding: 1px;
+  }
+
+  a.classroom-modal-toggle {
+    span { display: none; }
+  }
+
+}
+
+.large-grid .classroom-seat .student-desk .student-seated {
+
+  a.student-attendance-display {
+
+    img.student-pic {
+      width: 50px; height: 50px;
+      top: 5px; left: 5px;
+    }
+
+  }
+
+  a.classroom-modal-display {
+    font-size: $base-fontsize - 2;
+  }
+
+}
+
+.desk-hover {
+  background-color: $present-color-lightest;
+}
+
+.desk-taken {
+  background-color: $absent-color-lightest;
+}
+
+a.header-tab, .header-tab {
+  position: relative;
+  z-index: 10;
+  top: 1px;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: $base-fontsize - 2;
+  padding: 5px 8px 4px;
+  text-decoration: none;
+  color: $lightest-color;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+  border-top: 1px solid transparent;
+  -moz-transition: color 0.3s linear;
+  -webkit-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  -ms-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+
+  &:hover {
+    color: $present-color-light;
+  }
+
+  &:before {
+    font-size: $base-fontsize + 1;
+  }
+
+  &.active-toggle {
+    @include active-tab;
+    border-color: darken( $default-color, 8% );
+
+    .ie9 & { background-size: 1px 24px; }
+
+    &:before { color: $present-color-dark; }
+
+  }
+
+}
+
+/* Alerts */
+[class^="alert-"] {
+  @extend .center-box;
+  @extend .pad-box-mini;
+  @extend .row-box;
+  @extend .corner-box-mini;
+  border: 1px solid $border-color;
+}
+
+.alert-error {
+  background: $absent-color-lightest;
+  color: $absent-color-darkest;
+  border-color: lighten( $absent-color, 35% );
+}
+
+.alert-notification {
+  background: lighten( $present-color-lightest, 5% );
+  color: darken( $present-color-darkest, 8% );
+  border-color: lighten( $present-color, 25% );
+}

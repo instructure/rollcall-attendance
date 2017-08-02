@@ -1,0 +1,33 @@
+<div id="dialog-modal" style="display: none" title="Add a custom attendance badge" role="dialog">
+  <form>
+    <div class="form input">
+      <label for="badge_name">What would you like to call this badge?</label>
+      <input type="text" placeholder="e.g., Participation" name="name" value="<%= name %>" id="badge_name"/>
+    </div>
+  </form>
+  <div class="row-box clearfix">
+    <div class="block-box two-thirds first-box"><!--icons-->
+      <p class="last"><strong>Choose an icon</strong></p>
+      <div class="row-box last clearfix border-box">
+        
+      <% _.each(icons, function(icon, title) { %>
+        <div class="custom-cat-option option-icon default-color" title="<%= title %>" data-icon="<%= icon %>" role="button" tabindex="0" aria-label="Choose an icon: <%= title %>"></div>
+      <% }); %>
+
+      </div>
+    </div><!--end icons-->
+    
+    <div class="block-box one-third last-box"><!--colors-->
+      <p class="last"><strong>Choose a color</strong></p>
+      <div class="row-box last clearfix border-box">
+        <% _.each(colors, function(color, title) { %>
+          <div class="custom-cat-option option-color" title="<%= title %>" data-color="<%= color %>" role="button" tabindex="0" aria-label="Choose a color: <%= title %>">&#149;</div>
+        <% }); %>
+      </div>
+      
+    </div><!--end colors-->
+  </div>
+  <div class="content-box last clearfix">
+    <a role="button" href="#" class="btn btn-present right save-button">Save badge</a>
+  </div>
+</div>
