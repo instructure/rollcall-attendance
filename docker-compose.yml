@@ -10,7 +10,7 @@ services:
     image: redis:2.6
 
   fakes3:
-    image: lphoward/fake-s3
+    image: instructure/fake-s3
     ports:
       - "4569:4569"
     environment:
