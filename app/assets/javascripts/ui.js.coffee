@@ -16,9 +16,6 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 $ ->
-  # Enable placeholder fallback for older browsers on all forms
-  $("input, textarea").placeholder()
-
   # Dropdowns show/hide
   $(".rollcall-dropdown-toggle").click ->
     $(this).toggleClass("active").next(".rollcall-dropdown-list").toggleClass("visuallyhidden active")

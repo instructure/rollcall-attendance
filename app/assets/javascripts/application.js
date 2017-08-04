@@ -29,7 +29,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.placeholder.min
 //= require jquery-ui/jquery-ui-1.8.21.custom.min
 //= require jquery-ui/jquery.ui.touch-punch.min
 //= require date
