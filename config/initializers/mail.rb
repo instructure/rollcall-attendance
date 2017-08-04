@@ -15,14 +15,29 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-if ENV['SENDGRID_USERNAME'] && ENV['SENDGRID_PASSWORD']
-  ActionMailer::Base.smtp_settings = {
-    :address        => 'smtp.sendgrid.net',
-    :port           => '587',
-    :authentication => :plain,
-    :user_name      => ENV['SENDGRID_USERNAME'],
-    :password       => ENV['SENDGRID_PASSWORD'],
-    :domain         => 'heroku.com'
-  }
+path = File.join(Rails.root, 'config', 'mail.yml')
+if File.exists?(path)
+  smtp_settings = YAML.load_file(path)[Rails.env].deep_symbolize_keys
+else
+  smtp_settings = {}
+  smtp_settings[:address] = ENV['SMTP_ADDRESS']
+  smtp_settings[:port] = ENV['SMTP_PORT']
+  smtp_settings[:authentication] = ENV['SMTP_AUTHENTICATION']
+  smtp_settings[:user_name] = ENV['SMTP_USER_NAME']
+  smtp_settings[:password] = ENV['SMTP_PASSWORD']
+  smtp_settings[:domain] = ENV['SMTP_DOMAIN']
+  smtp_settings[:enable_starttls_auto] = ENV['SMTP_ENABLE_STARTTLS_AUTO']
+  smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
+
+  smtp_settings.delete_if { |k,v| v.blank? }
+
+  if smtp_settings.present?
+    smtp_settings[:enable_starttls_auto] = !%w(false False 0).include?(smtp_settings[:enable_starttls_auto])
+    smtp_settings[:authentication] = smtp_settings[:authentication].to_sym
+  end
+end
+
+if smtp_settings.present?
+  ActionMailer::Base.smtp_settings = smtp_settings
   ActionMailer::Base.delivery_method = :smtp
 end
