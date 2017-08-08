@@ -45,7 +45,7 @@ describe Award do
     let(:course_id) { 1 }
     let(:student_id) { 2 }
     let(:teacher_id) { 5 }
-    let(:class_date) { Date.today }
+    let(:class_date) { Time.now.utc.to_date }
     let(:tool_consumer_instance_guid) { "abc123" }
 
     subject do

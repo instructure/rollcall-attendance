@@ -36,8 +36,8 @@ RSpec.describe StudentStatusesController, type: :controller do
       json['data'].map { |status| status['id'] }
     end
 
-    let!(:yesterday_status) { create :status, class_date: Date.today - 1, student_id: user_id }
-    let!(:today_status) { create :status, class_date: Date.today, student_id: user_id }
+    let!(:yesterday_status) { create :status, class_date: 1.day.ago, student_id: user_id }
+    let!(:today_status) { create :status, class_date: Time.now.utc.to_date, student_id: user_id }
 
     before :each do
       expect(controller).to receive(:authorize_student).at_least(:once)

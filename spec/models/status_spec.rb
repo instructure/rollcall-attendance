@@ -38,12 +38,12 @@ describe Status do
     let(:teacher_id) { 5 }
     let(:tool_consumer_instance_guid) { "abc123" }
 
-    subject(:list) { Status.initialize_list(section, Date.today, teacher_id, tool_consumer_instance_guid) }
+    subject(:list) { Status.initialize_list(section, Time.now.utc.to_date, teacher_id, tool_consumer_instance_guid) }
 
     it 'queries the Status table for statuses in this section for the current date' do
       expect(Status).to receive(:existing_for_section_and_date).with(
         section,
-        Date.today,
+        Time.now.utc.to_date,
         tool_consumer_instance_guid
       ).and_return([])
       list
@@ -62,7 +62,7 @@ describe Status do
     end
 
     it "doesn't include students who are not in the list (removed from the class roster)" do
-      create(:status, section_id: 1, class_date: Date.today, student_id: 3, teacher_id: 5, tool_consumer_instance_guid: tool_consumer_instance_guid)
+      create(:status, section_id: 1, class_date: Time.now.utc.to_date, student_id: 3, teacher_id: 5, tool_consumer_instance_guid: tool_consumer_instance_guid)
       expect(list.map(&:student)).to eq([student1, student2])
     end
   end

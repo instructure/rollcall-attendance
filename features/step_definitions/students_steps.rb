@@ -58,7 +58,7 @@ Then /^I should see my current grade$/ do
 end
 
 Then /^I should see days marked late or absent$/ do
-  find('.student-table').should have_content "#{DateTime.now.strftime('%b %-d %A')} Late 80%"
+  find('.student-table').should have_content "#{Time.now.utc.strftime('%b %-d %A')} Late 80%"
 end
 
 Then /^I should see (\d+) statuses$/ do |number_of_statuses|

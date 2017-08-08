@@ -29,42 +29,42 @@ describe Report do
     it { is_expected.to validate_presence_of(:email) }
 
     it "does not check the date range for a course report" do
-      report = Report.new(course_id: 123, start_date: 8.days.ago, end_date: Date.today)
+      report = Report.new(course_id: 123, start_date: 8.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
 
     it "does not allow a date range longer than 7 days for an account report" do
-      report = Report.new(account_id: 123, start_date: 8.days.ago, end_date: Date.today)
+      report = Report.new(account_id: 123, start_date: 8.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to_not be_empty
     end
 
     it "does not allow an start date newer than the end date" do
-      report = Report.new(account_id: 123, start_date: Date.today, end_date: 8.days.ago)
+      report = Report.new(account_id: 123, start_date: Time.now.utc.to_date, end_date: 8.days.ago)
       expect(report.errors_on(:start_date)).to_not be_empty
     end
 
     it "does allow a date range of 0 days for an account report" do
-      report = Report.new(account_id: 123, start_date: Date.today, end_date: Date.today)
+      report = Report.new(account_id: 123, start_date: Time.now.utc.to_date, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
 
     it "does allow a date range of 4 days for an account report" do
-      report = Report.new(account_id: 123, start_date: 4.days.ago, end_date: Date.today)
+      report = Report.new(account_id: 123, start_date: 4.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
 
     it "does allow a date range of 6 days for an account report" do
-      report = Report.new(account_id: 123, start_date: 6.days.ago, end_date: Date.today)
+      report = Report.new(account_id: 123, start_date: 6.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
 
     it "does not allow an empty start date for an account report" do
-      report = Report.new(account_id: 123, start_date: "", end_date: Date.today)
+      report = Report.new(account_id: 123, start_date: "", end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to_not be_empty
     end
 
     it "does not allow an empty end date for an account report" do
-      report = Report.new(account_id: 123, start_date: Date.today, end_date: "")
+      report = Report.new(account_id: 123, start_date: Time.now.utc.to_date, end_date: "")
       expect(report.errors_on(:end_date)).to_not be_empty
     end
 
@@ -79,7 +79,7 @@ describe Report do
     end
 
     it "does not enforce 7 day max range if you provide a sis_course_id" do
-      report = Report.new(account_id: 123, sis_course_id: 1, start_date: 8.days.ago, end_date: Date.today)
+      report = Report.new(account_id: 123, sis_course_id: 1, start_date: 8.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
 
@@ -89,7 +89,7 @@ describe Report do
     end
 
     it "does not enforce 7 day max range if you provide a sis_student_id" do
-      report = Report.new(account_id: 123, sis_student_id: 1, start_date: 8.days.ago, end_date: Date.today)
+      report = Report.new(account_id: 123, sis_student_id: 1, start_date: 8.days.ago, end_date: Time.now.utc.to_date)
       expect(report.errors_on(:start_date)).to be_empty
     end
   end

@@ -21,7 +21,7 @@ FactoryGirl.define do
     teacher_id 5
     badge_id 2
     course_id 3
-    class_date { Date.today }
+    class_date { Time.now.utc.to_date }
     tool_consumer_instance_guid "abc123"
   end
 
@@ -36,7 +36,7 @@ FactoryGirl.define do
   factory :seating_chart do
     course_id 1
     section_id 2
-    class_date { Date.today }
+    class_date { Time.now.utc.to_date }
     tool_consumer_instance_guid "abc123"
   end
 
@@ -44,7 +44,7 @@ FactoryGirl.define do
     student_id 1
     section_id 1
     attendance 'present'
-    class_date { Date.today }
+    class_date { Time.now.utc.to_date }
     course_id 1
     account_id 3
     teacher_id 5
