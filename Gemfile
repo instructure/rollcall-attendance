@@ -66,7 +66,6 @@ group :development, :test do
   gem 'jasmine-rails'
   gem 'phantomjs', '1.9.7.1'
   gem 'guard-jasmine'
-  gem 'listen', '< 3.1.0' if RUBY_VERSION < '2.2.5'
 end
 
 group :development do
