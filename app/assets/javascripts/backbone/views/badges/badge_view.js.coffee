@@ -30,7 +30,7 @@ class InstructureRollcall.Views.Badges.BadgeView extends Backbone.View
 
   delete: =>
     if confirm "Are you sure you want to delete the #{@model.get 'name'} badge?"
-      @model.destroy()
+      @model.destroy(wait: true)
       @$el.remove()
       $(".ui-dialog").focus()
 

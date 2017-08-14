@@ -82,6 +82,7 @@ group :test do
   # dependencies (like QT & xvfb) on all platforms that run cucumber tests as part of a single
   # upgrade
   gem 'capybara-webkit', '1.3.1'
+  gem 'capybara-screenshot'
   gem 'factory_girl_rails'
   gem 'guard-rspec'
   gem 'simplecov', require: false

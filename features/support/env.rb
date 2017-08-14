@@ -29,6 +29,7 @@ end
 
 require 'cucumber/rails'
 require 'factory_girl'
+require 'capybara-screenshot/cucumber'
 
 Dir[Rails.root.join("features/support/**/*.rb")].each {|f| require f}
 
