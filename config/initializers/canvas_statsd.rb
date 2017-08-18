@@ -15,4 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-CanvasStatsd.track_default_metrics logger: Rails.logger
+CanvasStatsd::DefaultTracking.track_sql
+CanvasStatsd::DefaultTracking.track_cache
+CanvasStatsd::DefaultTracking.track_active_record
+CanvasStatsd::RequestTracking.enable
