@@ -44,7 +44,7 @@ gem 'responders', '~> 2.0'
 # so we're staying on 0.12 until the ruby 2.2 upgrade is cutovere everywhere, then
 # this can be unpinned and the TODO in config/raven.rb can be resolved
 gem 'sentry-raven', '0.12.2'
-gem 'canvas_statsd', '1.0.5'
+gem 'canvas_statsd', '1.0.8'
 
 gem 'sass-rails'
 gem 'coffee-rails'

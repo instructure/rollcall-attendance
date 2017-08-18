@@ -43,6 +43,7 @@ describe AccountsController do
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.read', kind_of(Numeric))
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.write', kind_of(Numeric))
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.cache', kind_of(Numeric))
+      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.cache.read', kind_of(Numeric))
       get :badges, id: 3
     end
 
