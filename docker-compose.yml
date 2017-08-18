@@ -39,10 +39,9 @@ services:
       RESQUE_USER: 'admin'
       RESQUE_PASS: 'changeme'
       AWS_ACCESS_KEY_ID: '123'
-      AWS_SECRET_ACCESS_KEY: 'scret'
-      AWS_USE_SSL: 'false'
-      AWS_S3_URL: 'fakes3.docker'
-      AWS_S3_PORT: 4569
+      AWS_SECRET_ACCESS_KEY: 'secret'
+      AWS_REGION: 'us-east-1'
+      AWS_S3_ENDPOINT: 'http://fakes3.docker'
       REDIS_URL: 'redis://redis:6379'
       LTI_KEY: '12345'
       LTI_SECRET: 'secret'

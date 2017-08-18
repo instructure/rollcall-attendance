@@ -35,10 +35,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.before :each do
-    allow(AWS::S3::S3Object).to receive_messages(
-      store: double(success?: true),
-      url_for: "http://foobar.com/file.csv"
-    )
+    allow_any_instance_of(Aws::S3::Bucket).to receive(:put_object).
+      and_return(double(presigned_url: "http://foobar.com/file.csv"))
   end
 
   # ## Mock Framework

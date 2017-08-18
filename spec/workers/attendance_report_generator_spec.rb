@@ -38,8 +38,6 @@ describe AttendanceReportGenerator do
     }
 
     before do
-      AWS.stub!
-
       allow(CanvasOauth::CanvasApi).to receive(:new)
       allow(AttendanceReport).to receive(:new).and_return(double(to_csv: "csv data"))
       allow(ReportMailer).to receive_message_chain(:attendance_report, :deliver_now)

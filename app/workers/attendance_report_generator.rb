@@ -16,7 +16,6 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AttendanceReportGenerator
-  class S3StorageFailure < StandardError;end
 
   @queue = :attendance_reports
 
@@ -34,7 +33,7 @@ class AttendanceReportGenerator
       report = AttendanceReport.new(canvas, params)
       csv_string = report.to_csv
       filename = "attendance-#{SecureRandom.uuid}.csv"
-      url = s3_url(filename, csv_string)
+      url = AttendanceReportUploader.s3_url(filename, csv_string)
     rescue AttendanceReport::SisFilterNotFound => e
       message = e.message
     rescue => e
@@ -44,19 +43,6 @@ class AttendanceReportGenerator
     end
 
     ReportMailer.attendance_report(params[:email], url, message).deliver_now
-  end
-
-  def self.s3_url(filename, data, expires_in = 24.hours)
-    expires = expires_in.from_now
-
-    filename = "#{S3_PREFIX}/#{filename}" if S3_PREFIX.present?
-    s3_file = AWS::S3.new.buckets[S3_BUCKET].objects[filename].write(data, content_type: 'text/csv', content_disposition: "attachment;filename=#{filename}")
-
-    if s3_file.exists?
-      s3_file.url_for(:read, expires: expires).to_s
-    else
-      raise AttendanceReportGenerator::S3StorageFailure
-    end
   end
 
   def self.check_params!(params)
