@@ -1,4 +1,4 @@
-FROM instructure/ruby-node-pg:2.2
+FROM instructure/ruby-node-pg:2.4
 
 ARG dev_build='false'
 ENV APP_HOME /usr/src/app/
