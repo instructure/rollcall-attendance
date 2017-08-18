@@ -23,6 +23,6 @@ class CourseConfig < ApplicationRecord
 
   attr_reader :needs_regrade
   def check_needs_regrade
-    @needs_regrade = tardy_weight.present? && tardy_weight_changed?
+    @needs_regrade = tardy_weight.present? && saved_change_to_tardy_weight?
   end
 end

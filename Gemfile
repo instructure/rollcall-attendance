@@ -19,7 +19,7 @@ source 'https://rubygems.org'
 
 gem 'bundler', '>= 1.7.10'
 
-gem 'rails', '~> 5.0.0'
+gem 'rails', '~> 5.1.0'
 gem 'rack'
 
 gem 'thin'
@@ -51,7 +51,7 @@ gem 'jwt', '~> 1.5.4'
 gem 'will_paginate', '~> 3.1.0'
 gem 'react-rails', '~> 1.7'
 gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
-gem 'font-awesome-rails', '~> 4.6.3.0'
+gem 'font-awesome-rails', '~> 4.7.0'
 
 group :development, :test do
   gem 'byebug'
