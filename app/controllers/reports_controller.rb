@@ -16,10 +16,10 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class ReportsController < ApplicationController
-  before_filter :can_grade
-  before_filter :setup_report
-  before_filter :load_course_or_account
-  before_filter :load_user
+  before_action :can_grade
+  before_action :setup_report
+  before_action :load_course_or_account
+  before_action :load_user
 
   def new
     @report.email = @user['primary_email'] if @user

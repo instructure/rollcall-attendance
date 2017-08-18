@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class Status < ActiveRecord::Base
+class Status < ApplicationRecord
   validates :class_date, :section_id, :student_id, :attendance, :course_id, :account_id, :teacher_id, :tool_consumer_instance_guid, presence: true
 
   attr_accessor :student
@@ -85,7 +85,7 @@ class Status < ActiveRecord::Base
         section_id: section.id,
         class_date: class_date,
         tool_consumer_instance_guid: tool_consumer_instance_guid
-      })
+      }).to_a
     end
 
     def key_list_by_student_id(list)

@@ -15,14 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class CreateCanvasAuthorizations < ActiveRecord::Migration[4.2]
-  def change
-    create_table :canvas_authorizations do |t|
-      t.integer :canvas_user_id
-      t.string :token
-      t.datetime :last_used_at
-
-      t.timestamps
-    end
-  end
+class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
 end

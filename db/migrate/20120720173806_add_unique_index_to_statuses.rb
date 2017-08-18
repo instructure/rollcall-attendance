@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class AddUniqueIndexToStatuses < ActiveRecord::Migration
+class AddUniqueIndexToStatuses < ActiveRecord::Migration[4.2]
   def change
     add_index :statuses, [:student_id, :section_id, :class_date], unique: true
   end

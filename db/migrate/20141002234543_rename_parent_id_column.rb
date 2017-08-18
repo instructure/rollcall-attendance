@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class RenameParentIdColumn < ActiveRecord::Migration
+class RenameParentIdColumn < ActiveRecord::Migration[4.2]
   def change
     rename_column :cached_accounts, :parent_id, :parent_account_id
     change_column :cached_accounts, :parent_account_id, :integer, :limit => 8

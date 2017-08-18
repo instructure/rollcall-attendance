@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AwardsController < ApplicationController
-  before_filter :can_grade
+  before_action :can_grade
 
   respond_to :json
 

@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # This migration comes from canvas_oauth (originally 20121121005358)
-class CreateCanvasOauthAuthorizations < ActiveRecord::Migration
+class CreateCanvasOauthAuthorizations < ActiveRecord::Migration[4.2]
   def change
     rename_table :canvas_authorizations, :canvas_oauth_authorizations
     # This is the original migration from the CanvasOauth gem but we

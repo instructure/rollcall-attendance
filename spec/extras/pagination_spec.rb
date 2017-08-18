@@ -25,32 +25,32 @@ describe Pagination do
     object.class_eval do
       attr_accessor :params
     end
-    object.params = {}
+    object.params = ActionController::Parameters.new({})
   end
 
   describe '#pagination_params' do
     it 'returns a default set of params' do
-      expect(object.pagination_params).to eql({ page: 1, per_page: 50 })
+      expect(object.pagination_params).to eql({ 'page' => 1, 'per_page' => 50 })
     end
 
     it 'adjusts to a lower bound for page' do
-      object.params = { page: -100 }
-      expect(object.pagination_params).to eql({ page: 1, per_page: 50 })
+      object.params = ActionController::Parameters.new({ 'page' => -100 })
+      expect(object.pagination_params).to eql({ 'page' => 1, 'per_page' => 50 })
     end
 
     it 'adjusts to a lower bound for per_page' do
-      object.params = { per_page: -100 }
-      expect(object.pagination_params).to eql({ page: 1, per_page: 50 })
+      object.params = ActionController::Parameters.new({ 'per_page' => -100 })
+      expect(object.pagination_params).to eql({ 'page' => 1, 'per_page' => 50 })
     end
 
     it 'adjusts to an upper bound for per_page' do
-      object.params = { per_page: 100 }
-      expect(object.pagination_params).to eql({ page: 1, per_page: 50 })
+      object.params = ActionController::Parameters.new({ 'per_page' => 100 })
+      expect(object.pagination_params).to eql({ 'page' => 1, 'per_page' => 50 })
     end
 
     it 'if no params are out of bounds, use user supplied params' do
-      object.params = { page: 5, per_page: 24 }
-      expect(object.pagination_params).to eql({ page: 5, per_page: 24 })
+      object.params = ActionController::Parameters.new({ 'page' => 5, 'per_page' => 24 })
+      expect(object.pagination_params).to eql({ 'page' => 5, 'per_page' => 24 })
     end
   end
 

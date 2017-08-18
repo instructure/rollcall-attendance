@@ -18,7 +18,7 @@
 module Pagination
 
   def pagination_params
-    opts = params.slice(:page, :per_page).reverse_merge({ page: 1, per_page: 50 })
+    opts = params.to_unsafe_h.slice(:page, :per_page).reverse_merge({ page: 1, per_page: 50 })
     opts[:page] = 1 if opts[:page].to_i < 1
     opts[:per_page] = 50 if opts[:per_page].to_i < 1 || opts[:per_page].to_i > 50
     opts

@@ -33,12 +33,12 @@ describe BadgesController do
 
   describe "index" do
     it "finds badges for the course" do
-      get :index, course_id: course_id, format: "json"
+      get :index, params: { course_id: course_id }, format: "json"
       expect(JSON.parse(response.body).class).to eq(Array)
     end
 
     it "finds badges for the account" do
-      get :index, account_id: course_id, format: "json"
+      get :index, params: { account_id: course_id }, format: "json"
       expect(JSON.parse(response.body).class).to eq(Array)
     end
 
@@ -50,13 +50,13 @@ describe BadgesController do
 
   describe "create" do
     it "creates a new badge for the passed in course" do
-      post :create, badge: attributes_for(:badge), format: 'json'
+      post :create, params: { badge: attributes_for(:badge) }, format: 'json'
       expect(Badge.where(course_id: course_id).count).to eq(1)
     end
 
     it "does not create a badge when authorization fails" do
       allow(controller).to receive(:load_and_authorize_course) { false }
-      post :create, badge: attributes_for(:badge), format: 'json'
+      post :create, params: { badge: attributes_for(:badge) }, format: 'json'
       expect(Badge.count).to eq(0)
       expect(response.code).to eq('406')
     end
@@ -66,14 +66,14 @@ describe BadgesController do
     let(:badge) { create(:badge, course_id: course_id) }
 
     it "destroys a badge when the course is authorized" do
-      delete :destroy, id: badge.id, format: :json
+      delete :destroy, params: { id: badge.id }, format: :json
       expect(Badge.count).to eq(0)
       expect(response.code).to eq('204')
     end
 
     it "does not destroy a badge when unauthorized" do
       allow(controller).to receive(:load_and_authorize_course) { false }
-      delete :destroy, id: badge.id, format: :json
+      delete :destroy, params: { id: badge.id }, format: :json
       expect(Badge.count).to eq(1)
       expect(response.code).to eq('406')
     end
@@ -83,13 +83,13 @@ describe BadgesController do
     let(:badge) { create(:badge, course_id: course_id) }
 
     it "updates a badge assuming the course ID matches that of the logged in user" do
-      put :update, id: badge.id, badge: { name: 'new name' }, format: :json
+      put :update, params: { id: badge.id, badge: { name: 'new name' } }, format: :json
       expect(badge.reload.name).to eq('new name')
     end
 
     it "does not update a badge when authorization fails" do
       allow(controller).to receive(:load_and_authorize_course) { false }
-      put :update, id: badge.id, badge: { name: 'new name' }, format: :json
+      put :update, params: { id: badge.id, badge: { name: 'new name' } }, format: :json
       expect(badge.reload.name).not_to eq('new name')
     end
   end

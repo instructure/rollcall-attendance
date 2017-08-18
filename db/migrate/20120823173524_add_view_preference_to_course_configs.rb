@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class AddViewPreferenceToCourseConfigs < ActiveRecord::Migration
+class AddViewPreferenceToCourseConfigs < ActiveRecord::Migration[4.2]
   def change
     add_column :course_configs, :view_preference, :string
   end

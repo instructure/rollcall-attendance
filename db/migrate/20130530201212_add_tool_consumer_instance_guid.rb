@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class AddToolConsumerInstanceGuid < ActiveRecord::Migration
+class AddToolConsumerInstanceGuid < ActiveRecord::Migration[4.2]
   def change
     add_column :awards, :tool_consumer_instance_guid, :string
     add_column :badges, :tool_consumer_instance_guid, :string

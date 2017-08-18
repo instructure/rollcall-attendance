@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class CourseConfigsController < ApplicationController
-  before_filter :can_grade
+  before_action :can_grade
 
   respond_to :json
 
@@ -35,7 +35,7 @@ class CourseConfigsController < ApplicationController
       resubmit_all_grades!(config) if saved && config.needs_regrade
       respond_with config
     else
-      render nothing: true, status: 404
+      head :not_found
     end
   end
 

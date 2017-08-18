@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class CreateStatuses < ActiveRecord::Migration
+class CreateStatuses < ActiveRecord::Migration[4.2]
   def change
     create_table :statuses do |t|
       t.integer :student_id

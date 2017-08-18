@@ -50,45 +50,45 @@ describe ReportsController do
       before { allow(controller).to receive_messages(load_and_authorize_course: nil) }
 
       it "is not acceptable" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(response.status).to eql(406)
       end
 
       it "does not assign the user" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(assigns[:user]).to_not be
       end
 
       it "does not assign the course" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(assigns[:course]).to_not be
       end
     end
 
     context "the happiest candyland path" do
       it "renders the course report" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(response).to render_template("course")
       end
 
       it "loads the course" do
         expect(controller).to receive(:load_and_authorize_course).
           with(course_id).and_return(course)
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
       end
 
       it "assigns the course" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(assigns[:course]).to eql(course)
       end
 
       it "assigns the report" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(assigns[:report].course_id).to eql(course_id)
       end
 
       it "assigns the current user" do
-        get :new, course_id: course_id
+        get :new, params: { course_id: course_id }
         expect(assigns[:user]['primary_email']).to eql("foo@bar.com")
       end
     end
@@ -97,11 +97,11 @@ describe ReportsController do
   describe "POST #create" do
     it "generates a report for the given course" do
       expect(Resque).to receive(:enqueue).with(AttendanceReportGenerator, kind_of(Hash))
-      post :create, course_id: course_id, report: valid_attrs
+      post :create, params: { course_id: course_id, report: valid_attrs }
     end
 
     it "sets the flash notice" do
-      post :create, course_id: course_id, report: valid_attrs
+      post :create, params: { course_id: course_id, report: valid_attrs }
       expect(flash[:notice]).to eql("Thank you, your report should arrive in your inbox shortly.")
     end
   end

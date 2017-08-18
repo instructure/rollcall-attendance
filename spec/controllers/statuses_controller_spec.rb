@@ -35,7 +35,7 @@ describe StatusesController do
   describe "index" do
     it "initializes the list of statuses for the day's section" do
       expect(Status).to receive(:initialize_list).with(section, '2012-08-17', user_id, "abc123")
-      get :index, section_id: 1, class_date: '2012-08-17', format: :json
+      get :index, params: { section_id: 1, class_date: '2012-08-17' }, format: :json
     end
   end
 
@@ -43,8 +43,8 @@ describe StatusesController do
     let(:course) { Course.new(account_id: 3) }
 
     it "loads and authorizes the course" do
-      expect(controller).to receive(:load_and_authorize_course).with(1)
-      post :create, status: { course_id: 1 }, format: :json
+      expect(controller).to receive(:load_and_authorize_course).with('1')
+      post :create, params: { status: { course_id: 1 } }, format: :json
     end
 
     context "with an authorized course" do
@@ -53,18 +53,18 @@ describe StatusesController do
       end
 
       it "sets the account_id of the status to that of the course" do
-        post :create, status: attributes_for(:status), format: :json
+        post :create, params: { status: attributes_for(:status) }, format: :json
         expect(Status.first.account_id).to eq(3)
       end
 
       it "posts a grade to canvas" do
         expect(controller).to receive(:submit_grade!)
-        post :create, status: attributes_for(:status), format: :json
+        post :create, params: { status: attributes_for(:status) }, format: :json
       end
 
       it "gracefully handles duplicate key errors" do
-        post :create, status: attributes_for(:status), format: :json
-        expect { post :create, status: attributes_for(:status), format: :json }.to_not raise_error
+        post :create, params: { status: attributes_for(:status) }, format: :json
+        expect { post :create, params: { status: attributes_for(:status) }, format: :json }.to_not raise_error
       end
     end
   end
@@ -73,7 +73,7 @@ describe StatusesController do
     it "authorizes the section on the found status" do
       allow(Status).to receive(:find_by) { Status.new(section_id: 1) }
       expect(controller).to receive(:load_and_authorize_section).with(1)
-      put :update, id: 1, status: {id: 1}, format: :json
+      put :update, params: { id: 1, status: {id: 1} }, format: :json
     end
 
     it "posts a grade to canvas" do
@@ -82,7 +82,7 @@ describe StatusesController do
       allow(Status).to receive(:find_by).and_return(status)
       expect(status).to receive(:save).and_return(true)
       expect(controller).to receive(:submit_grade!).with(status)
-      put :update, id: 1, status: {id: 1}, format: :json
+      put :update, params: { id: 1, status: {id: 1} }, format: :json
     end
   end
 
@@ -90,7 +90,7 @@ describe StatusesController do
     it "authorizes the section on the found status" do
       allow(Status).to receive(:find_by) { Status.new(section_id: 1) }
       expect(controller).to receive(:load_and_authorize_section).with(1)
-      delete :destroy, id: 1
+      delete :destroy, params: { id: 1 }
     end
 
     it "posts a grade to canvas" do
@@ -98,7 +98,7 @@ describe StatusesController do
       status = double(destroy: true, section_id: 1)
       allow(Status).to receive(:find_by).and_return(status)
       expect(controller).to receive(:submit_grade!).with(status)
-      delete :destroy, id: 1, format: :json
+      delete :destroy, params: { id: 1 }, format: :json
     end
   end
 

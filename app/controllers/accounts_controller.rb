@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AccountsController < ApplicationController
-  before_filter :can_admin_report
+  before_action :can_admin_report
 
   def show
     redirect_to new_report_path(account_id: params[:id])

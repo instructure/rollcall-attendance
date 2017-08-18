@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class BadgesController < ApplicationController
-  before_filter :can_grade
+  before_action :can_grade
 
   respond_to :json
 
@@ -29,7 +29,7 @@ class BadgesController < ApplicationController
     elsif account = load_and_authorize_account(params[:account_id], tool_consumer_instance_guid)
       respond_with account.badges
     else
-      render nothing: true, status: 406
+      head :not_acceptable
     end
   end
 
@@ -41,7 +41,7 @@ class BadgesController < ApplicationController
       badge = Badge.create(create_badge_params)
       respond_with badge
     else
-      render nothing: true, status: 406
+      head :not_acceptable
     end
   end
 
@@ -55,7 +55,7 @@ class BadgesController < ApplicationController
       badge.update_attributes(update_badge_params)
       respond_with badge
     else
-      render nothing: true, status: 406
+      head :not_acceptable
     end
   end
 
@@ -69,7 +69,7 @@ class BadgesController < ApplicationController
       badge.destroy
       respond_with badge
     else
-      render nothing: true, status: 406
+      head :not_acceptable
     end
   end
 

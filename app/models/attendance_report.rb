@@ -77,7 +77,7 @@ class AttendanceReport
       @course_ids = []
       [@account.statuses, @account.descendant_statuses].each do |scope|
         scope = scope.where(course_id: course_filter.id) if course_filter
-        @course_ids |= scope.uniq.pluck('course_id')
+        @course_ids |= scope.distinct.pluck('course_id')
       end
     end
     return @course_ids

@@ -19,7 +19,7 @@ source 'https://rubygems.org'
 
 gem 'bundler', '>= 1.7.10'
 
-gem 'rails', '~> 4.2.9'
+gem 'rails', '~> 5.0.0'
 gem 'rack'
 
 gem 'thin'
@@ -84,6 +84,7 @@ group :test do
   gem 'guard-rspec'
   gem 'simplecov', require: false
   gem 'sprockets-helpers', require: false
+  gem 'rails-controller-testing'
 end
 
 group :postgres do

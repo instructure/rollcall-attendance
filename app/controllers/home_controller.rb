@@ -18,8 +18,8 @@
 require 'health_check'
 
 class HomeController < ApplicationController
-  skip_before_filter :request_canvas_authentication, :only => [:health_check]
-  skip_before_filter :require_lti_launch, :only => [:health_check]
+  skip_before_action :request_canvas_authentication, :only => [:health_check]
+  skip_before_action :require_lti_launch, :only => [:health_check]
 
   def index
     if student_launch?
@@ -40,7 +40,7 @@ class HomeController < ApplicationController
     message = healthy ? 'ok' : 'down'
     status = healthy ? 200 : 500
     respond_to do |format|
-      format.html { render text: message, status: status }
+      format.html { render plain: message, status: status }
       format.json { render json: { message: message }, status: status }
     end
   end

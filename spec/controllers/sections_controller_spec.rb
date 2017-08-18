@@ -36,17 +36,17 @@ describe SectionsController do
 
     it "prepares the course" do
       expect(controller).to receive(:prepare_course)
-      get :course, course_id: 1
+      get :course, params: { course_id: 1 }
     end
 
     it "redirects to the first section" do
-      get :course, course_id: 1
+      get :course, params: { course_id: 1 }
       expect(response).to redirect_to section_path(1)
     end
 
     it "should try loading sections even if you have no enrollments (for admins)" do
       allow(controller).to receive_messages(enrollment_section_ids: [])
-      get :course, course_id: 1
+      get :course, params: { course_id: 1 }
       expect(response).to redirect_to section_path(1)
     end
   end
@@ -59,24 +59,24 @@ describe SectionsController do
     end
 
     it "sets the @sections to the list of all sections" do
-      get :show, section_id: '1'
+      get :show, params: { section_id: '1' }
       expect(assigns(:sections)).to eq(sections)
     end
 
     it "sets the @section to the full section" do
-      get :show, section_id: '1'
+      get :show, params: { section_id: '1' }
       expect(assigns(:section)).to eq(section)
     end
 
     it "renders an error if the section is nil" do
       allow(controller).to receive(:load_and_authorize_full_section).and_return(nil)
       expect(controller).to receive(:render_error)
-      get :show, section_id: '1'
+      get :show, params: { section_id: '1' }
     end
 
     it "should limit to specific section if flag is set" do
       allow(controller).to receive(:section_limited?).and_return(true)
-      get :show, section_id: '1'
+      get :show, params: { section_id: '1' }
       expect(assigns(:sections)).to eq([section])
     end
   end

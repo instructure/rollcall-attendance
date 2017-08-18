@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class AddCourseIdToStatuses < ActiveRecord::Migration
+class AddCourseIdToStatuses < ActiveRecord::Migration[4.2]
   def change
     add_column :statuses, :course_id, :integer
     add_index :statuses, :course_id

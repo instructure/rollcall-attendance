@@ -17,10 +17,10 @@
 
 FactoryGirl.define do
   factory :award do
-    student_id 1
+    student_id '1'
     teacher_id 5
     badge_id 2
-    course_id 3
+    course_id '3'
     class_date { Time.now.utc.to_date }
     tool_consumer_instance_guid "abc123"
   end

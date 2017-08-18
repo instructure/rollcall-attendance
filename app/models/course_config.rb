@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class CourseConfig < ActiveRecord::Base
+class CourseConfig < ApplicationRecord
   validates :course_id, :tool_consumer_instance_guid, presence: true
   validates :tardy_weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, allow_nil: true }
 

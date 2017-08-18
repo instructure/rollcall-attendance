@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class ApplicationController < ActionController::Base
-  prepend_before_filter :stub_session
+  prepend_before_action :stub_session
 
   def stub_session
     session[:canvas_url] = "http://test.canvas"

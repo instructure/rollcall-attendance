@@ -45,12 +45,12 @@ describe CourseConfigsController do
 
     it "updates grades and saves when the tardy weight changes" do
       expect(controller).to receive(:resubmit_all_grades!).with(cc)
-      put :update, id: 1, course_config: { tardy_weight: 0.63 }, format: :json
+      put :update, params: { id: 1, course_config: { tardy_weight: 0.63 } }, format: :json
     end
 
     it "just saves when the tardy weight is blank" do
       expect(controller).not_to receive(:resubmit_all_grades!)
-      put :update, id: 1, course_config: {}, format: :json
+      put :update, params: { id: 1, course_config: {} }, format: :json
     end
   end
 

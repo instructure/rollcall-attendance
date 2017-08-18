@@ -44,18 +44,18 @@ RSpec.describe StudentStatusesController, type: :controller do
     end
 
     it 'returns a sorted list of statuses for a given student' do
-      get :index, course_id: course_id, student_id: user_id
+      get :index, params: { course_id: course_id, student_id: user_id }
       expect(response.status).to eql 200
       expect(response_ids).to eql [today_status.id, yesterday_status.id]
     end
 
     it 'uses attendance_scope to limit returned status to only those with a given attendance value(s)' do
       yesterday_status.update attendance: 'late'
-      get :index, course_id: course_id, student_id: user_id, attendance_scope: 'late'
+      get :index, params: { course_id: course_id, student_id: user_id, attendance_scope: 'late' }
       expect(response_ids).to eql [yesterday_status.id]
 
       today_status.update attendance: 'absent'
-      get :index, course_id: course_id, student_id: user_id, attendance_scope: %w(late absent)
+      get :index, params: { course_id: course_id, student_id: user_id, attendance_scope: %w(late absent) }
       expect(response_ids).to eql [today_status.id, yesterday_status.id]
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe StudentStatusesController, type: :controller do
     end
 
     it "returns a summary of a student's attendance in a course" do
-      get :summary, course_id: course_id, student_id: user_id
+      get :summary, params: { course_id: course_id, student_id: user_id }
       json = JSON.parse(response.body)
       expected = {
         'present_statuses' => 1,

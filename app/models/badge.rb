@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class Badge < ActiveRecord::Base
+class Badge < ApplicationRecord
   validates :color, :icon, :name, :tool_consumer_instance_guid, presence: true
   validate :course_or_account_id
 

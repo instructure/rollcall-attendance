@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class RenameAccountsTable < ActiveRecord::Migration
+class RenameAccountsTable < ActiveRecord::Migration[4.2]
   def up
     rename_table :accounts, :cached_accounts
     add_column :cached_accounts, :account_id, :integer, :limit => 8

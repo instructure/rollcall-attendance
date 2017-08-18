@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class IncreaseCanvasIdsTo64Bit < ActiveRecord::Migration
+class IncreaseCanvasIdsTo64Bit < ActiveRecord::Migration[4.2]
   def up
     change_column :awards, :course_id, :integer, limit: 8
     change_column :awards, :student_id, :integer, limit: 8

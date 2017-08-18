@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
       'urn:lti:sysrole:ims/lis/SysAdmin' # site admin
     ]
     if (valid_roles & user_roles.split(',')).blank?
-      render text: "You do not have permission to launch this tool.", status: :unauthorized
+      render plain: "You do not have permission to launch this tool.", status: :unauthorized
     end
   end
 
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
       'urn:lti:sysrole:ims/lis/SysAdmin' # site admin
     ]
     if (valid_roles & user_roles.split(',')).blank?
-      render text: "You do not have permission to launch this tool.", status: :unauthorized
+      render plain: "You do not have permission to launch this tool.", status: :unauthorized
     end
   end
 

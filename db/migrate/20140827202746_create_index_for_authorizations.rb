@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class CreateIndexForAuthorizations < ActiveRecord::Migration
+class CreateIndexForAuthorizations < ActiveRecord::Migration[4.2]
   def change
     add_index :canvas_oauth_authorizations, [:canvas_user_id, :tool_consumer_instance_guid],
       name: 'index_canvas_oauth_auths_on_user_id_and_tciguid'

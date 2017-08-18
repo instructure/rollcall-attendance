@@ -15,6 +15,9 @@ vendor/bundle
 /log/*.log
 /tmp
 
+# Ignore byebug stuff
+.byebug_history
+
 # Ignore local .env file for docker-compose
 .env
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class MakeABunchOfIndexes < ActiveRecord::Migration
+class MakeABunchOfIndexes < ActiveRecord::Migration[4.2]
   def up
     add_index :account_associations, :account_id
     add_index :account_associations, :descendant_id

@@ -38,13 +38,13 @@ describe AwardsController do
       course3 = Course.new(:id => course_id)
       expect(controller).to receive(:load_and_authorize_course).with(course_id).and_return(course3)
       expect(Award).to receive(:build_list_for_student).with(course3, student_id, '2012-08-02', teacher_id, tool_consumer_instance_guid)
-      get :index, student_id: student_id, course_id: course_id, class_date: '2012-08-02', format: 'json'
+      get :index, params: { student_id: student_id, course_id: course_id, class_date: '2012-08-02' }, format: 'json'
     end
   end
 
   describe "create" do
     it "creates a new award for the current course" do
-      post :create, award: attributes_for(:award), format: 'json'
+      post :create, params: { award: attributes_for(:award) }, format: 'json'
       expect(Award.where(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid).count).to eq(1)
     end
   end
@@ -52,22 +52,22 @@ describe AwardsController do
   describe "destroy" do
     it "destroys an award assuming the course authorization passes" do
       award = create(:award, course_id: course_id)
-      delete :destroy, id: award.id, format: :json
+      delete :destroy, params: { id: award.id }, format: :json
       expect(Award.count).to eq(0)
     end
 
     it "does not destroy an award when course authorization doesn't return success" do
       allow(controller).to receive(:load_and_authorize_course).and_return(false)
       award = create(:award, course_id: 100)
-      delete :destroy, id: award.id, format: :json
+      delete :destroy, params: { id: award.id }, format: :json
       expect(Award.count).to eq(1)
     end
   end
 
   describe "stats" do
     it "calls student_stats" do
-      expect(Award).to receive(:student_stats).with(course_id, student_id, tool_consumer_instance_guid)
-      get :stats, course_id: course_id, student_id: student_id, format: 'json'
+      expect(Award).to receive(:student_stats).with(course_id.to_s, student_id.to_s, tool_consumer_instance_guid)
+      get :stats, params: { course_id: course_id, student_id: student_id }, format: 'json'
     end
   end
 end

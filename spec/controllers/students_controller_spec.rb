@@ -33,7 +33,7 @@ RSpec.describe StudentsController, type: :controller do
   describe 'show' do
     it 'renders a show template' do
       expect(controller).to receive(:load_and_authorize_student).with(course_id.to_s, user_id.to_s).and_return(true)
-      get :show, course_id: course_id, id: user_id
+      get :show, params: { course_id: course_id, id: user_id }
       expect(response).to render_template 'students/show'
     end
   end

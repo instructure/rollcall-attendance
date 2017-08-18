@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class CreateSeatingCharts < ActiveRecord::Migration
+class CreateSeatingCharts < ActiveRecord::Migration[4.2]
   def change
     create_table :seating_charts do |t|
       t.integer :course_id

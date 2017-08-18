@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class MergePresentAndLateIntoAttendance < ActiveRecord::Migration
+class MergePresentAndLateIntoAttendance < ActiveRecord::Migration[4.2]
   def up
     remove_column :statuses, :present
     remove_column :statuses, :late

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class ReaddIndexesToIncludeTciGuid < ActiveRecord::Migration
+class ReaddIndexesToIncludeTciGuid < ActiveRecord::Migration[4.2]
   def change
     add_index :statuses, [:student_id, :tool_consumer_instance_guid]
     add_index :statuses, [:section_id, :class_date, :tool_consumer_instance_guid],

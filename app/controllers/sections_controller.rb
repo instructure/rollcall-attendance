@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class SectionsController < ApplicationController
-  before_filter :can_grade
+  before_action :can_grade
 
   def course
     prepare_course
@@ -52,7 +52,7 @@ class SectionsController < ApplicationController
 
   private
   def render_error
-    render text: "There was an error loading your section. Please try re-launching the tool."
+    render plain: "There was an error loading your section. Please try re-launching the tool."
   end
 
   def prepare_course

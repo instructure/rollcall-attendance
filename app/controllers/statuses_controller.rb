@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class StatusesController < ApplicationController
-  before_filter :can_grade
+  before_action :can_grade
 
   respond_to :json
 
@@ -64,7 +64,7 @@ class StatusesController < ApplicationController
         not_acceptable
       end
     else
-      render nothing: true, status: 404
+      head :not_found
     end
   end
 
@@ -77,7 +77,7 @@ class StatusesController < ApplicationController
         not_acceptable
       end
     else
-      render nothing: true, status: 404
+      head :not_found
     end
   end
 

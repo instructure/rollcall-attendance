@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class SeatingChart < ActiveRecord::Base
+class SeatingChart < ApplicationRecord
   validates :class_date, :course_id, :section_id, :tool_consumer_instance_guid, presence: true
 
   serialize :assignments, Hash

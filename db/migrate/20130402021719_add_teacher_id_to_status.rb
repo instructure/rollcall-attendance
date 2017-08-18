@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class AddTeacherIdToStatus < ActiveRecord::Migration
+class AddTeacherIdToStatus < ActiveRecord::Migration[4.2]
   def change
     add_column :statuses, :teacher_id, :integer, limit: 8
   end

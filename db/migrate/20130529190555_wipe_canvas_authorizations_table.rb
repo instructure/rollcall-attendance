@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class WipeCanvasAuthorizationsTable < ActiveRecord::Migration
+class WipeCanvasAuthorizationsTable < ActiveRecord::Migration[4.2]
   def up
     CanvasOauth::Authorization.destroy_all
   end

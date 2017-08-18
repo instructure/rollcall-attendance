@@ -29,7 +29,7 @@ describe AccountsController do
 
   describe "show" do
     it "redirects to the new report path" do
-      get :show, id: 1
+      get :show, params: { id: 1 }
       expect(response).to redirect_to(new_report_path(account_id: 1))
     end
   end
@@ -44,11 +44,11 @@ describe AccountsController do
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.write', kind_of(Numeric))
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.cache', kind_of(Numeric))
       expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.cache.read', kind_of(Numeric))
-      get :badges, id: 3
+      get :badges, params: { id: 3 }
     end
 
     it "assigns the account id to the controller instance" do
-      get :badges, id: 3
+      get :badges, params: { id: 3 }
       expect(assigns[:account_id]).to eq("3")
     end
   end

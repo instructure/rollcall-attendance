@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class Award < ActiveRecord::Base
+class Award < ApplicationRecord
   validates :badge_id, :class_date, :student_id, :teacher_id, :course_id, :tool_consumer_instance_guid, presence: true
 
   belongs_to :badge
@@ -27,7 +27,7 @@ class Award < ActiveRecord::Base
       teacher_id: teacher_id,
       class_date: class_date,
       tool_consumer_instance_guid: tool_consumer_instance_guid
-    })
+    }).to_a
     awarded_badges = awards.map(&:badge_id)
 
     account = CachedAccount.where(
