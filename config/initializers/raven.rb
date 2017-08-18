@@ -39,9 +39,7 @@ if Rails.env.production?
     end
   elsif ENV['SENTRY_DSN']
     Raven.configure do |config|
-      # TODO: turn back on once we're on >= 0.14.0
-      #config.silence_ready = true
-      config.ssl_verification = true
+      config.silence_ready = true
       config.tags = { site: ENV['CG_ENVIRONMENT'] }
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
     end

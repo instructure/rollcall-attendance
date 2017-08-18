@@ -339,8 +339,8 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sentry-raven (0.12.2)
-      faraday (>= 0.7.6)
+    sentry-raven (2.6.2)
+      faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
     shoulda (3.5.0)
       shoulda-context (~> 1.0, >= 1.0.1)
@@ -445,7 +445,7 @@ DEPENDENCIES
   rspec-its
   rspec-rails
   sass-rails
-  sentry-raven (= 0.12.2)
+  sentry-raven (~> 2.0)
   shoulda
   simplecov
   sprockets-helpers

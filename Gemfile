@@ -40,10 +40,7 @@ gem 'chronic'
 gem 'json'
 gem 'responders', '~> 2.0'
 
-# 0.14.0 has configuration options that aren't the same as what's available in 0.12
-# so we're staying on 0.12 until the ruby 2.2 upgrade is cutovere everywhere, then
-# this can be unpinned and the TODO in config/raven.rb can be resolved
-gem 'sentry-raven', '0.12.2'
+gem 'sentry-raven', '~> 2.0'
 gem 'canvas_statsd', '1.0.8'
 
 gem 'sass-rails'
