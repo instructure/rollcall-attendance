@@ -48,7 +48,7 @@ class InstructureRollcall.Views.Statuses.DeskView extends InstructureRollcall.Vi
       cursor: 'move'
       helper: 'clone'
       opacity: 0.5
-      revert: 'false'
+      revert: false
       containment: 'document'
       cursorAt:
         top: 8
@@ -60,7 +60,7 @@ class InstructureRollcall.Views.Statuses.DeskView extends InstructureRollcall.Vi
  
   makeUndraggable: =>
     @enableStatus()
-    @$el.draggable 'destroy'
+    @$el.draggable('destroy') if @$el.draggable('instance')
 
   disableStatus: =>
     @$('a:first').removeClass("student-toggle").attr("title", "Click and drag to move this student around the seating chart")

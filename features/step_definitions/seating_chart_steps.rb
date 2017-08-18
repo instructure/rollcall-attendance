@@ -116,7 +116,7 @@ Then /^I should see their details in a modal dialog$/ do
 end
 
 When /^I close the details dialog$/ do
-  click_link 'close'
+  click_button 'Close'
 end
 
 When /^I drag both students back to the unassigned list$/ do

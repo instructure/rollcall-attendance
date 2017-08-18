@@ -628,7 +628,12 @@ a.date-picker-arrow {
   position: absolute;
   right: 50px;
   top: 10px;
-  z-index: 40;
+  z-index: 50 !important;
+}
+
+.ui-widget-overlay {
+  background-color: $darkbg-color;
+  opacity: 0.6;
 }
 
 

@@ -21,7 +21,7 @@ class InstructureRollcall.Views.CourseConfigs.SettingsView extends Backbone.View
   template: JST["backbone/templates/course_configs/settings"]
 
   initialize: ->
-    $("a#settings-toggle").live 'click', @render
+    $("a#settings-toggle").on 'click', @render
 
   setupSlider: ->
     @$("#lateness-percentage-slider").slider
@@ -50,7 +50,6 @@ class InstructureRollcall.Views.CourseConfigs.SettingsView extends Backbone.View
     @setupSlider()
 
     @$el.dialog
-      height: 300
       width: 500
       minWidth: 500
       modal: true

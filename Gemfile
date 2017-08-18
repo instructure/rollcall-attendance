@@ -99,8 +99,6 @@ end
 
 gem 'nokogiri'
 
-# Next version of jquery-rails and rails-backbone require front end updates
-gem 'jquery-rails', "~>2.0.2"
+gem 'jquery-rails', "~> 4.0"
+gem 'jquery-ui-rails', "~> 6.0"
 gem 'rails-backbone', "~>0.7.2"
-
-# NON-STANDARD GEM DEPENDENCIES
