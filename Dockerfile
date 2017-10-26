@@ -28,6 +28,10 @@ COPY . $APP_HOME
 RUN chown -R docker:docker $APP_HOME
 
 USER docker
-RUN bundle exec rake assets:precompile RAILS_ENV=production LTI_KEY=12345 LTI_SECRET=secret
+RUN RAILS_ENV=production \
+    DATABASE_URL=postgres://user:pass@127.0.0.1/does_not_exist_dbname \
+    LTI_KEY=12345 \
+    LTI_SECRET=secret \
+    bundle exec rake assets:precompile
 
 CMD ["bin/startup"]

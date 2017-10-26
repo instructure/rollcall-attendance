@@ -41,3 +41,4 @@ config/redis.yml
 config/resque.yml
 config/s3.yml
 config/sentry.yml
+config/database.yml

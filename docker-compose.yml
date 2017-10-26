@@ -2,9 +2,6 @@ version: '2'
 services:
   db:
     image: postgres:9.6-alpine
-    environment:
-      POSTGRES_PASSWORD: rollcall
-      POSTGRES_USER: postgres
 
   redis:
     image: redis:3-alpine
@@ -28,12 +25,10 @@ services:
       - fakes3
     environment: &ENV
       RAILS_ENV: development
-      ROLLCALL_ROLE: 'web'
+      ROLLCALL_ROLE: web
       VIRTUAL_HOST: rollcall.docker
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: rollcall
-      DATABASE_ADDRESS: db
-      DATABASE_PORT: 5432
+      DATABASE_URL: postgres://postgres@db:5432/rollcall_dev
+      REDIS_URL: redis://redis:6379
       # SENTRY_DSN: 'https://foo:bar@sentry.insops.net/35'
       SECRET_KEY_BASE: 'GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC'
       RESQUE_USER: 'admin'
@@ -42,7 +37,6 @@ services:
       AWS_SECRET_ACCESS_KEY: 'secret'
       AWS_REGION: 'us-east-1'
       AWS_S3_ENDPOINT: 'http://fakes3.docker'
-      REDIS_URL: 'redis://redis:6379'
       LTI_KEY: '12345'
       LTI_SECRET: 'secret'
       LTI_REQUIRE_CANVAS: 'true'
