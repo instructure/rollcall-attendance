@@ -42,3 +42,4 @@ config/resque.yml
 config/s3.yml
 config/sentry.yml
 config/database.yml
+config/mail.yml
