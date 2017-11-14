@@ -1,0 +1,22 @@
+---
+defaults: &defaults
+  address: mail.yourdomain.edu
+  port: 465
+  authentication: plain
+  user_name: someuser
+  password: itsasecret
+  domain: yourdomain.edu
+  enable_starttls_auto: true
+  openssl_verify_mode: none
+
+development:
+  <<: *defaults
+
+test: &test
+  <<: *defaults
+
+cucumber:
+  <<: *test
+
+production:
+  <<: *defaults

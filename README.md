@@ -31,7 +31,13 @@ key to Canvas for rollcall to connect with. As an admin account, go to
 ID number (an integer) from the index page along with the token and add
 them as `CANVAS_KEY` and `CANVAS_SECRET`, respectively, in `.env`.
 
-### 2. Docker build + Database migrations:
+### 2. Configure the LTI
+
+The LTI will run in development without further configuration; however, some things like mail delivery (for attendance report exports) may not work. You can further configure the LTI by specifying environment variables in `.env`. Refer to `env.sample` for inspiration.
+
+Some aspects (such as database and mail) can also be configured in the traditional Rails way of YAML files in the `config` directory. Refer to `config/database.yml.sample` and `config/mail.yaml.sample` for examples.
+
+### 3. Docker build + Database migrations:
 
 Now you should be able to build your containers with:
 
@@ -44,7 +50,7 @@ rake tasks, you just have to run them in the container:
     docker-compose run --rm web bundle exec rake db:create
     docker-compose run --rm web bundle exec rake db:migrate
 
-### 3. Run it!
+### 4. Run it!
 
 You should be able to start everything with:
 
@@ -56,7 +62,7 @@ AWS resources. When they're running, you can visit your app in the browser by go
 
 `http://rollcall.docker`
 
-### 8. Add Roll Call to Canvas:
+### 5. Add Roll Call to Canvas:
 
 In Canvas, go to Account >> Settings >> Apps, click "Add App", and use the following settings:
 
