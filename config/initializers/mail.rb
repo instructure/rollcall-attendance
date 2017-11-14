@@ -28,7 +28,8 @@ else
   smtp_settings[:domain] = ENV['SMTP_DOMAIN']
   smtp_settings[:enable_starttls_auto] = ENV['SMTP_ENABLE_STARTTLS_AUTO']
   smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
-
+  smtp_settings[:outgoing_address] = ENV['SMTP_OUTGOING_ADDRESS']
+  
   smtp_settings.delete_if { |k,v| v.blank? }
 
   if smtp_settings.present?
@@ -40,4 +41,5 @@ end
 if smtp_settings.present?
   ActionMailer::Base.smtp_settings = smtp_settings
   ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.default_options = { from: smtp_settings[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
 end

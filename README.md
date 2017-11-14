@@ -37,6 +37,8 @@ The LTI will run in development without further configuration; however, some thi
 
 Some aspects (such as database and mail) can also be configured in the traditional Rails way of YAML files in the `config` directory. Refer to `config/database.yml.sample` and `config/mail.yaml.sample` for examples.
 
+Note that in production you will want to make sure to configure the SMTP outgoing address parameter to an email address on your own domain; otherwise, your reports will be sent from "`Roll Call <notifications@instructure.com>`", which is most certainly not what you want.
+
 ### 3. Docker build + Database migrations:
 
 Now you should be able to build your containers with:

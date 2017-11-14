@@ -20,6 +20,6 @@ class ReportMailer < ActionMailer::Base
     @error_message = error_message
     @url = url
 
-    mail from: "Roll Call <notifications@instructure.com>", to: recipient, subject: "Roll Call Attendance Report"
+    mail to: recipient, subject: "Roll Call Attendance Report"
   end
 end

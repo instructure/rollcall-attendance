@@ -20,3 +20,4 @@ cucumber:
 
 production:
   <<: *defaults
+  outgoing_address: "Canvas Rollcall <canvas@yourdomain.edu>"
