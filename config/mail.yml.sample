@@ -1,13 +1,16 @@
 ---
 defaults: &defaults
-  address: mail.yourdomain.edu
-  port: 465
-  authentication: plain
-  user_name: someuser
-  password: itsasecret
-  domain: yourdomain.edu
-  enable_starttls_auto: true
-  openssl_verify_mode: none
+  smtp:
+    address: mail.yourdomain.edu
+    port: 465
+    authentication: plain
+    user_name: someuser
+    password: itsasecret
+    domain: yourdomain.edu
+    enable_starttls_auto: true
+    openssl_verify_mode: none
+  default_options:
+    outgoing_address: "Canvas Rollcall <canvas@yourdomain.edu>"
 
 development:
   <<: *defaults
@@ -20,4 +23,3 @@ cucumber:
 
 production:
   <<: *defaults
-  outgoing_address: "Canvas Rollcall <canvas@yourdomain.edu>"

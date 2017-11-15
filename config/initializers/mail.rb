@@ -17,9 +17,13 @@
 
 path = File.join(Rails.root, 'config', 'mail.yml')
 if File.exists?(path)
-  smtp_settings = YAML.load_file(path)[Rails.env].deep_symbolize_keys
+  mail_config = YAML.load_file(path)[Rails.env].deep_symbolize_keys
+  smtp_settings = mail_config[:smtp]
+  default_options = mail_config[:default_options]
 else
   smtp_settings = {}
+  default_options = {}
+
   smtp_settings[:address] = ENV['SMTP_ADDRESS']
   smtp_settings[:port] = ENV['SMTP_PORT']
   smtp_settings[:authentication] = ENV['SMTP_AUTHENTICATION']
@@ -28,9 +32,11 @@ else
   smtp_settings[:domain] = ENV['SMTP_DOMAIN']
   smtp_settings[:enable_starttls_auto] = ENV['SMTP_ENABLE_STARTTLS_AUTO']
   smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
-  smtp_settings[:outgoing_address] = ENV['SMTP_OUTGOING_ADDRESS']
   
+  default_options[:outgoing_address] = ENV[OUTGOING_ADDRESS]
+
   smtp_settings.delete_if { |k,v| v.blank? }
+  default_options.delete_if { |k,v| v.blank? }
 
   if smtp_settings.present?
     smtp_settings[:enable_starttls_auto] = !%w(false False 0).include?(smtp_settings[:enable_starttls_auto])
@@ -41,5 +47,8 @@ end
 if smtp_settings.present?
   ActionMailer::Base.smtp_settings = smtp_settings
   ActionMailer::Base.delivery_method = :smtp
-  ActionMailer::Base.default_options = { from: smtp_settings[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
+end
+
+if default_options.present?
+    ActionMailer::Base.default_options = { from: default_options[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
 end
