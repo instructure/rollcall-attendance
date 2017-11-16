@@ -33,7 +33,7 @@ else
   smtp_settings[:enable_starttls_auto] = ENV['SMTP_ENABLE_STARTTLS_AUTO']
   smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
   
-  default_options[:outgoing_address] = ENV[OUTGOING_ADDRESS]
+  default_options[:outgoing_address] = ENV['OUTGOING_ADDRESS']
 
   smtp_settings.delete_if { |k,v| v.blank? }
   default_options.delete_if { |k,v| v.blank? }
