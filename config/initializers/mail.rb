@@ -49,6 +49,5 @@ if smtp_settings.present?
   ActionMailer::Base.delivery_method = :smtp
 end
 
-if default_options.present?
-    ActionMailer::Base.default_options = { from: default_options[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
-end
+ActionMailer::Base.default_options = { from: default_options[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
+
