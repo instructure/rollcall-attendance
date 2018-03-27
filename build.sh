@@ -23,8 +23,8 @@ sleep 5
 
 set +e
 
-# create and migrate the database &&
-docker-compose run --rm web bundle exec rake db:setup &&
+# create and migrate the database
+docker-compose run --rm web bundle exec rake db:setup
 
 # run the tests
 docker-compose run --user root --rm web bundle exec rake spec spec:javascript
