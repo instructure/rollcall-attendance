@@ -52,6 +52,9 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'react-rails', '~> 1.7'
 gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 gem 'font-awesome-rails', '~> 4.7.0'
+gem 'jquery-rails', "~> 4.0"
+gem 'jquery-ui-rails', "~> 6.0"
+gem 'rails-backbone', "~>0.7.2"
 
 group :development, :test do
   gem 'byebug'
@@ -91,9 +94,3 @@ end
 group :mysql do
   gem 'mysql2'
 end
-
-gem 'nokogiri'
-
-gem 'jquery-rails', "~> 4.0"
-gem 'jquery-ui-rails', "~> 6.0"
-gem 'rails-backbone', "~>0.7.2"

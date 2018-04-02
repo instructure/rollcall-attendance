@@ -440,7 +440,6 @@ DEPENDENCIES
   minitest
   momentjs-rails (~> 2.11, >= 2.11.1)
   mysql2
-  nokogiri
   paul_bunyan (~> 1.5)
   pg
   phantomjs (= 1.9.7.1)
