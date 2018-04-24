@@ -36,7 +36,7 @@ class InstructureRollcall.Views.Awards.AwardView extends Backbone.View
   setButtonState: ->
     @$el.toggleClass 'chosen-cat', @model.isAwarded()
     @$el.toggleClass 'chosen', @model.isAwarded()
-    badgeName = @model.get('badge').name
+    badgeName = _.escape(@model.get('badge').name)
 
     if @model.isAwarded()
       @$el.css("background", @$el.data("color")).attr("title", "Click to un-award this badge")
@@ -45,8 +45,13 @@ class InstructureRollcall.Views.Awards.AwardView extends Backbone.View
       @$el.css("background", '').attr("title", "Click to award this badge")
       @$el.attr("aria-label", "Click to award #{badgeName} badge")
 
-  render : =>
-    html = @template(@model.toJSON())
+  templateOptions: ->
+    options = @model.toJSON()
+    options.badge.name = _.escape(options.badge.name)
+    options
+
+  render: =>
+    html = @template(@templateOptions())
     @el = $(html)
     @$el = @el
     @delegateEvents()

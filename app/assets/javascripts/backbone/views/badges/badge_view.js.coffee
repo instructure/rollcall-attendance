@@ -29,11 +29,16 @@ class InstructureRollcall.Views.Badges.BadgeView extends Backbone.View
     new InstructureRollcall.Views.Badges.EditView(model: @model)
 
   delete: =>
-    if confirm "Are you sure you want to delete the #{@model.get 'name'} badge?"
+    if confirm "Are you sure you want to delete the #{@model.escape 'name'} badge?"
       @model.destroy(wait: true)
       @$el.remove()
       $(".ui-dialog").focus()
 
-  render : ->
-    @$el.html(@template(@model.toJSON()))
+  templateOptions: ->
+    options = @model.toJSON()
+    options.name = _.escape(options.name)
+    options
+
+  render: ->
+    @$el.html(@template(@templateOptions()))
     return this

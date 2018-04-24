@@ -87,6 +87,7 @@ class   InstructureRollcall.Views.Badges.EditView extends Backbone.View
 
   templateOptions: ->
     options = @model.toJSON()
+    options.name = _.escape(options.name)
     options.icons = @icons
     options.colors = @colors
     options

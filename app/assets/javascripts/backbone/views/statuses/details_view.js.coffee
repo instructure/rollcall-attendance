@@ -92,7 +92,7 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
     @awards.statsForStudent @model.get('course_id'), @model.get('student_id'), (stats) ->
       markup = ''
       for label, count of stats
-        markup += "<li>#{label}: <strong>#{count}</strong></li>"
+        markup += "<li>#{_.escape(label)}: <strong>#{count}</strong></li>"
       @$('.badge-stats').html(markup)
 
   renderAwards: =>
