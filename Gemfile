@@ -21,6 +21,7 @@ gem 'bundler', '>= 1.7.10'
 
 gem 'rails', '~> 5.2.0'
 gem 'rack'
+gem 'bootsnap', '~> 1.0', require: false
 
 gem 'thin'
 
