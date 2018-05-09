@@ -25,6 +25,9 @@ RUN RAILS_ENV=production \
     DATABASE_URL=postgres://user:pass@127.0.0.1/does_not_exist_dbname \
     LTI_KEY=12345 \
     LTI_SECRET=secret \
+    CANVAS_KEY=1 \
+    CANVAS_SECRET=secret \
+    SECRET_KEY_BASE=fake \
     bundle exec rake assets:precompile
 
 CMD ["/tini", "--", "bin/startup"]
