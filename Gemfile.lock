@@ -194,7 +194,6 @@ GEM
     jwt (1.5.6)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libv8 (6.3.292.48.1)
     link_header (0.0.8)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -213,8 +212,6 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_portile2 (2.3.0)
-    mini_racer (0.1.15)
-      libv8 (~> 6.3)
     minitest (5.10.3)
     momentjs-rails (2.17.1)
       railties (>= 3.1)
@@ -442,7 +439,6 @@ DEPENDENCIES
   json
   jwt (~> 1.5.4)
   lti_provider_engine (~> 1.0.0)
-  mini_racer
   minitest
   momentjs-rails (~> 2.11, >= 2.11.1)
   mysql2
@@ -477,4 +473,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.15.3
+   1.16.1
