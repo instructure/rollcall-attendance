@@ -47,5 +47,15 @@ module InstructureRollcall
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
+
+    # Our deploy tooling exports a DATABASE_URL like:
+    # mysql://user:pass@db:port/database, so handle that
+    module MysqlProtocolResolver
+      def initialize(url)
+        url = url.gsub("mysql://", "mysql2://")
+        super(url)
+      end
+    end
+    ActiveRecord::ConnectionAdapters::ConnectionSpecification::ConnectionUrlResolver.prepend(MysqlProtocolResolver)
   end
 end

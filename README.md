@@ -41,6 +41,10 @@ Note that in production you will want to make sure to configure the SMTP outgoin
 
 ### 3. Docker build + Database migrations:
 
+NOTE: By default this setup uses postgres. To use mysql instead, export:
+
+    COMPOSE_FILE=docker-compose.yml:docker-compose.override.yml:docker-compose.mysql.yml
+
 Now you should be able to build your containers with:
 
     docker-compose build

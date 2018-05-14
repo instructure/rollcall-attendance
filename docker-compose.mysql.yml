@@ -1,0 +1,16 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+  web:
+    links:
+      - mysql
+    environment:
+      DATABASE_URL: mysql://root@mysql:3306/rollcall_dev
+
+  work:
+    links:
+      - mysql
