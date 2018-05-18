@@ -36,12 +36,20 @@ class InstructureRollcall.Mixins.ToggleSync
 
   commitOrUnlock: => if @queuedParams? then @commit() else @unlock()
 
+  showError: (model, resp, options) =>
+    $('#ajax-error').show()
+    model.trigger('error', model, resp, options)
+    setTimeout =>
+      $('#ajax-error').fadeOut()
+      @errorTimeout = null
+    , 5000
+
   commit: =>
     @lock()
     @applyQueue()
 
     unless @model.toggledOff()
-      @model.save()
+      @model.save(null, error: @showError)
     else if @model.get('id')
       @delete()
     else

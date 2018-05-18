@@ -32,8 +32,8 @@ class InstructureRollcall.Models.Status extends Backbone.Model
     Backbone.sync 'delete', this, success: (response) =>
       @set 'stats', response.stats
       @trigger 'sync'
-    , error: =>
-      @trigger 'error'
+    , error: (model, response, options) =>
+      @showError(this, response, options)
 
     @set(id: null)
 
@@ -74,7 +74,7 @@ class InstructureRollcall.Models.Status extends Backbone.Model
       @get('attendance')
 
   togglePresence: ->
-    if @isPresent() 
+    if @isPresent()
       @markAsAbsent()
     else if @isAbsent()
       @markAsLate()

@@ -1597,3 +1597,12 @@ a.header-tab, .header-tab {
   color: darken( $present-color-darkest, 8% );
   border-color: lighten( $present-color, 25% );
 }
+
+#ajax-error {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 98%;
+  z-index: 200;
+  display: none;
+}
