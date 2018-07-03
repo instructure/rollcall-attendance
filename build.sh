@@ -30,14 +30,18 @@ docker-compose run --rm web bundle exec rake db:setup
 docker-compose run --user root --rm web bundle exec rake spec spec:javascript
 rake_status=$?
 
+docker-compose run --user root --rm web bundle exec brakeman
+brake_status=$?
+
 # run cucumber tests
 docker-compose run --rm web bash bin/cucumber
 cuke_status=$?
 
 echo $rake_status
+echo $brake_status
 echo $cuke_status
 
-if [ $rake_status != 0 -o $cuke_status != 0 ]; then
+if [ $rake_status != 0 -o $brake_status != 0 -o $cuke_status != 0 ]; then
   test_status=1
 else
   test_status=0

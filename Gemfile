@@ -71,6 +71,7 @@ group :development, :test do
   gem 'jasmine-rails'
   gem 'phantomjs', '1.9.7.1'
   gem 'guard-jasmine', '~> 2.0'
+  gem 'brakeman', require: false
 end
 
 group :test do

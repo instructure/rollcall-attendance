@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   include Authorization
   include Pagination
 
-  protect_from_forgery
+  protect_from_forgery with: :exception
 
   def can_admin_report
     valid_roles = [
