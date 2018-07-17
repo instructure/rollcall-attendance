@@ -3,7 +3,7 @@
 ## Boot the app
 if [ "$ROLLCALL_ROLE" == "worker" ]; then
   echo "Starting worker"
-  exec bundle exec rake resque:work
+  exec COUNT=${WORKER_COUNT:-1} bundle exec rake resque:workers
 else
   echo "Starting web server"
   exec /usr/src/entrypoint
