@@ -27,4 +27,4 @@ RUN RAILS_ENV=production \
     LTI_SECRET=secret \
     bundle exec rake assets:precompile
 
-CMD ["bin/startup"]
+CMD ["/tini", "--", "bin/startup"]
