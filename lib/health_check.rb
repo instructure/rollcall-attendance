@@ -23,8 +23,7 @@ class HealthCheck
   private
 
   def database_healthy?
-    result = ActiveRecord::Base.connection.execute("SELECT '1' AS check")
-    ((result && result.first) || {})["check"] == "1"
+    ActiveRecord::Base.connection.select_value("SELECT 1")
   rescue StandardError
     # TODO: once all envs are on PG, we should be more specific and rescue
     # PG::ConnectionBad rather than a generic error like this

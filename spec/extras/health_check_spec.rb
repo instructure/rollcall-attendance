@@ -26,10 +26,10 @@ describe HealthCheck do
     end
 
     it "is false when you can't talk to the database" do
-      allow(ActiveRecord::Base.connection).to receive(:execute).and_raise(StandardError)
+      allow(ActiveRecord::Base.connection).to receive(:select_value).and_raise(StandardError)
       expect(HealthCheck.new.healthy?).to be false
       # allow the test transaction to do it's thing
-      allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+      allow(ActiveRecord::Base.connection).to receive(:select_value).and_call_original
     end
 
     it "is false when you can't access the file system" do
