@@ -16,6 +16,8 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class SyncAccountRelationships
+  extend ResqueStats
+
   @queue = :sync_account_relationships
 
   # SyncAccountRelationships.perform({

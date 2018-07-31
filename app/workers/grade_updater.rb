@@ -17,6 +17,7 @@
 
 class GradeUpdater
   extend Resque::Plugins::Retry
+  extend ResqueStats
 
   @queue = :grade_updates
 

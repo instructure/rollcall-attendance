@@ -16,6 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AttendanceReportGenerator
+  extend ResqueStats
 
   @queue = :attendance_reports
 
