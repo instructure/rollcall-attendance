@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const StudentDashboard = React.createClass({
+var StudentDashboard = React.createClass({
   displayName: 'StudentDashboard',
 
   componentDidMount: function() {

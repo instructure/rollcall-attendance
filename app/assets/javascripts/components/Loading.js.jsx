@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const Loading = React.createClass({
+var Loading = React.createClass({
   displayName: 'Loading',
   render: function() {
     return (

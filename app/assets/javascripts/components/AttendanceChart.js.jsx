@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const AttendanceChart = React.createClass({
+var AttendanceChart = React.createClass({
   displayName: 'AttendanceChart',
   propTypes: {
     chartData: React.PropTypes.shape({

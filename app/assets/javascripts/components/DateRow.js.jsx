@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const DateRow = React.createClass({
+var DateRow = React.createClass({
   displayName: 'DateRow',
 
   propTypes: {

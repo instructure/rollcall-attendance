@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const AttendanceTotals = React.createClass({
+var AttendanceTotals = React.createClass({
   displayName: 'AttendanceTotals',
   propTypes: {
     data: React.PropTypes.shape({

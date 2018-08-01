@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const StudentStore = {
+var StudentStore = {
   summary: {},
   dates: [],
   datesMeta: {},

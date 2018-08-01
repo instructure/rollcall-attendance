@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const DatesTable = React.createClass({
+var DatesTable = React.createClass({
   displayName: 'DatesTable',
 
   propTypes: {

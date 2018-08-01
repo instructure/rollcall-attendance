@@ -412,7 +412,7 @@ GEM
     tilt (2.0.8)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (3.2.0)
+    uglifier (4.1.17)
       execjs (>= 0.3.0, < 3)
     vegas (0.1.11)
       rack (>= 1.0.0)
@@ -487,7 +487,7 @@ DEPENDENCIES
   syck
   test-unit
   thin (~> 1.0)
-  uglifier (~> 3.0)
+  uglifier (~> 4.0)
   webmock
   will_paginate (~> 3.1.0)
 

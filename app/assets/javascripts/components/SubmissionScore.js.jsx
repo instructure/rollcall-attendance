@@ -16,7 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const SubmissionScore = React.createClass({
+var SubmissionScore = React.createClass({
   displayName: 'SubmissionScore',
   propTypes: {
     grade: React.PropTypes.string
