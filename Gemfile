@@ -31,7 +31,7 @@ gem 'canvas_oauth_engine', '~> 2.1.0', require: 'canvas_oauth'
 gem 'httparty', '~> 0.15'
 
 gem 'aws-sdk-s3', '~> 1.0'
-gem 'redis', '~> 3.0'
+gem 'redis', '~> 4.0'
 gem 'redis-objects', '~> 1.0'
 gem 'resque', '~> 1.0'
 gem 'resque-retry', '~> 1.0'
