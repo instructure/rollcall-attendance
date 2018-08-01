@@ -25,10 +25,10 @@ gem 'bootsnap', '~> 1.0', require: false
 
 gem 'thin', '~> 1.0'
 
-gem 'ims-lti', require: 'ims'
+gem 'ims-lti', '~> 1.0', require: 'ims'
 gem 'lti_provider_engine', '~> 1.1.0', require: 'lti_provider'
 gem 'canvas_oauth_engine', '~> 2.1.0', require: 'canvas_oauth'
-gem 'httparty'
+gem 'httparty', '~> 0.15'
 
 gem 'aws-sdk-s3', '~> 1.0'
 gem 'redis', '~> 3.0'
@@ -39,17 +39,18 @@ gem 'resque-retry', '~> 1.0'
     # rufus-scheduler 3.5.x breaks resque-scheduler 4.3.1
     gem 'rufus-scheduler', '3.4.2'
 gem 'resque-sentry', '~> 1.0'
-gem 'chronic'
-gem 'json'
+gem 'chronic', '~> 0.10'
+gem 'json', '~> 2.0'
 gem 'responders', '~> 2.0'
 
 gem 'sentry-raven', '~> 2.0'
 gem 'canvas_statsd', '~> 2.0.0'
 gem 'paul_bunyan', '~> 1.5'
 
-gem 'sass-rails'
-gem 'coffee-rails'
-gem 'uglifier'
+gem 'sass-rails', '~> 5.0.0'
+gem 'coffee-rails', '~> 4.2.0'
+gem 'coffee-script', '2.2.0'
+gem 'uglifier', '~> 3.0'
 gem 'jwt', '~> 1.5.4'
 gem 'will_paginate', '~> 3.1.0'
 gem 'react-rails', '~> 1.7'
@@ -91,9 +92,9 @@ group :test do
 end
 
 group :postgres do
-  gem 'pg'
+  gem 'pg', '~> 1.0'
 end
 
 group :mysql do
-  gem 'mysql2'
+  gem 'mysql2', '~> 0.5.2'
 end
