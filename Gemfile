@@ -55,7 +55,7 @@ gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 gem 'font-awesome-rails', '~> 4.7.0'
 gem 'jquery-rails', "~> 4.0"
 gem 'jquery-ui-rails', "~> 6.0"
-gem 'rails-backbone', "~>0.7.2"
+gem 'rails-backbone', "~> 0.7.2"
 
 group :development, :test do
   gem 'byebug'
@@ -67,13 +67,13 @@ group :development, :test do
   gem 'rspec-collection_matchers'
   gem 'jasmine-rails'
   gem 'phantomjs', '1.9.7.1'
-  gem 'guard-jasmine'
+  gem 'guard-jasmine', '~> 2.0'
 end
 
 group :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
-  gem 'shoulda', require: false
+  gem 'shoulda'
   gem 'webmock'
   # upgrades are unstable for getting webkit running in all test environments,
   # will need to upgrade capybara-webkit as it's own commit and step up background
@@ -81,7 +81,7 @@ group :test do
   # upgrade
   gem 'capybara-webkit', '1.3.1'
   gem 'capybara-screenshot'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'guard-rspec'
   gem 'simplecov', require: false
   gem 'sprockets-helpers', require: false

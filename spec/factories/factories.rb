@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :award do
     student_id '1'
     teacher_id 5

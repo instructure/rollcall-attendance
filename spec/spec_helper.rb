@@ -33,7 +33,7 @@ require 'shoulda'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.before :each do
     allow_any_instance_of(Aws::S3::Bucket).to receive(:put_object).
       and_return(double(presigned_url: "http://foobar.com/file.csv"))
@@ -70,6 +70,13 @@ RSpec.configure do |config|
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
 end
 
 Test::Unit::AutoRunner.need_auto_run = false if defined?(Test::Unit::AutoRunner)

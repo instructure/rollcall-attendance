@@ -57,7 +57,7 @@ Then /^the student should not have a participation badge$/ do
 end
 
 Given /^my course has a good citizen badge$/ do
-  @badge = FactoryGirl.create(:badge, course_id: 1, name: "Good citizen", icon: "+", color: "blue", tool_consumer_instance_guid: 'abc123')
+  @badge = FactoryBot.create(:badge, course_id: 1, name: "Good citizen", icon: "+", color: "blue", tool_consumer_instance_guid: 'abc123')
 end
 
 When /^I click the good citizen badge(?: again)?$/ do

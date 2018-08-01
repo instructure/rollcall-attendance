@@ -28,7 +28,7 @@ if ENV['COVERAGE']
 end
 
 require 'cucumber/rails'
-require 'factory_girl'
+require 'factory_bot'
 require 'capybara-screenshot/cucumber'
 
 Dir[Rails.root.join("features/support/**/*.rb")].each {|f| require f}
@@ -60,11 +60,8 @@ ActionController::Base.allow_rescue = false
 
 # Remove/comment out the lines below if your app doesn't have a database.
 # For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.
-begin
-  DatabaseCleaner.strategy = :transaction
-rescue NameError
-  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
-end
+DatabaseCleaner.allow_remote_database_url = true
+DatabaseCleaner.strategy = :transaction
 
 # You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
 # See the DatabaseCleaner documentation for details. Example:
@@ -89,7 +86,7 @@ Cucumber::Rails::Database.javascript_strategy = :truncation
 require 'webmock/cucumber'
 require 'cucumber/rspec/doubles'
 
-World(FactoryGirl::Syntax::Methods)
+World(FactoryBot::Syntax::Methods)
 World(WaitSteps)
 
 WebMock.disable_net_connect!(:allow_localhost => true)

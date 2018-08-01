@@ -27,7 +27,7 @@ describe Badge do
     it { is_expected.to validate_presence_of :color }
 
     it  "won't allow empty course_id and account_id" do
-      badge = FactoryGirl.build(:badge)
+      badge = FactoryBot.build(:badge)
       badge.course_id = nil
       badge.account_id = nil
       badge.valid?
@@ -35,7 +35,7 @@ describe Badge do
     end
 
     it  "will allow only a course_id and not a account_id" do
-      badge = FactoryGirl.build(:badge)
+      badge = FactoryBot.build(:badge)
       badge.course_id = 1
       badge.account_id = nil
       badge.valid?
@@ -43,7 +43,7 @@ describe Badge do
     end
 
     it  "will allow no course_id and only a account_id" do
-      badge = FactoryGirl.build(:badge)
+      badge = FactoryBot.build(:badge)
       badge.course_id = nil
       badge.account_id = 1
       badge.valid?

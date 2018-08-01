@@ -53,7 +53,7 @@ describe AttendanceReport do
   }
 
   before do
-    @account = FactoryGirl.create(:cached_account, tool_consumer_instance_guid: tci_guid)
+    @account = FactoryBot.create(:cached_account, tool_consumer_instance_guid: tci_guid)
     allow(SyncAccountRelationships).to receive_messages(perform: true)
   end
 
