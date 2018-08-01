@@ -20,10 +20,10 @@ source 'https://rubygems.org'
 gem 'bundler', '>= 1.7.10'
 
 gem 'rails', '~> 5.2.0'
-gem 'rack'
+gem 'rack', '~> 2.0'
 gem 'bootsnap', '~> 1.0', require: false
 
-gem 'thin'
+gem 'thin', '~> 1.0'
 
 gem 'ims-lti', require: 'ims'
 gem 'lti_provider_engine', '~> 1.1.0', require: 'lti_provider'
