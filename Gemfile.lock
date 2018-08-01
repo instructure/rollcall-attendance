@@ -146,8 +146,6 @@ GEM
     ffi (1.9.25)
     font-awesome-rails (4.7.0.4)
       railties (>= 3.2, < 6.0)
-    foreman (0.84.0)
-      thor (~> 0.19.1)
     formatador (0.2.5)
     gherkin (5.1.0)
     globalid (0.4.1)
@@ -444,7 +442,6 @@ DEPENDENCIES
   database_cleaner
   factory_bot_rails
   font-awesome-rails (~> 4.7.0)
-  foreman
   guard-jasmine (~> 2.0)
   guard-rspec
   httparty

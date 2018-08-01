@@ -39,7 +39,6 @@ gem 'resque-retry', '~> 1.0'
     # rufus-scheduler 3.5.x breaks resque-scheduler 4.3.1
     gem 'rufus-scheduler', '3.4.2'
 gem 'resque-sentry', '~> 1.0'
-gem 'foreman'
 gem 'chronic'
 gem 'json'
 gem 'responders', '~> 2.0'
