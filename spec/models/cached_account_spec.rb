@@ -69,9 +69,9 @@ describe CachedAccount do
       expect(account).to_not be_fresh
     end
 
-    it "returns true when the last sync was 20 minutes ago" do
+    it "returns true when the last sync was less than 5 minutes ago" do
       account = CachedAccount.new
-      account.last_sync_on = 20.minutes.ago
+      account.last_sync_on = 2.minutes.ago
       expect(account).to be_fresh
     end
   end

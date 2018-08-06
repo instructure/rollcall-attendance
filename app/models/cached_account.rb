@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class CachedAccount < ApplicationRecord
-  SYNC_TTL=30.minutes
+  SYNC_TTL = 5.minutes
 
   validates :account_id, presence: true
 
