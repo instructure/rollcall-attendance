@@ -66,10 +66,6 @@ group :development, :test do
   gem 'guard-jasmine'
 end
 
-group :development do
-  gem 'web-console', '~> 2.0'
-end
-
 group :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
