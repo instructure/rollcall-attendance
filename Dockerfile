@@ -6,14 +6,12 @@ ENV APP_HOME /usr/src/app/
 USER root
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
   && curl --silent https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-  && apt-get install --quiet=2 postgresql-client-9.6 mysql-client-5.6 nodejs tmux > /dev/null; \
+  && apt-get update --quiet=2 \
+  && apt-get install --quiet=2 postgresql-client-9.6 mysql-client-5.6 tmux> /dev/null; \
   if [ "$dev_build" = 'true' ] ; then apt-get install --quiet=2 libqt4-dev libqtwebkit-dev xvfb; fi \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-
-# Copy over nginx config
 COPY config/nginx/location.conf /usr/src/nginx/location.d/location.conf
 
 USER docker
