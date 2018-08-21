@@ -42,6 +42,15 @@ pipeline {
             sh 'docker-compose run --rm -T --name=\$COMPOSE_PROJECT_NAME-brakeman web bundle exec brakeman'
           }
         }
+        stage('Synk') {
+          when { environment name: "GERRIT_EVENT_TYPE", value: "change-merged"}
+          steps {
+            withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+              sh 'docker pull snyk/snyk-cli:rubygems'
+              sh 'docker run --rm -v "$(pwd):/project" -e SNYK_TOKEN snyk/snyk-cli:rubygems monitor --project-name=rollcall-attendance:ruby'
+            }
+          }
+        }
       }
     }
   }
