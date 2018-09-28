@@ -77,4 +77,26 @@ describe Status do
     specify { expect(hash[2]).to eq(status2) }
     its(:length) { should == 2 }
   end
+
+  describe "#as_json" do
+    let(:section) do
+      section = Section.new(id: 1, name: 'a section')
+      section.students = [student]
+      section
+    end
+    let(:student) { Student.new(id: 12345, name: 'Student') }
+    let(:teacher) { Student.new(id: 56789, name: 'Teacher') }
+    let(:status) do
+      Status.initialize_list(section, Time.now.utc.to_date, teacher.id, tool_consumer_instance_guid)
+    end
+    let(:tool_consumer_instance_guid) { "abc123" }
+
+    it "returns the student_id as a string" do
+      expect(status.as_json.first[:student_id]).to eq student.id.to_s
+    end
+
+    it "returns the teacher_id as a string" do
+      expect(status.as_json.first[:teacher_id]).to eq teacher.id.to_s
+    end
+  end
 end

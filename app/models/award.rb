@@ -76,11 +76,13 @@ class Award < ApplicationRecord
     Hash[stats.sort]
   end
 
+  # Return user IDs as strings because Javascript can't handle numbers beyond
+  # a certain size (which we may hit with cross-shard users)
   def as_json(options={})
     {
       id: id,
-      student_id: student_id,
-      teacher_id: teacher_id,
+      student_id: student_id.to_s,
+      teacher_id: teacher_id.to_s,
       course_id: course_id,
       class_date: class_date,
       badge_id: badge_id,

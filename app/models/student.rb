@@ -30,9 +30,11 @@ class Student
     self.active = check_for_active_enrollments(params[:enrollments])
   end
 
+  # Return user IDs as strings because Javascript can't handle numbers beyond
+  # a certain size (which we may hit with cross-shard users)
   def as_json
     {
-      id: id,
+      id: id.to_s,
       name: name,
       sortable_name: sortable_name,
       avatar_url: avatar_url,

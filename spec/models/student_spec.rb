@@ -38,4 +38,12 @@ describe Student do
     its(:first) { should be_a Student }
     its('first.avatar_url') { should == 'avatar1' }
   end
+
+  describe "#as_json" do
+    it "returns the id as a string" do
+      student = Student.new(id: 123, name: 'Fred')
+
+      expect(student.as_json[:id]).to eq '123'
+    end
+  end
 end

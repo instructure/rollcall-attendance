@@ -33,12 +33,13 @@ When /^I click the first section$/ do
   select "Section 1", :from => "section_select"
 end
 
-Given /^I am a teacher with (\d+) sections? and (\d+) students(?: in each)?$/ do |sections, students|
+Given /^I am a teacher with (\d+) sections? and (\d+) (cross-shard )?students(?: in each)?$/ do |sections, students, cross_shard|
   # Responses for when each of the sections are queried
   enrollment_hashes = []
   sections.to_i.times do |i|
     section = i + 1
-    enrollment_hashes << { course_id: 1, section_id: section, user_id: 1 }
+    user_id = cross_shard ? 10610000000574765 : 1
+    enrollment_hashes << { course_id: 1, section_id: section, user_id: user_id }
     stub_request(:get, "http://test.canvas/api/v1/sections/#{section}").
       with(:headers => {'Authorization'=>'Bearer'}).
       to_return(:status => 200, :body => '{"course_id":1}', headers: {'Content-Type' => 'application/json'})

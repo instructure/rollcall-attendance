@@ -22,15 +22,17 @@ class Status < ApplicationRecord
 
   def as_json(opts={})
 
+    # Return user IDs as strings because Javascript can't handle numbers beyond
+    # a certain size (which we may hit with cross-shard users)
     attributes = {
       id: id,
       attendance: attendance,
       section_id: section_id,
       course_id: course_id,
       stats: student_stats,
-      student_id: student_id,
+      student_id: student_id.to_s,
       class_date: class_date,
-      teacher_id: teacher_id
+      teacher_id: teacher_id.to_s
     }
 
     attributes[:student] = student if student

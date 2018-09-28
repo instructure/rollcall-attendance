@@ -39,6 +39,16 @@ describe Award do
     it "includes the badge" do
       expect(award.as_json[:badge]).to eq(badge)
     end
+
+    it "returns the student_id as a string" do
+      award.student_id = 567
+      expect(award.as_json[:student_id]).to eq '567'
+    end
+
+    it "returns the student_id as a string" do
+      award.teacher_id = 456
+      expect(award.as_json[:teacher_id]).to eq '456'
+    end
   end
 
   describe "#build_list_for_student" do
