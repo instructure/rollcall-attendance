@@ -7,7 +7,7 @@ USER root
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
   && curl --silent https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
   && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-  && apt-get install --quiet=2 postgresql-client-9.6 mysql-client-5.6 nodejs > /dev/null; \
+  && apt-get install --quiet=2 postgresql-client-9.6 mysql-client-5.6 nodejs tmux > /dev/null; \
   if [ "$dev_build" = 'true' ] ; then apt-get install --quiet=2 libqt4-dev libqtwebkit-dev xvfb; fi \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
