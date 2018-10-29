@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Removes the marker file that causes nginx to display a maintenance mode page
+# usage: cg ssh --environment staging --pool web --all -- docker exec cloudgate-running bin/stop_downtime
+
+if [ -e public/down.txt ]; then
+  rm public/down.txt
+fi
+

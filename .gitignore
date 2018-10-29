@@ -43,3 +43,6 @@ config/s3.yml
 config/sentry.yml
 config/database.yml
 config/mail.yml
+
+# Ignore the maintenance page trigger file
+/public/down.txt

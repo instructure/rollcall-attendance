@@ -12,6 +12,10 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg m
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+
+# Copy over nginx config
+COPY config/nginx/location.conf /usr/src/nginx/location.d/location.conf
+
 USER docker
 
 COPY --chown=docker:docker Gemfile Gemfile.lock $APP_HOME
