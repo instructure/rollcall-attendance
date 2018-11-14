@@ -1,4 +1,4 @@
-FROM instructure/ruby-passenger:2.4
+FROM instructure/ruby-passenger:2.4-xenial
 
 ARG dev_build='false'
 ENV APP_HOME /usr/src/app/
