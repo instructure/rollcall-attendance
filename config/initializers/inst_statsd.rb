@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-CanvasStatsd::DefaultTracking.track_sql
-CanvasStatsd::DefaultTracking.track_cache
-CanvasStatsd::DefaultTracking.track_active_record
-CanvasStatsd::RequestTracking.enable
+InstStatsd::DefaultTracking.track_sql
+InstStatsd::DefaultTracking.track_cache
+InstStatsd::DefaultTracking.track_active_record
+InstStatsd::RequestTracking.enable

@@ -36,14 +36,20 @@ describe AccountsController do
 
   describe "badges" do
     it 'sends performance metrics to statsd' do
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.total', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.db', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.view', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.active_record', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.read', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.write', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.sql.cache', kind_of(Numeric))
-      expect(CanvasStatsd::Statsd).to receive(:timing).with('request.accounts.badges.cache.read', kind_of(Numeric))
+      tags = { action: "badges", controller: "accounts" }
+
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.total', kind_of(Numeric), short_stat: 'request.total', tags: tags)
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.view', kind_of(Numeric), short_stat: 'request.view', tags: tags)
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.db', kind_of(Numeric), short_stat: 'request.db', tags: tags)
+
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.sql.read', kind_of(Numeric), short_stat: 'request.sql.read', tags: tags)
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.sql.write', kind_of(Numeric), short_stat: 'request.sql.write', tags: tags)
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.sql.cache', kind_of(Numeric), short_stat: 'request.sql.cache', tags: tags)
+
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.cache.read', kind_of(Numeric), short_stat: 'request.cache.read', tags: tags)
+
+      expect(InstStatsd::Statsd).to receive(:timing).with('request.active_record', kind_of(Numeric), short_stat: 'request.active_record', tags: tags)
+
       get :badges, params: { id: 3 }
     end
 

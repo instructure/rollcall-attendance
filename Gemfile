@@ -44,7 +44,7 @@ gem 'json', '~> 2.0'
 gem 'responders', '~> 2.0'
 
 gem 'sentry-raven', '~> 2.0'
-gem 'canvas_statsd', '~> 2.0.0'
+gem 'inst_statsd', '~> 2.1.4'
 gem 'paul_bunyan', '~> 1.5'
 
 gem 'sass-rails', '~> 5.0.0'

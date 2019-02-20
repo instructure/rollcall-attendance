@@ -6,3 +6,6 @@ services:
       DATABASE_URL: postgres://postgres@db:5432/rollcall_test
       CANVAS_KEY: '101'
       CANVAS_SECRET: 'secret'
+      INST_DOG_TAGS: '{"project": "rollcall", "environment": "test", "region": "local"}'
+      INST_STATSD_HOST: 'localhost'
+      INST_STATSD_APPEND_HOSTNAME: 'false'

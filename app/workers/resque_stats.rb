@@ -19,14 +19,14 @@ module ResqueStats
   def before_perform(*args)
     stats = Resque.info
     %i[pending processed workers working failed].each do |stat|
-      CanvasStatsd::Statsd.gauge("resque.#{stat}", stats[stat])
+      InstStatsd::Statsd.gauge("resque.#{stat}", stats[stat])
     end
   end
 
   def around_perform(*args)
     job = self.name.underscore
     stats = ["resque.perform", "resque.perform.#{job}"]
-    CanvasStatsd::Statsd.time(stats) do
+    InstStatsd::Statsd.time(stats) do
       yield
     end
   end
