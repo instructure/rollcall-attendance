@@ -19,6 +19,7 @@ require 'spec_helper'
 
 describe AttendanceReport do
   subject(:report) { AttendanceReport.new(canvas, {account_id: @account.account_id, tool_consumer_instance_guid: 'abc123'}) }
+
   let(:canvas) { double }
   let(:single_api_result) do
     api_result = {
@@ -290,6 +291,19 @@ describe AttendanceReport do
 
         report.get_teacher_enrollments
       end
+    end
+  end
+
+  describe '#get_courses' do
+    it "adds 'include_delete' to queries" do
+      expect(canvas).to receive(:get_report).with(
+        any_args,
+        {
+          "parameters[courses]" => true,
+          "parameters[include_deleted]" => true
+        }
+      ).and_return([])
+      report.get_courses
     end
   end
 end

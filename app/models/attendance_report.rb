@@ -109,13 +109,17 @@ class AttendanceReport
     if course_filter
       hash[course_filter.id] = course_filter
     else
-      @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[courses]' => true).each do |course|
+      params = {
+        'parameters[courses]' => true,
+        'parameters[include_deleted]' => true
+      }
+      @canvas.get_report(@account.account_id, :provisioning_csv, params).each do |course|
         course = Course.new(
-            id: course['canvas_course_id'].to_i,
-            sis_id: course['course_id'],
-            course_code: course['short_name'],
-            name: course['long_name'])
-
+          id: course['canvas_course_id'].to_i,
+          sis_id: course['course_id'],
+          course_code: course['short_name'],
+          name: course['long_name']
+        )
         hash[course.id] = course
       end
     end
