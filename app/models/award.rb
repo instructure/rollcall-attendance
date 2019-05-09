@@ -24,7 +24,6 @@ class Award < ApplicationRecord
     awards = Award.where({
       course_id: course.id,
       student_id: student_id,
-      teacher_id: teacher_id,
       class_date: class_date,
       tool_consumer_instance_guid: tool_consumer_instance_guid
     }).to_a

@@ -82,6 +82,11 @@ describe Award do
       its(:size) { should == 3 }
       specify { expect(subject.all?(&:new_record?)).to be_falsey }
       specify { expect(subject.map(&:badge)).to include @badge1, @badge2, @badge4 }
+
+      it "is not teacher specific" do
+        awards = Award.build_list_for_student(@double_course, student_id, class_date, teacher_id + 1, tool_consumer_instance_guid)
+        expect(awards.all?(&:new_record?)).to be false
+      end
     end
   end
 
