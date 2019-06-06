@@ -24,7 +24,7 @@ class InstructureRollcall.Models.CourseConfig extends Backbone.Model
     tardy_weight: null
 
   tardyWeight: ->
-    @get('tardy_weight') || <%=ENV['COURSE_TARDY_WEIGHT']||0.8%>
+    @get('tardy_weight') || <%=ENV['COURSE_TARDY_WEIGHT']||0.80%>
 
   tardyWeightPercentage: ->
     Math.round (@tardyWeight() * 100)
