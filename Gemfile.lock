@@ -309,7 +309,7 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    redis (4.0.3)
+    redis (4.1.2)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
     redis-objects (1.4.3)
@@ -475,7 +475,7 @@ DEPENDENCIES
   rails-backbone (~> 0.7.2)
   rails-controller-testing
   react-rails (~> 1.7)
-  redis (~> 4.0)
+  redis (~> 4.1)
   redis-objects (~> 1.0)
   responders (~> 2.0)
   resque (~> 1.0)
