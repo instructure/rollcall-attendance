@@ -94,7 +94,7 @@ group :test do
 end
 
 group :postgres do
-  gem 'pg', '~> 1.0'
+  gem 'pg', '~> 1.1'
 end
 
 group :mysql do
