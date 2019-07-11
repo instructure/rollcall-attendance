@@ -33,11 +33,19 @@ them as `CANVAS_KEY` and `CANVAS_SECRET`, respectively, in `.env`.
 
 ### 2. Configure the LTI
 
-The LTI will run in development without further configuration; however, some things like mail delivery (for attendance report exports) may not work. You can further configure the LTI by specifying environment variables in `.env`. Refer to `env.sample` for inspiration.
+The LTI will run in development without further configuration; however, some
+things like mail delivery (for attendance report exports) may not work. You can
+further configure the LTI by specifying environment variables in `.env`. Refer
+to `env.sample` for inspiration.
 
-Some aspects (such as database and mail) can also be configured in the traditional Rails way of YAML files in the `config` directory. Refer to `config/database.yml.sample` and `config/mail.yaml.sample` for examples.
+Some aspects (such as database and mail) can also be configured in the
+traditional Rails way of YAML files in the `config` directory. Refer to
+`config/database.yml.sample` and `config/mail.yaml.sample` for examples.
 
-Note that in production you will want to make sure to configure the SMTP outgoing address parameter to an email address on your own domain; otherwise, your reports will be sent from "`Roll Call <notifications@instructure.com>`", which is most certainly not what you want.
+Note that in production you will want to make sure to configure the SMTP
+outgoing address parameter to an email address on your own domain; otherwise,
+your reports will be sent from "`Roll Call <notifications@instructure.com>`",
+which is most certainly not what you want.
 
 ### 3. Docker build + Database migrations:
 
@@ -62,9 +70,10 @@ You should be able to start everything with:
 
     docker-compose up
 
-This will start up 5 containers: a web process to hit with your browser, a worker process to 
-consume jobs, a postgres data store, a redis cache, and a fakes3 server so you don't need 
-AWS resources. When they're running, you can visit your app in the browser by going to:
+This will start up 5 containers: a web process to hit with your browser, a
+worker process to consume jobs, a postgres data store, a redis cache, and a
+minio server so you don't need a real AWS S3 bucket. When they're running, you
+can visit your app in the browser by going to:
 
 `http://rollcall.docker`
 

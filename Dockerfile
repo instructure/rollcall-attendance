@@ -21,6 +21,7 @@ COPY --chown=docker:docker Gemfile Gemfile.lock $APP_HOME
 RUN if [ "$dev_build" = 'false' ] ; then BUNDLER_ARGS='--without development test'; fi; \
   bundle install --jobs 8 $BUNDLER_ARGS
 
+RUN mkdir -p tmp
 COPY --chown=docker:docker . $APP_HOME
 
 RUN RAILS_ENV=production \

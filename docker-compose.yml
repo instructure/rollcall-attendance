@@ -1,4 +1,5 @@
-version: '2'
+version: '3.3'
+
 services:
   db:
     image: postgres:9.6-alpine
@@ -6,13 +7,15 @@ services:
   redis:
     image: redis:3-alpine
 
-  fakes3:
-    image: instructure/fake-s3
-    ports:
-      - "4569:4569"
+  minio:
+    image: minio/minio
+    command: /bin/sh -c "mkdir -p /data/bucket && minio server /data"
+    entrypoint: ''
     environment:
-      VIRTUAL_HOST: .fakes3.docker
-      VIRTUAL_PORT: 4569
+      MINIO_DOMAIN: minio.rollcall-attendance.docker
+      MINIO_ACCESS_KEY: dev-access-key
+      MINIO_SECRET_KEY: dev-secret-key
+      VIRTUAL_HOST: bucket.minio.rollcall-attendance.docker
 
   web:
     build:
@@ -22,7 +25,7 @@ services:
     links:
       - db
       - redis
-      - fakes3
+      - minio
     environment: &ENV
       RAILS_ENV: development
       ROLLCALL_ROLE: web
@@ -33,13 +36,16 @@ services:
       SECRET_KEY_BASE: 'GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC'
       RESQUE_USER: 'admin'
       RESQUE_PASS: 'changeme'
-      AWS_ACCESS_KEY_ID: '123'
-      AWS_SECRET_ACCESS_KEY: 'secret'
+      AWS_ACCESS_KEY_ID: dev-access-key
+      AWS_SECRET_ACCESS_KEY: dev-secret-key
       AWS_REGION: 'us-east-1'
-      AWS_S3_ENDPOINT: 'http://fakes3.docker'
+      AWS_BUCKET: bucket
+      AWS_S3_ENDPOINT: http://minio.rollcall-attendance.docker
       LTI_KEY: '12345'
       LTI_SECRET: 'secret'
       LTI_REQUIRE_CANVAS: 'true'
+    external_links:
+      - ${PROXY_CONTAINER:-dinghy_http_proxy}:bucket.minio.rollcall-attendance.docker
 
   work:
     build:
@@ -49,7 +55,10 @@ services:
     links:
       - db
       - redis
+      - minio
     environment:
       <<: *ENV
       ROLLCALL_ROLE: 'worker'
       QUEUE: "*"
+    external_links:
+      - ${PROXY_CONTAINER:-dinghy_http_proxy}:bucket.minio.rollcall-attendance.docker
