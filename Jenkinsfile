@@ -7,7 +7,7 @@ pipeline {
     COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}".replaceAll("/", "-").toLowerCase()
     COMPOSE_FILE = "docker-compose.yml:docker-compose.test.yml"
     RAILS_ENV = "test"
-    DOCKER_REF = "${(env.GERRIT_EVENT_TYPE == 'change-merged') ? 'env.GERRIT_BRANCH' : env.GERRIT_REFSPEC}"
+    DOCKER_REF = "${(env.GERRIT_EVENT_TYPE == 'change-merged') ? env.GERRIT_BRANCH : env.GERRIT_REFSPEC}"
     DOCKER_TAG = env.DOCKER_REF.replace("refs/changes/", "").replaceAll("/", ".")
   }
 
