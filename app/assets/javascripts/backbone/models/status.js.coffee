@@ -54,7 +54,7 @@ class InstructureRollcall.Models.Status extends Backbone.Model
   unmark: ->
     @set(attendance: null)
     @queueSave()
-    
+
   isLate: ->
     @get('attendance') == 'late'
 
@@ -84,6 +84,8 @@ class InstructureRollcall.Models.Status extends Backbone.Model
       @markAsPresent()
 
   firstName: -> @get('student').name.split(' ')[0]
+
+  sectionId: -> @get('section_id')
 
 _.extend InstructureRollcall.Models.Status.prototype, InstructureRollcall.Mixins.ToggleSync.prototype, { delete: InstructureRollcall.Models.Status.prototype.delete }
 

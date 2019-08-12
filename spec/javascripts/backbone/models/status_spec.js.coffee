@@ -115,6 +115,12 @@ describe "Status", ->
           @status.togglePresence()
           expect(spy).toHaveBeenCalled()
 
+  describe ".sectionId", ->
+    beforeEach -> @status.set(section_id: '1')
+
+    it "gets the section id", ->
+      expect(@status.sectionId()).toBe('1')
+
   describe "unmark", ->
     beforeEach ->
       @status.set({id: 1, attendance: 'present'})

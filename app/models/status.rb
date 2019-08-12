@@ -59,40 +59,46 @@ class Status < ApplicationRecord
 
   class <<self
     def initialize_list(section, class_date, teacher_id, tool_consumer_instance_guid)
-      list = existing_for_section_and_date(section, class_date, tool_consumer_instance_guid)
+      statuses = existing_for_course_and_date(section.course_id, class_date, tool_consumer_instance_guid)
 
-      lookup_table = key_list_by_student_id(list)
+      lookup_table = key_statuses_by_student_id(statuses, section.id)
+      students_table = {}
 
       section.students.each do |student|
-        status = lookup_table[student.id] || new(
-          student_id: student.id,
-          section_id: section.id,
-          course_id: section.course_id,
-          class_date: class_date,
-          teacher_id: teacher_id,
-          tool_consumer_instance_guid: tool_consumer_instance_guid,
-          fixed: true
-        )
-        status.student = student
-        list << status if status.new_record?
+        students_table[student.id] = student
+        unless lookup_table.key?(student.id)
+          default_status = new(
+            student_id: student.id,
+            section_id: section.id,
+            course_id: section.course_id,
+            class_date: class_date,
+            teacher_id: teacher_id,
+            tool_consumer_instance_guid: tool_consumer_instance_guid,
+            fixed: true
+          )
+          statuses << default_status
+        end
       end
 
-      list = list.to_a
-      list.reject! { |status| status.student.nil? }
-      list.sort_by! { |status| status.student.sortable_name }
+      statuses.each do |status|
+        status.student = students_table[status.student_id]
+      end
+
+      statuses.reject! { |status| status.student.nil? }
+      statuses.sort_by! { |status| status.student.sortable_name }
     end
 
-    def existing_for_section_and_date(section, class_date, tool_consumer_instance_guid)
+    def existing_for_course_and_date(course_id, class_date, tool_consumer_instance_guid)
       where({
-        section_id: section.id,
+        course_id: course_id,
         class_date: class_date,
         tool_consumer_instance_guid: tool_consumer_instance_guid
       }).to_a
     end
 
-    def key_list_by_student_id(list)
-      list.inject({}) do |hash, status|
-        hash[status.student_id] = status
+    def key_statuses_by_student_id(statuses, section_id)
+      statuses.inject({}) do |hash, status|
+        hash[status.student_id] = status if status.section_id == section_id
         hash
       end
     end

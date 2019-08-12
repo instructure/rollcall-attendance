@@ -125,6 +125,9 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
         section_id: @sectionId
         class_date: @classDate.toString("yyyy-MM-dd")
 
+  sectionId: ->
+    @sectionId
+
   prettyClassDate: ->
     day = @classDate.toString("ddd")
     date = @classDate.toString("MMM dd")

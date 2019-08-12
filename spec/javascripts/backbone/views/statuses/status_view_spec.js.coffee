@@ -68,3 +68,38 @@ describe "StatusView", ->
           event = $.Event('keydown', { which: code })
           $('a.student-toggle').trigger(event)
           expect(spy).not.toHaveBeenCalled()
+
+  describe "#templateOptions", ->
+    beforeEach ->
+      @status = new InstructureRollcall.Models.Status()
+      @status.set student: { name: "Snail Mail" }
+      statuses = new InstructureRollcall.Collections.StatusesCollection()
+      statuses.add(@status)
+      statuses.add({student: { name: "Clairo" }})
+
+      @indexView = new InstructureRollcall.Views.Statuses.IndexView(
+        statuses: statuses,
+        sectionId: '1'
+      )
+
+      @statusView = new InstructureRollcall.Views.Statuses.StatusView(
+        model: @status,
+        indexView: @indexView
+      )
+
+    describe ".sectionName", ->
+      it "gets the name of the current section", ->
+        @select = document.createElement 'select'
+        @select .setAttribute 'id', 'section_select'
+        document.body.appendChild @select
+
+        @option = document.createElement 'option'
+        @option.setAttribute 'value', '1'
+        @select.appendChild @option
+
+        $('#section_select').find("option[value=1]").text('Intro to Vaporwave')
+        expect(@statusView.sectionName('1')).toBe('Intro to Vaporwave')
+
+    describe "default_section_id", ->
+      it "gets index view sectionId", ->
+        expect(@statusView.templateOptions().default_section_id).toBe(@indexView.sectionId)
