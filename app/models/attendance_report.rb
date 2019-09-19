@@ -174,7 +174,7 @@ class AttendanceReport
   end
 
   def header
-    header = ["Course ID", "SIS Course ID", "Course Code", "Course Name"]
+    header = ["Course ID", "SIS Course ID", "Course Code", "Course Name", "Section Name", "Section ID", "SIS Section ID"]
     if course_filter
       header.concat ["Teacher ID", "Teacher Name"]
       header.concat ["Student ID", "Student Name"]
@@ -195,6 +195,7 @@ class AttendanceReport
 
     attendance_collection = AttendanceCollection.new
     relevant_statuses.each { |status| attendance_collection.add_status status }
+
     relevant_awards.each { |award| attendance_collection.add_award award }
 
     CSV.generate do |csv|
@@ -202,7 +203,7 @@ class AttendanceReport
       attendance_collection.each do |attendance|
         teacher_id = attendance.teacher_id || teachers[attendance.course_id]
         next unless users[attendance.student_id]
-        csv << course_columns(courses[attendance.course_id]) +
+        csv << course_columns(courses[attendance.course_id], attendance.section_id) +
             user_columns(users[teacher_id]) +
             user_columns(users[attendance.student_id]) +
             attendance_columns(attendance)
@@ -210,9 +211,10 @@ class AttendanceReport
     end
   end
 
-  def course_columns(course)
-    return ['', '', '', ''] if course.nil?
-    return [course.id, course.sis_id, course.course_code, course.name]
+  def course_columns(course, section_id)
+    return ['', '', '', '', '', '', ''] if course.nil?
+    section = @canvas.get_section(section_id)
+    return [course.id, course.sis_id, course.course_code, course.name, section['name'], section_id, section['sis_section_id']]
   end
 
   def user_columns(user)

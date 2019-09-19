@@ -23,6 +23,7 @@ class Attendance
     if params.has_key? :status
       set_keys params[:status]
       @status = params[:status]
+      @section_id = params[:status].section_id
     elsif params.has_key? :award
       set_keys params[:award]
       add_award(params[:award])

@@ -142,6 +142,25 @@ describe AttendanceReport do
         end
       end
     end
+
+    describe "course with multiple sections" do
+      before do
+        @account4 = create(:cached_account, parent_account_id: @account.account_id, tool_consumer_instance_guid: tci_guid)
+
+        @status6 = create(:status, student_id: 4, course_id: 4, section_id: 1, account_id: @account4.account_id, class_date: 2.days.ago, tool_consumer_instance_guid: tci_guid)
+        @status7 = create(:status, student_id: 4, course_id: 4, section_id: 2, account_id: @account4.account_id, class_date: 2.days.ago, tool_consumer_instance_guid: tci_guid)
+      end
+
+      describe "a student in two sections on one day" do
+        before do
+          allow(report).to receive(:course_ids) { [4] }
+        end
+        let(:result) { report.relevant_statuses }
+        it "includes separate statuses for each section" do
+          expect(result).to include @status6, @status7
+        end
+      end
+    end
   end
 
   describe "awards" do
@@ -204,6 +223,18 @@ describe AttendanceReport do
       allow(badge2).to receive(:name).and_return("badge2")
       allow(account).to receive(:badges).and_return([badge1, badge2])
       expect(report.header.length).to eq(min_length + 3)
+    end
+
+    it "includes Section ID" do
+      expect(report.header).to include ("Section ID")
+    end
+
+    it "includes Section Name" do
+      expect(report.header).to include ("Section Name")
+    end
+
+    it "includes SIS Section ID" do
+      expect(report.header).to include ("SIS Section ID")
     end
 
     context "when the course_filter is active" do
