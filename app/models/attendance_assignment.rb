@@ -84,12 +84,10 @@ class AttendanceAssignment
         section_id,
         tool_consumer_instance_guid
       ).grade
-      if grade
-        begin
-          canvas.grade_assignment(course_id, assignment_id, student_id, submission: { posted_grade: grade, submission_type: 'basic_lti_launch', url: @tool_launch_url })
-        rescue CanvasOauth::CanvasApi::Unauthorized
-          # user is not authorized to update grades
-        end
+      begin
+        canvas.grade_assignment(course_id, assignment_id, student_id, submission: { posted_grade: grade, submission_type: 'basic_lti_launch', url: @tool_launch_url })
+      rescue CanvasOauth::CanvasApi::Unauthorized
+        # user is not authorized to update grades
       end
     end
   end

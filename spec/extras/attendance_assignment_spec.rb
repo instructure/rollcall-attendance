@@ -115,6 +115,13 @@ describe AttendanceAssignment do
       attendance_assignment.submit_grade('assignment id', 'student id', 'section id', 'abc123')
     end
 
+    it "updates an unmarked grade in canvas" do
+      allow(StudentCourseStats).to receive_message_chain(:new, :grade) { '' }
+      expect(canvas).to receive(:grade_assignment).with(course_id, 'assignment id', 'student id',
+        submission: { posted_grade: '', submission_type: 'basic_lti_launch', url: 'http://localhost:3001' })
+      attendance_assignment.submit_grade('assignment id', 'student id', 'section id', 'abc123')
+    end
+
     it "fails gracefully when the user is not authorized to update grades" do
       expect(canvas).to receive(:grade_assignment).and_raise(CanvasOauth::CanvasApi::Unauthorized)
       expect { attendance_assignment.submit_grade('assignment id', 'student id', 'section id', 'abc123') }.to_not raise_error
