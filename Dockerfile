@@ -1,16 +1,26 @@
 FROM instructure/ruby-passenger:2.4-xenial
 
-ARG dev_build='false'
+ARG DEV_BUILD='false'
 ENV APP_HOME /usr/src/app/
 
 USER root
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
   && curl --silent https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-  && apt-get update --quiet=2 \
-  && apt-get install --quiet=2 postgresql-client-9.6 mysql-client-5.6 tmux> /dev/null; \
-  if [ "$dev_build" = 'true' ] ; then apt-get install --quiet=2 libqt4-dev libqtwebkit-dev xvfb; fi \
+  && apt-get update -y \
+  && apt-get install -y \
+    mysql-client-5.7 \
+    postgresql-client-9.6 \
+  && ([ "$DEV_BUILD" = 'true' ] \
+    && apt-get install -y \
+      libqt4-dev \
+      libqtwebkit-dev \
+      xvfb \
+    || true ) \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf \
+    /tmp/* \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
 
 COPY config/nginx/location.conf /usr/src/nginx/location.d/location.conf
 
@@ -18,7 +28,7 @@ USER docker
 
 COPY --chown=docker:docker Gemfile Gemfile.lock $APP_HOME
 
-RUN if [ "$dev_build" = 'false' ] ; then BUNDLER_ARGS='--without development test'; fi; \
+RUN if [ "$DEV_BUILD" = 'false' ]; then BUNDLER_ARGS='--without development test'; fi; \
   bundle install --jobs 8 $BUNDLER_ARGS
 
 RUN mkdir -p tmp

@@ -2,20 +2,26 @@ version: '3.3'
 
 services:
   web:
-    volumes:
-      - .:/usr/src/app
-      - tmp:/usr/src/app/tmp
+    build:
+      args:
+        DEV_BUILD: 'true'
     env_file: .env
     external_links:
       - ${PROXY_CONTAINER:-dinghy_http_proxy}:canvas.docker
+    volumes:
+      - .:/usr/src/app
+      - tmp:/usr/src/app/tmp
 
   work:
-    volumes:
-      - .:/usr/src/app
-      - tmp:/usr/src/app/tmp
+    build:
+      args:
+        DEV_BUILD: 'true'
     env_file: .env
     external_links:
       - ${PROXY_CONTAINER:-dinghy_http_proxy}:canvas.docker
+    volumes:
+      - .:/usr/src/app
+      - tmp:/usr/src/app/tmp
 
 volumes:
   tmp:

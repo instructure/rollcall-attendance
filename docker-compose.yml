@@ -20,8 +20,6 @@ services:
   web:
     build:
       context: .
-      args:
-        dev_build: 'true'
     links:
       - db
       - redis
@@ -50,8 +48,6 @@ services:
   work:
     build:
       context: .
-      args:
-        dev_build: 'true'
     links:
       - db
       - redis
