@@ -25,19 +25,23 @@ pipeline {
     }
     stage('Test') {
       parallel {
-        stage('RSpec') {
-          steps {
-            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
+        stage('Database Dependent Suites') {
+          stages {
+            stage('RSpec') {
+              steps {
+                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
+              }
+            }
+            stage('Cucumber') {
+              steps {
+                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
+              }
+            }
           }
         }
         stage('Jasmine') {
           steps {
             sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
-          }
-        }
-        stage('Cucumber') {
-          steps {
-            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
           }
         }
         stage('Brakeman') {
