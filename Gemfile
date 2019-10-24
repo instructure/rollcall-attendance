@@ -30,7 +30,7 @@ gem 'lti_provider_engine', '~> 1.1.0', require: 'lti_provider'
 gem 'canvas_oauth_engine', '~> 2.1.0', require: 'canvas_oauth'
 gem 'httparty', '~> 0.15'
 
-gem 'aws-sdk-s3', '~> 1.0'
+gem 'aws-sdk-s3', '~> 1.51'
 gem 'redis', '~> 4.0'
 gem 'redis-objects', '~> 1.0'
 gem 'resque', '~> 1.0'
