@@ -19,7 +19,7 @@ source 'https://rubygems.org'
 
 gem 'bundler', '>= 1.7.10'
 
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.3'
 gem 'rack', '~> 2.0'
 gem 'bootsnap', '~> 1.0', require: false
 
