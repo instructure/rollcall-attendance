@@ -23,13 +23,14 @@ https://github.com/instructure/canvas-lms/blob/stable/doc/docker/getting_docker.
 And our Canvas in Docker setup here:
 https://github.com/instructure/canvas-lms/blob/stable/doc/docker/developing_with_docker.md
 
-Once you have a dockerized Canvas up and running, you need to add a developer
-key to Canvas for rollcall to connect with. As an admin account, go to
-`http://canvas.docker/accounts/<id>/developer_keys`, create one with a
-`tool_id` of "rollcall" and a redirect url of
-`http://rollcall.docker/canvas_oauth`. Once it's been created, get the
-ID number (an integer) from the index page along with the token and add
-them as `CANVAS_KEY` and `CANVAS_SECRET`, respectively, in `.env`.
+Once you have a dockerized Canvas up and running, you need to add a
+developer key to Canvas for rollcall to connect with. As an admin
+account, go to `http://canvas.docker/accounts/<id>/developer_keys`,
+create an API key with a `tool_id` of "rollcall" and a redirect url of
+`http://rollcall.docker/canvas_oauth`. Ensure the key state is `ON`.
+Once it's been created, get the ID number (an integer) from the index
+page along with the token and add them as `CANVAS_KEY` and
+`CANVAS_SECRET`, respectively, in `.env`.
 
 ### 2. Configure the LTI
 
