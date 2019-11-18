@@ -48,6 +48,8 @@ module InstructureRollcall
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
 
+    config.autoload_paths += %w[lib]
+
     # Our deploy tooling exports a DATABASE_URL like:
     # mysql://user:pass@db:port/database, so handle that
     module MysqlProtocolResolver

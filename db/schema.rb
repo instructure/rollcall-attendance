@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2015_08_13_210811) do
+ActiveRecord::Schema.define(version: 2019_11_18_151647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 2015_08_13_210811) do
     t.datetime "updated_at"
     t.string "view_preference"
     t.string "tool_consumer_instance_guid"
+    t.boolean "omit_from_final_grade", default: false, null: false
     t.index ["course_id", "tool_consumer_instance_guid"], name: "index_course_configs, uniquely", unique: true
   end
 

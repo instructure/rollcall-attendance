@@ -60,4 +60,11 @@ FactoryBot.define do
     cached_account {}
     descendant {}
   end
+
+  factory :course_config do
+    course_id 1
+    tardy_weight 0.8
+    omit_from_final_grade false
+    tool_consumer_instance_guid "abc123"
+  end
 end
