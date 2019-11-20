@@ -50,7 +50,7 @@ class CourseConfigsController < ApplicationController
   end
 
   def course_config_params
-    params.require(:course_config).permit(:course_id, :tardy_weight, :view_preference)
+    params.require(:course_config).permit(:course_id, :tardy_weight, :view_preference, :omit_from_final_grade)
   rescue ActionController::ParameterMissing
     {}
   end

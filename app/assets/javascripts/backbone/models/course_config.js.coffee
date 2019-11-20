@@ -22,6 +22,7 @@ class InstructureRollcall.Models.CourseConfig extends Backbone.Model
   defaults:
     course_id: null
     tardy_weight: null
+    omit_from_final_grade: false
 
   tardyWeight: ->
     @get('tardy_weight') || 0.80
@@ -31,3 +32,9 @@ class InstructureRollcall.Models.CourseConfig extends Backbone.Model
 
   setTardyWeight: (wholeNumber) ->
     @set 'tardy_weight', (parseInt(wholeNumber) / 100.0)
+
+  omitFromFinalGrade: ->
+    @get('omit_from_final_grade')
+
+  setOmitFromFinalGrade: (boolValue) ->
+    @set 'omit_from_final_grade', boolValue

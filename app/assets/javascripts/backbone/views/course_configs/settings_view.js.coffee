@@ -23,7 +23,7 @@ class InstructureRollcall.Views.CourseConfigs.SettingsView extends Backbone.View
   initialize: ->
     $("a#settings-toggle").on 'click', @render
 
-  setupSlider: ->
+  setupSettings: ->
     @$("#lateness-percentage-slider").slider
       range: "min"
       min: 0
@@ -34,20 +34,31 @@ class InstructureRollcall.Views.CourseConfigs.SettingsView extends Backbone.View
 
     @updateTardyWeightPercentage()
 
+    @$("#omit-checkbox").prop("checked", @model.omitFromFinalGrade()).change(@saveOmitFromFinalGrade)
+
   updateTardyWeightPercentage: (event, ui) =>
     value = if event and ui then ui.value else @model.tardyWeightPercentage()
-    
+
     @$("#lateness-percentage span").html(value)
     @$("#lateness-percentage-slider").attr("aria-valuenow", value).attr("aria-valuetext", "#{value} percent")
-    
+
   saveTardyWeight: (event, ui) =>
     @updateTardyWeightPercentage(event, ui)
     @model.setTardyWeight(ui.value)
     @model.save()
 
+  updateOmitFromFinalGrade: (event) =>
+    value = if event then @$("#omit-checkbox").prop("checked") else @model.omitFromFinalGrade()
+    @$("#omit-checkbox").prop("checked", value);
+
+  saveOmitFromFinalGrade: (event) =>
+    @updateOmitFromFinalGrade(event)
+    @model.setOmitFromFinalGrade(@$("#omit-checkbox").prop("checked"))
+    @model.save()
+
   render : =>
     @$el = $(@template())
-    @setupSlider()
+    @setupSettings()
 
     @$el.dialog
       width: 500

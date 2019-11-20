@@ -33,3 +33,16 @@ Feature: Settings
     When I click the settings cog at the top
     And I click the Roll Call Settings link
     Then I should see the tardy weight is 50 percent
+
+  @javascript
+  Scenario: Changing the omit from final grade
+    When I click the settings cog at the top
+    And I click the Roll Call Settings link
+    Then I should see the omit from final grade checkbox
+    And I should see the omit from final grade checkbox is unchecked
+    When I click on the omit from final grade checkbox
+    And I close the settings dialog
+    And I go to take attendance
+    When I click the settings cog at the top
+    And I click the Roll Call Settings link
+    Then I should see the omit from final grade checkbox is checked

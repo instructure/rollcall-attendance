@@ -38,3 +38,20 @@ end
 When /^I close the settings dialog$/ do
   find('.ui-dialog-titlebar-close').click
 end
+
+Then /^I should see the omit from final grade checkbox$/ do
+  page.should have_field("omit-checkbox", type: 'checkbox')
+end
+
+When /^I should see the omit from final grade checkbox is unchecked$/ do
+  !page.find_by_id('omit-checkbox')['checked']
+end
+
+When /^I click on the omit from final grade checkbox$/ do
+  check 'Do not count attendance towards final grade'
+end
+
+Then /^I should see the omit from final grade checkbox is checked$/ do
+  page.find_by_id('omit-checkbox')['checked']
+end
+

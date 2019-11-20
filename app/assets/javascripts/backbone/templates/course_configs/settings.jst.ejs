@@ -1,18 +1,25 @@
 <div id="dialog-settings" title="Roll Call settings" style="display: none" role="dialog">
   <div class="pad-box lightest-bg corner-box-mini" tabindex="0">
-    <h5>A <strong>lateness</strong> counts as what percent of a <strong>presence</strong>?</h5>
-    
     <div class="clearfix">
-      
+      <div class="checkbox-input">
+        <label class="omit_from_final_grade">
+          <h5><input id="omit-checkbox" type="checkbox" />Do not count attendance towards final grade</h5>
+        </label>
+      </div>
+    </div>
+    <h5>A <strong>lateness</strong> counts as what percent of a <strong>presence</strong>?</h5>
+
+    <div class="clearfix">
+
       <div class="block-box three-quarters first-box">
         <div id="lateness-percentage-slider" role="slider" aria-label="Use arrow keys to change the value of a late period"></div>
       </div>
-      
+
       <div class="block-box one-quarter last-box">
         <div id="lateness-percentage"><span>80</span>%</div>
       </div>
-      
+
     </div>
-  
+
   </div>
 </div>
