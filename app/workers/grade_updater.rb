@@ -45,13 +45,12 @@ class GradeUpdater
       params[:tool_consumer_instance_guid]
     )
 
-    assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url])
-    assignment_id = assignment.fetch_or_create
+    assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
+    canvas_assignment = assignment.fetch_or_create
     assignment.submit_grade(
-      assignment_id,
+      canvas_assignment['id'],
       params[:student_id],
-      params[:section_id],
-      params[:tool_consumer_instance_guid]
+      params[:section_id]
     )
   end
 end

@@ -16,44 +16,45 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AttendanceAssignment
-  attr_accessor :canvas, :course_id, :tool_launch_url
+  attr_accessor :canvas, :course_id, :tool_launch_url, :tool_consumer_instance_guid
 
-  def initialize(canvas, course_id, tool_launch_url)
-    @canvas, @course_id, @tool_launch_url = canvas, course_id, tool_launch_url
+  def initialize(canvas, course_id, tool_launch_url, tool_consumer_instance_guid)
+    @canvas = canvas
+    @course_id = course_id
+    @tool_launch_url = tool_launch_url
+    @tool_consumer_instance_guid = tool_consumer_instance_guid
   end
 
   def fetch_or_create
-    assignment = nil
+    assignment = fetch_from_cache
 
-    assign_id = fetch_from_cache
-    return assign_id if assign_id
+    return assignment if assignment
 
     Redis::Lock.new(lock_key, :expiration => 120, :timeout => 0.5).lock do
       # expiration and timeout are in seconds
       assignment = fetch || create
     end
 
-    redis.set(cache_key, assignment['id']) if assignment
-    assignment['id'] if assignment
+    redis.set(cache_key, assignment.to_json) if assignment
+
+    assignment
   end
 
   def fetch
-    if assignments = canvas.get_assignments(course_id)
-      assignments.find { |a| a['name'] == name }
-    end
+    assignments = canvas.get_assignments(course_id)
+    assignment = assignments&.find { |a| a['name'] == name }
+    update_if_needed(assignment: assignment) if assignment
+    assignment
   end
 
   def fetch_from_cache
-    assign_id = redis.get(cache_key)
-    return nil if assign_id.blank?
-
-    assignment = canvas.get_assignment(course_id, assign_id)
-    if assignment['name'] == name
-      return assign_id
+    canvas_assignment = redis.get(cache_key)
+    canvas_assignment = if canvas_assignment.blank?
+      nil
     else
-      redis.del(cache_key)
-      return nil
+      update_if_needed(assignment: JSON.parse(canvas_assignment), update_cache: true)
     end
+    canvas_assignment
   end
 
   def create
@@ -66,17 +67,39 @@ class AttendanceAssignment
       external_tool_tag_attributes: {
         url: tool_launch_url,
         new_tab: false
-      }
+      },
+      omit_from_final_grade: course_config_omit_from_final_grade
     }
 
     canvas.create_assignment(course_id, options)
+  end
+
+  def update_if_needed(assignment:, update_cache: false)
+    return nil unless assignment
+
+    canvas_assignment_omit_from_final_grade = !!assignment['omit_from_final_grade']
+    return assignment if canvas_assignment_omit_from_final_grade == course_config_omit_from_final_grade
+
+    options = { omit_from_final_grade: course_config_omit_from_final_grade }
+    updated_assignment = canvas.update_assignment(course_id, assignment['id'], options)
+    redis.set(cache_key, updated_assignment.to_json) if update_cache
+    assignment
+  end
+
+  def course_config_omit_from_final_grade
+    # Doing the nil check since ||= if omit_from_final_grade was false we'd do a lookup anyway
+    if @omit_from_final_grade.nil?
+      @omit_from_final_grade = !!(CourseConfig.select(:omit_from_final_grade).
+        find_by(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid)&.omit_from_final_grade)
+    end
+    @omit_from_final_grade
   end
 
   def name
     "Roll Call Attendance"
   end
 
-  def submit_grade(assignment_id, student_id, section_id, tool_consumer_instance_guid)
+  def submit_grade(assignment_id, student_id, section_id)
     if assignment_id.present?
       grade = StudentCourseStats.new(
         student_id,

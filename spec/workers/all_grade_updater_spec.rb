@@ -21,13 +21,13 @@ describe GradeUpdater do
   describe "perform" do
     let(:section_id) { 1 }
     let(:student_id) { 2 }
-    let(:assignment_id) { 3 }
+    let(:canvas_assignment) { { 'id' => 3, 'omit_from_final_grade' => false } }
     let(:tci_guid) { 'abc123' }
 
     it "submits grades for all students in all sections" do
-      assignment = double(fetch_or_create: assignment_id)
+      assignment = double(fetch_or_create: canvas_assignment)
       expect(assignment).to receive(:submit_grade).
-        with(assignment_id, student_id, section_id, tci_guid)
+        with(canvas_assignment['id'], student_id, section_id)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
       AllGradeUpdater.perform(

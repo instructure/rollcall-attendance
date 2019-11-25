@@ -19,15 +19,15 @@ require 'spec_helper'
 
 describe GradeUpdater do
   describe "perform" do
-    let(:assignment_id) { 5 }
+    let(:canvas_assignment) { { 'id' => 5, 'omit_from_final_grade' => false } }
     let(:student_id) { 2 }
     let(:section_id) { 3 }
     let(:tci_guid) { 'abc123' }
 
     it "submits a grade for the found assignment given the passed in params" do
-      assignment = double(fetch_or_create: assignment_id)
+      assignment = double(fetch_or_create: canvas_assignment)
       expect(assignment).to receive(:submit_grade).
-        with(assignment_id, student_id, section_id, tci_guid)
+        with(canvas_assignment['id'], student_id, section_id)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
       GradeUpdater.perform(
