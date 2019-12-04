@@ -17,43 +17,43 @@
 
 FactoryBot.define do
   factory :award do
-    student_id '1'
-    teacher_id 5
-    badge_id 2
-    course_id '3'
+    student_id { '1' }
+    teacher_id { 5 }
+    badge_id { 2 }
+    course_id { '3' }
     class_date { Time.now.utc.to_date }
-    tool_consumer_instance_guid "abc123"
+    tool_consumer_instance_guid { "abc123" }
   end
 
   factory :badge do
-    name 'Participation'
-    course_id 1
-    icon '+'
-    color 'blue'
-    tool_consumer_instance_guid "abc123"
+    name { 'Participation' }
+    course_id { 1 }
+    icon { '+' }
+    color { 'blue' }
+    tool_consumer_instance_guid { "abc123" }
   end
 
   factory :seating_chart do
-    course_id 1
-    section_id 2
+    course_id { 1 }
+    section_id { 2 }
     class_date { Time.now.utc.to_date }
-    tool_consumer_instance_guid "abc123"
+    tool_consumer_instance_guid { "abc123" }
   end
 
   factory :status do
-    student_id 1
-    section_id 1
-    attendance 'present'
+    student_id { 1 }
+    section_id { 1 }
+    attendance { 'present' }
     class_date { Time.now.utc.to_date }
-    course_id 1
-    account_id 3
-    teacher_id 5
-    tool_consumer_instance_guid "abc123"
+    course_id { 1 }
+    account_id { 3 }
+    teacher_id { 5 }
+    tool_consumer_instance_guid { "abc123" }
   end
 
   factory :cached_account do
     sequence(:account_id) { |n| n + 1000 }
-    tool_consumer_instance_guid "abc123"
+    tool_consumer_instance_guid { "abc123" }
   end
 
   factory :account_association do
@@ -62,9 +62,9 @@ FactoryBot.define do
   end
 
   factory :course_config do
-    course_id 1
-    tardy_weight 0.8
-    omit_from_final_grade false
-    tool_consumer_instance_guid "abc123"
+    course_id { 1 }
+    tardy_weight { 0.8 }
+    omit_from_final_grade { false }
+    tool_consumer_instance_guid { "abc123" }
   end
 end
