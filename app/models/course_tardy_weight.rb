@@ -25,6 +25,6 @@ class CourseTardyWeight
   end
 
   def self.default_tardy_weight
-    0.8
+    ENV['COURSE_TARDY_WEIGHT'] || 0.8
   end
 end
