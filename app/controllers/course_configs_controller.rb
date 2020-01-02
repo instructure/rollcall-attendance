@@ -57,12 +57,12 @@ class CourseConfigsController < ApplicationController
 
   def resubmit_all_grades!(config)
     sections = course_sections(config)
-    section_ids = Hash[sections.map{|s| [s.id, s.students.map(&:id)]}]
+    student_ids = sections.map { |s| s.students.map(&:id) }.flatten.uniq
     grade_params = {
       canvas_url: canvas_url,
       user_id: user_id,
       course_id: config.course_id,
-      section_ids: section_ids,
+      student_ids: student_ids,
       tool_consumer_instance_guid: tool_consumer_instance_guid,
       identifier: SecureRandom.hex(32),
       tool_launch_url: launch_url

@@ -49,8 +49,7 @@ class GradeUpdater
     canvas_assignment = assignment.fetch_or_create
     assignment.submit_grade(
       canvas_assignment['id'],
-      params[:student_id],
-      params[:section_id]
+      params[:student_id]
     )
   end
 end

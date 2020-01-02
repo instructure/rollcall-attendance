@@ -16,12 +16,12 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class StudentCourseStats
-  attr_reader :student_id, :course_id, :section_id, :tool_consumer_instance_guid
+  attr_reader :student_id, :course_id, :section_ids, :tool_consumer_instance_guid
 
-  def initialize(student_id, course_id, section_id, tool_consumer_instance_guid)
+  def initialize(student_id, course_id, section_ids, tool_consumer_instance_guid)
     @student_id = student_id
     @course_id = course_id
-    @section_id = section_id
+    @section_ids = Array(section_ids)
     @tool_consumer_instance_guid = tool_consumer_instance_guid
   end
 
@@ -53,7 +53,7 @@ class StudentCourseStats
   def attendance_count(attendance=nil)
     options = {
       student_id: student_id,
-      section_id: section_id,
+      section_id: section_ids,
       tool_consumer_instance_guid: tool_consumer_instance_guid
     }
     options[:attendance] = attendance if attendance.present?

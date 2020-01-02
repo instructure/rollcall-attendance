@@ -16,6 +16,8 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AttendanceAssignment
+  include CanvasCache
+
   attr_accessor :canvas, :course_id, :tool_launch_url, :tool_consumer_instance_guid
 
   def initialize(canvas, course_id, tool_launch_url, tool_consumer_instance_guid)
@@ -99,16 +101,21 @@ class AttendanceAssignment
     "Roll Call Attendance"
   end
 
-  def submit_grade(assignment_id, student_id, section_id)
+  def submit_grade(assignment_id, student_id)
     if assignment_id.present?
       grade = StudentCourseStats.new(
         student_id,
         course_id,
-        section_id,
+        active_section_ids,
         tool_consumer_instance_guid
       ).grade
       begin
-        canvas.grade_assignment(course_id, assignment_id, student_id, submission: { posted_grade: grade, submission_type: 'basic_lti_launch', url: @tool_launch_url })
+        canvas.grade_assignment(
+          course_id,
+          assignment_id,
+          student_id,
+          submission: { posted_grade: grade, submission_type: 'basic_lti_launch', url: @tool_launch_url }
+        )
       rescue CanvasOauth::CanvasApi::Unauthorized
         # user is not authorized to update grades
       end
@@ -129,5 +136,12 @@ class AttendanceAssignment
 
   def cache_key
     "#{base_key}:cache"
+  end
+
+  def active_section_ids
+    @active_sections_ids ||= begin
+      sections = cached_sections(course_id)
+      sections.map { |s| s["id"] }
+    end
   end
 end

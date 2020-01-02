@@ -27,13 +27,13 @@ describe GradeUpdater do
     it "submits grades for all students in all sections" do
       assignment = double(fetch_or_create: canvas_assignment)
       expect(assignment).to receive(:submit_grade).
-        with(canvas_assignment['id'], student_id, section_id)
+        with(canvas_assignment['id'], student_id)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
       AllGradeUpdater.perform(
         canvas_url: 'http://test.canvas',
         user_id: 1,
-        section_ids: { section_id => [student_id] },
+        student_ids: [student_id],
         course_id: 4,
         tool_consumer_instance_guid: tci_guid
       )

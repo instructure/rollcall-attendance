@@ -23,30 +23,39 @@ describe StudentCourseStats do
 
     its(:student_id) { should == 1 }
     its(:course_id) { should == 1 }
-    its(:section_id) { should == 123 }
+    its(:section_ids) { should == [123] }
+    its(:tool_consumer_instance_guid) { should == 'abc123' }
+  end
+
+  describe "initializer 2" do
+    subject { StudentCourseStats.new(1, 1, [123, 456], 'abc123') }
+
+    its(:student_id) { should == 1 }
+    its(:course_id) { should == 1 }
+    its(:section_ids) { should == [123, 456] }
     its(:tool_consumer_instance_guid) { should == 'abc123' }
   end
 
   describe "attendance_count" do
     let(:student_id) { 1 }
     let(:course_id) { 2 }
-    let(:section_id) { 3 }
+    let(:section_ids) { [3, 4] }
     let(:tci_guid) { "abc123" }
 
-    subject { StudentCourseStats.new(student_id, course_id, section_id, tci_guid) }
+    subject { StudentCourseStats.new(student_id, course_id, section_ids, tci_guid) }
 
     before do
       create(:status,
              student_id: student_id,
              course_id: course_id,
-             section_id: section_id,
+             section_id: section_ids.first,
              class_date: 1.minute.ago,
              attendance: 'present',
              tool_consumer_instance_guid: tci_guid)
       create(:status,
              student_id: student_id,
              course_id: course_id,
-             section_id: section_id,
+             section_id: section_ids.last,
              class_date: 1.day.ago,
              attendance: 'absent',
              tool_consumer_instance_guid: tci_guid)
@@ -55,7 +64,7 @@ describe StudentCourseStats do
       create(:status,
              student_id: 0,
              course_id: course_id,
-             section_id: section_id,
+             section_id: section_ids.first,
              class_date: 1.minute.ago,
              attendance: 'present',
              tool_consumer_instance_guid: tci_guid)

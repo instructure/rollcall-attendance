@@ -47,14 +47,11 @@ class AllGradeUpdater
 
     assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
     if canvas_assignment = assignment.fetch_or_create
-      params[:section_ids].each do |section_id, student_ids|
-        student_ids.each do |student_id|
-          assignment.submit_grade(
-            canvas_assignment['id'],
-            student_id,
-            section_id
-          )
-        end
+      params[:student_ids].each do |student_id|
+        assignment.submit_grade(
+          canvas_assignment['id'],
+          student_id
+        )
       end
     end
   end

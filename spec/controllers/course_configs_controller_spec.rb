@@ -18,7 +18,7 @@
 require 'spec_helper'
 
 describe CourseConfigsController do
-  let(:section) { Section.new(id: 1, students: [{id: 1}]) }
+  let(:section) { Section.new(id: 1, students: [{id: 1}, {id: 2}]) }
   let(:sections) { [section] }
   let(:user_id) { 5 }
   let(:tci_guid) { 'abc123' }
@@ -55,11 +55,19 @@ describe CourseConfigsController do
   end
 
   describe "resubmit_all_grades!" do
+    let(:course_id) { 3 }
     before { allow(controller).to receive(:resubmit_all_grades!).and_call_original }
 
     it "queues up an all grade update" do
-      expect(Resque).to receive(:enqueue).with(AllGradeUpdater, kind_of(Hash))
-      controller.send(:resubmit_all_grades!, CourseConfig.new(course_id: 3))
+      grade_params = {
+        canvas_url: nil,
+        user_id: user_id,
+        course_id: course_id,
+        student_ids: [1, 2],
+        tool_consumer_instance_guid: tci_guid
+      }
+      expect(Resque).to receive(:enqueue).with(AllGradeUpdater, hash_including(grade_params))
+      controller.send(:resubmit_all_grades!, CourseConfig.new(course_id: course_id))
     end
   end
 end

@@ -27,14 +27,13 @@ describe GradeUpdater do
     it "submits a grade for the found assignment given the passed in params" do
       assignment = double(fetch_or_create: canvas_assignment)
       expect(assignment).to receive(:submit_grade).
-        with(canvas_assignment['id'], student_id, section_id)
+        with(canvas_assignment['id'], student_id)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
       GradeUpdater.perform(
         canvas_url: 'http://test.canvas',
         user_id: 1,
         student_id: student_id,
-        section_id: section_id,
         course_id: 4,
         tool_consumer_instance_guid: tci_guid
       )
