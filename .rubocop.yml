@@ -1,0 +1,272 @@
+require:
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.3
+
+# our style changes: disabling style rules we aren't interested in
+Layout/AlignParameters:
+  Enabled: false
+Layout/ElseAlignment:
+  Enabled: false
+Layout/EmptyLines:
+  Enabled: false
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: false
+Layout/EmptyLinesAroundArguments:
+  Enabled: false
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: false
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+Layout/IndentHash:
+  Enabled: false
+Layout/IndentationConsistency:
+  Enabled: false
+Layout/IndentationWidth:
+  Enabled: false
+Layout/MultilineOperationIndentation:
+  Enabled: false
+Layout/SpaceAfterColon:
+  Enabled: false
+Layout/SpaceAfterComma:
+  Enabled: false
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+Layout/SpaceAroundOperators:
+  Enabled: false
+Layout/SpaceBeforeBlockBraces:
+  Enabled: false
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+Layout/SpaceInLambdaLiteral:
+  Enabled: false
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: false
+Layout/TrailingBlankLines:
+  Enabled: false
+Layout/TrailingWhitespace:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Style/SignalException:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/BracesAroundHashParameters:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/RedundantSelf:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/WordArray:
+  Enabled: false
+Style/PercentQLiterals:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInLiteral:
+  Enabled: false
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: false
+Style/MethodCallWithArgsParentheses:
+  Enabled: false
+Layout/DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
+Layout/AlignHash:
+  Enabled: false
+Layout/AlignParameters:
+  Enabled: false
+Style/Lambda:
+  Enabled: false
+Style/WhileUntilModifier:
+  Enabled: false
+Style/ParallelAssignment:
+  Enabled: false
+Style/ZeroLengthPredicate:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+Style/Dir:
+  Enabled: false
+Style/ReturnNil:
+  Enabled: false
+Style/StderrPuts:
+  Enabled: false
+Style/DateTime:
+  Enabled: false
+Style/SymbolArray:
+  Enabled: false
+# We may want to enable this when we start working toward Ruby 3
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: true
+  Exclude:
+    - spec/**/*_spec.rb
+    - spec/shared_examples/**/*.rb
+
+# RSpec cops we don't care about
+RSpec/MessageSpies:
+  Enabled: false
+RSpec/HookArgument:
+  Enabled: false
+RSpec/VerifiedDoubles:
+  Enabled: false
+RSpec/NamedSubject:
+  Enabled: false
+RSpec/NotToNot:
+  Enabled: false
+# RSpec cops we care extra about
+RSpec/EmptyExampleGroup:
+  Severity: error
+RSpec/RepeatedDescription:
+  Severity: error
+RSpec/ExpectChange:
+  Enabled: false
+
+# this isn't good for us because of how we pin dependencies
+Bundler/OrderedGems:
+  Enabled: false
+Gemspec/OrderedDependencies:
+  Enabled: false
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+# Rails style changes
+Rails:
+  Enabled: true
+Rails/TimeZone:
+  Enabled: false
+# accessors are often defined in terms of read_attribute
+Rails/ReadWriteAttribute:
+  Enabled: false
+# we never bothered creating an ApplicationRecord
+Rails/ApplicationRecord:
+  Enabled: false
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+# It whines about update_all too much, which we use a lot specifically to
+# bypass validations and any other AR-ness
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# Lint changes
+Lint/AmbiguousRegexpLiteral:
+  Severity: convention
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
+Lint/UselessAssignment:
+  Severity: convention
+Lint/Debugger:
+  Severity: error
+Lint/EndAlignment:
+  EnforcedStyleAlignWith: variable
+  Severity: convention
+
+# Performance changes
+Performance/Detect:
+  Severity: warning
+Performance/TimesMap:
+  Exclude:
+    - spec/**/*
+
+# these need better configuration than the default:
+Style/AndOr:
+  EnforcedStyle: conditionals
+Style/RescueModifier:
+  Severity: warning
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Layout/IndentArray:
+  EnforcedStyle: consistent
+
+# these don't make sense pre-Rails 4
+Rails/FindBy:
+  Enabled: false
+Rails/ActionFilter:
+  Enabled: false
+
+# these are invalid pre-Rails 5
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+# these are invalid pre-Ruby 2.4
+Performance/RegexpMatch:
+  Enabled: false
+
+# Things we may want to tighten down later
+Metrics/AbcSize:
+  Enabled: false
+Metrics/LineLength:
+  Max: 160
+Metrics/MethodLength:
+  Max: 100
+Metrics/ClassLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/BlockLength:
+  Max: 50
+  Exclude:
+  - gems/*/spec/**/*.rb
+  - gems/plugins/*/spec_canvas/**/*.rb
+  - spec/**/*.rb
+  - pact/spec/**/*_spec.rb
+Metrics/CyclomaticComplexity:
+  Max: 28
+Metrics/PerceivedComplexity:
+  Max: 28
+RSpec/InstanceVariable:
+  Enabled: false
+RSpec/ExampleWording:
+  Enabled: false
+RSpec/ContextWording:
+  Enabled: false
+RSpec/ExampleLength:
+  Max: 48
+RSpec/NestedGroups:
+  Max: 5
+RSpec/DescribedClass:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ScatteredSetup:
+  Enabled: false
+Style/RescueStandardError:
+  Enabled: false

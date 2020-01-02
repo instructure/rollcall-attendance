@@ -73,6 +73,8 @@ group :development, :test do
   gem 'phantomjs', '1.9.7.1'
   gem 'guard-jasmine', '~> 2.0'
   gem 'brakeman', require: false
+  gem 'rubocop', '0.52.1', require: false
+  gem 'rubocop-rspec', '1.22.2', require: false
 end
 
 group :test do
@@ -84,7 +86,7 @@ group :test do
   # will need to upgrade capybara-webkit as it's own commit and step up background
   # dependencies (like QT & xvfb) on all platforms that run cucumber tests as part of a single
   # upgrade
-  gem 'capybara-webkit', '1.3.1'
+  gem 'capybara-webkit', '1.15.1'
   gem 'capybara-screenshot'
   gem 'factory_bot_rails'
   gem 'guard-rspec'
