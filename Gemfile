@@ -72,7 +72,9 @@ group :development, :test do
   gem 'jasmine-rails'
   gem 'phantomjs', '1.9.7.1'
   gem 'guard-jasmine', '~> 2.0'
-  gem 'brakeman', require: false
+  # We can relax this brakeman dependency after we have deployed a hybrid
+  # cookie serializer and allowed a chance for cookies to be stored as JSON.
+  gem 'brakeman', '4.5.1', require: false
   gem 'rubocop', '0.52.1', require: false
   gem 'rubocop-rspec', '1.22.2', require: false
 end
@@ -82,6 +84,8 @@ group :test do
   gem 'database_cleaner'
   gem 'shoulda'
   gem 'webmock'
+  # Capybara-webkit breaks with capybara 3, so we'll stay at the latest version 2
+  gem 'capybara', '2.18.0'
   # upgrades are unstable for getting webkit running in all test environments,
   # will need to upgrade capybara-webkit as it's own commit and step up background
   # dependencies (like QT & xvfb) on all platforms that run cucumber tests as part of a single
