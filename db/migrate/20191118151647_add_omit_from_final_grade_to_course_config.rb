@@ -20,16 +20,7 @@ class AddOmitFromFinalGradeToCourseConfig < ActiveRecord::Migration[5.2]
 
   def up
     if ActiveRecord::ConnectionAdapters.const_defined?("Mysql2Adapter") && ActiveRecord::Base.connection.instance_of?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
-      # Look at https://dev.mysql.com/doc/refman/5.6/en/innodb-online-ddl-operations.html#online-ddl-column-operations
-      # for some additional information. We're trying to do the database changes in place without needing a copy table,
-      # the MySQL default. We're on a new enough MySQL that we should be able to the add the column, set the default,
-      # and set it NOT NULL all without a copy nor a lock.
-      execute <<~SQL
-        ALTER TABLE course_configs
-        ADD COLUMN omit_from_final_grade BOOL DEFAULT false NOT NULL,
-        ALGORITHM=INPLACE,
-        LOCK=NONE;
-      SQL
+      add_column :course_configs, :omit_from_final_grade, :boolean, default: false, null: false
     else
       add_column :course_configs, :omit_from_final_grade, :boolean
       change_column_default :course_configs, :omit_from_final_grade, false
