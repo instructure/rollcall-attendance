@@ -21,7 +21,11 @@ describe "StatusView", ->
 
     describe "with an apostrophe", ->
       it "makes the apostrophe'd last name strong", ->
-        expect(@statusView.formatStudentName("test test'test")).toEqual("test <strong>test'test</strong>")
+        expect(@statusView.formatStudentName("test test'test")).toEqual("test <strong>test&#x27;test</strong>")
+
+    describe "XSS", ->
+      it "escapes the name to avoid XSS issues", ->
+        expect(@statusView.formatStudentName("<script>window.alert('display');</script>")).toEqual("&lt;script&gt;window.alert(&#x27;display&#x27;);&lt;&#x2F;script&gt;")
 
   describe "#clickTogglePresence", ->
     beforeEach ->
