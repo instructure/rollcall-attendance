@@ -48,7 +48,7 @@ When /^I should see the omit from final grade checkbox is unchecked$/ do
 end
 
 When /^I click on the omit from final grade checkbox$/ do
-  check 'Do not count attendance towards final grade'
+  check 'Do not count attendance toward final grade'
 end
 
 Then /^I should see the omit from final grade checkbox is checked$/ do
