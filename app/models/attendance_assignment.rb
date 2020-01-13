@@ -135,7 +135,7 @@ class AttendanceAssignment
   end
 
   def cache_key
-    "#{base_key}:cache"
+    "#{base_key}:assignment_cache"
   end
 
   def active_section_ids
