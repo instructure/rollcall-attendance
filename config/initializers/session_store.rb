@@ -17,4 +17,5 @@
 #
 # Be sure to restart your server when you modify this file.
 
-Rails.application.config.session_store :cookie_store, key: '_instructure-rollcall_session', same_site: :none
+Rails.application.config.session_store :samesite_transition_cookie_store, key: '_instructure-rollcall_session',
+  legacy_key: '_instructure-rollcall_session_legacy', same_site: :none
