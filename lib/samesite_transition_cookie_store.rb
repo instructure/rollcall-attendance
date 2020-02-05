@@ -26,9 +26,10 @@ class SamesiteTransitionCookieStore < ActionDispatch::Session::CookieStore
   end
 
   def set_cookie(request, session_id, cookie)
-    if cookie[:same_site]
+    if cookie[:same_site] || cookie[:secure]
       legacy_cookie = cookie.dup
       legacy_cookie[:same_site] = nil
+      legacy_cookie[:secure] = nil
       cookie_jar(request)[@legacy_key] = legacy_cookie
     end
     cookie_jar(request)[@key] = cookie
