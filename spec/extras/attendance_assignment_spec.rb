@@ -207,7 +207,7 @@ describe AttendanceAssignment do
 
       allow(canvas).to receive(:update_assignment).and_return(updated_assignment)
 
-      expect(redis).to receive(:set).with(attendance_assignment.cache_key, updated_assignment.to_json)
+      expect(redis).to receive(:set).with(attendance_assignment.cache_key, updated_assignment.to_json, ex: 900)
       attendance_assignment.update_if_needed(assignment: { 'id' => '123', 'omit_from_final_grade' => false },
         update_cache: true)
     end

@@ -37,7 +37,7 @@ class AttendanceAssignment
       assignment = fetch || create
     end
 
-    redis.set(cache_key, assignment.to_json) if assignment
+    cache_assignment(assignment.to_json) if assignment
 
     assignment
   end
@@ -84,7 +84,7 @@ class AttendanceAssignment
 
     options = { omit_from_final_grade: course_config_omit_from_final_grade }
     updated_assignment = canvas.update_assignment(course_id, assignment['id'], options)
-    redis.set(cache_key, updated_assignment.to_json) if update_cache
+    cache_assignment(updated_assignment.to_json) if update_cache
     assignment
   end
 
@@ -135,7 +135,12 @@ class AttendanceAssignment
   end
 
   def cache_key
-    "#{base_key}:assignment_cache"
+    "#{base_key}:assignment_cache_ex"
+  end
+
+  def cache_assignment(assign_json)
+    expiration = 15.minutes.seconds.to_i
+    redis.set(cache_key, assign_json, ex: expiration)
   end
 
   def active_section_ids
