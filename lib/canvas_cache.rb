@@ -55,7 +55,7 @@ module CanvasCache
   def submission_request(course_id, user_id)
     lambda do
       assignment = AttendanceAssignment.new(canvas, course_id, launch_url, tool_consumer_instance_guid)
-      assignment_id = assignment.fetch.try(:[], 'id')
+      assignment_id = assignment.fetch(try_update: false).try(:[], 'id')
       if assignment_id
         response = canvas.get_submission(course_id, assignment_id, user_id)
         cache_response redis_key(:submission, course_id, user_id), response

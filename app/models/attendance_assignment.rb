@@ -42,10 +42,10 @@ class AttendanceAssignment
     assignment
   end
 
-  def fetch
+  def fetch(try_update: true)
     assignments = canvas.get_assignments(course_id)
     assignment = assignments&.find { |a| a['name'] == name }
-    update_if_needed(assignment: assignment) if assignment
+    update_if_needed(assignment: assignment) if assignment && try_update
     assignment
   end
 
