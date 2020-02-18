@@ -3,6 +3,8 @@ version: '3.3'
 services:
   db:
     image: postgres:9.6-alpine
+    environment:
+      POSTGRES_PASSWORD: password
 
   redis:
     image: redis:3-alpine
@@ -28,7 +30,7 @@ services:
       RAILS_ENV: development
       ROLLCALL_ROLE: web
       VIRTUAL_HOST: rollcall.docker
-      DATABASE_URL: postgres://postgres@db:5432/rollcall_dev
+      DATABASE_URL: postgres://postgres:password@db:5432/rollcall_dev
       REDIS_URL: redis://redis:6379
       # SENTRY_DSN: 'https://foo:bar@sentry.insops.net/35'
       SECRET_KEY_BASE: 'GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC'
