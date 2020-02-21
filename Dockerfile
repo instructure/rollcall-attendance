@@ -24,6 +24,8 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg m
 
 COPY config/nginx/location.conf /usr/src/nginx/location.d/location.conf
 
+RUN if [ "$DEV_BUILD" = 'true' ]; then echo 'docker ALL=(ALL) NOPASSWD: SETENV: /usr/sbin/update-ca-certificates' >> /etc/sudoers; fi
+
 USER docker
 
 COPY --chown=docker:docker Gemfile Gemfile.lock $APP_HOME
@@ -43,4 +45,4 @@ RUN RAILS_ENV=production \
     SECRET_KEY_BASE=fake \
     bundle exec rake assets:precompile
 
-CMD ["/tini", "--", "bin/startup"]
+ENTRYPOINT [ "/usr/src/app/docker-entrypoint.sh" ]

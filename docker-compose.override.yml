@@ -6,22 +6,28 @@ services:
       args:
         DEV_BUILD: 'true'
     env_file: .env
+    environment:
+      DEV_BUILD: 'true'
     external_links:
       - ${PROXY_CONTAINER:-dinghy_http_proxy}:canvas.docker
     volumes:
       - .:/usr/src/app
       - tmp:/usr/src/app/tmp
+      - ~/.dinghy/certs:/usr/local/share/ca-certificates:ro
 
   work:
     build:
       args:
         DEV_BUILD: 'true'
     env_file: .env
+    environment:
+      DEV_BUILD: 'true'
     external_links:
       - ${PROXY_CONTAINER:-dinghy_http_proxy}:canvas.docker
     volumes:
       - .:/usr/src/app
       - tmp:/usr/src/app/tmp
+      - ~/.dinghy/certs:/usr/local/share/ca-certificates:ro
 
 volumes:
   tmp:

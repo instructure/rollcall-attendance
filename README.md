@@ -48,7 +48,17 @@ outgoing address parameter to an email address on your own domain; otherwise,
 your reports will be sent from "`Roll Call <notifications@instructure.com>`",
 which is most certainly not what you want.
 
-### 3. Docker build + Database migrations:
+### 3. Configure your docker environment for SSL
+
+Do to recent changes in browsers, the session cookies for rollcall are required to have `SaveSite=None` and `secure`.
+Due to `secure` local development is easier if you configure your dockerized canvas and rollcall to use SSL. If you are
+using dinghy for OS X based development. You can find instructions on how to create self signed certificates at
+https://github.com/codekitchen/dinghy-http-proxy/blob/master/README.md#ssl-support
+
+The default docker-compose.override.yml file will share your ~/.dinghy/cert directory into the docker containers and add
+the certifications in that directory as trusted certificates to the container.
+
+### 4. Docker build + Database migrations:
 
 NOTE: By default this setup uses postgres. To use mysql instead, export:
 
@@ -65,7 +75,7 @@ rake tasks, you just have to run them in the container:
     docker-compose run --rm web bundle exec rake db:create
     docker-compose run --rm web bundle exec rake db:migrate
 
-### 4. Run it!
+### 5. Run it!
 
 You should be able to start everything with:
 
@@ -78,7 +88,7 @@ can visit your app in the browser by going to:
 
 `http://rollcall.docker`
 
-### 5. Add Roll Call to Canvas:
+### 6. Add Roll Call to Canvas:
 
 In Canvas, go to Account >> Settings >> Apps, click "Add App", and use the following settings:
 
