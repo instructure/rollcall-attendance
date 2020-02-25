@@ -19,6 +19,17 @@ require 'csv'
 
 class AttendanceReport
 
+  # We get into a weird case with the CDN with canvas where the Content-Type for a CSV comes back as text/csv, but there
+  # is no associated charset with it. HTTParty will default to treating it as binary (aka ASCII-8BIT) data. In cases
+  # where we can reasonably know it'll be a UTF-8 compatible file (i.e any file from canvas) we'll force an encoding of
+  # UTF-8 if ruby thinks its ASCII-8BIT
+  class ForceUTF8Parser < HTTParty::Parser
+    def parse
+      body.force_encoding("UTF-8") if body&.encoding == Encoding::ASCII_8BIT
+      super
+    end
+  end
+
   def initialize(canvas, params)
     @params = params
     @canvas = canvas
@@ -110,6 +121,7 @@ class AttendanceReport
       hash[course_filter.id] = course_filter
     else
       params = {
+        parser: ForceUTF8Parser,
         'parameters[courses]' => true,
         'parameters[include_deleted]' => true
       }
@@ -138,7 +150,11 @@ class AttendanceReport
         hash[student.id] = student
       end
     else
-      report = @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[users]' => true)
+      params = {
+        parser: ForceUTF8Parser,
+        'parameters[users]' => true
+      }
+      report = @canvas.get_report(@account.account_id, :provisioning_csv, params)
       report.each do |student|
         student = Student.new(
             id: student['canvas_user_id'].to_i,
@@ -160,7 +176,11 @@ class AttendanceReport
         hash[course_filter.id] = user['id']
       end
     else
-      report = @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[enrollments]' => true)
+      params = {
+        parser: ForceUTF8Parser,
+        'parameters[enrollments]' => true
+      }
+      report = @canvas.get_report(@account.account_id, :provisioning_csv, params)
       report.each do |teacher|
         valid_roles = %w(teacher ta)
 
