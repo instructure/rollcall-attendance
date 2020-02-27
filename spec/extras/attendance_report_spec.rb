@@ -317,7 +317,6 @@ describe AttendanceReport do
         report.instance_variable_set(:@filters, sis_course_id: "sis_c_id")
         allow(canvas).to receive(:get_course).once.and_return(single_api_result)
         allow(canvas).to receive(:hex_sis_id).and_return('123')
-
         expect(canvas).to receive(:get_course_teachers_and_tas).once.and_return(multi_api_result)
         expect(canvas).not_to receive(:get_report)
 
@@ -327,60 +326,15 @@ describe AttendanceReport do
   end
 
   describe '#get_courses' do
-    it "adds 'include_delete' and ForceUTF8Parser to queries" do
+    it "adds 'include_delete' to queries" do
       expect(canvas).to receive(:get_report).with(
         any_args,
         {
-          parser: AttendanceReport::ForceUTF8Parser,
           "parameters[courses]" => true,
           "parameters[include_deleted]" => true
         }
       ).and_return([])
       report.get_courses
-    end
-  end
-
-  describe "#get_users" do
-    it "adds ForceUTF8Parser to the get_report call" do
-      expect(canvas).to receive(:get_report).with(
-        any_args,
-        {
-          parser: AttendanceReport::ForceUTF8Parser,
-          "parameters[users]" => true,
-        }
-      ).and_return([])
-      report.get_users
-    end
-  end
-
-  describe "#get_teacher_enrollments" do
-    it "adds ForceUTF8Parser to the get_report call" do
-      expect(canvas).to receive(:get_report).with(
-        any_args,
-        {
-          parser: AttendanceReport::ForceUTF8Parser,
-          "parameters[enrollments]" => true,
-        }
-      ).and_return([])
-      report.get_teacher_enrollments
-    end
-  end
-
-  describe "ForceUTF8Parser" do
-    it "forces the body passed in to UTF-8 if it is ASCII_8BIT" do
-      body = String.new("I am some next", encoding: Encoding::ASCII_8BIT)
-
-      parser = AttendanceReport::ForceUTF8Parser.new(body, "text/plain")
-      expect(body).to receive(:force_encoding).with("UTF-8")
-      parser.parse
-    end
-
-    it "does not force the body passed in to UTF-8 if not ASCII_8BIT" do
-      body = String.new("I am some next", encoding: Encoding::US_ASCII)
-
-      parser = AttendanceReport::ForceUTF8Parser.new(body, "text/plain")
-      expect(body).not_to receive(:force_encoding)
-      parser.parse
     end
   end
 end
