@@ -74,9 +74,8 @@ class InstructureRollcall.Views.Statuses.StatusView extends Backbone.View
   formatStudentName: (name) ->
     if name.indexOf(' ') >= 0
       split_name = name.split(/([^ ][\w\-\']+)$/).map (part) -> _.escape(part)
-      "#{split_name[0]}<strong>#{split_name[1]}</strong>"
-    else
-      _.escape(name)
+      return "#{split_name[0]}<strong>#{split_name[1]}</strong>" if split_name[1]
+    _.escape(name)
 
   sectionName: (section_id) ->
     $('#section_select').find("option[value=#{section_id}]").text()
