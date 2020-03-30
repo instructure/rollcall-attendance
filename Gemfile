@@ -85,7 +85,7 @@ group :test do
   gem 'shoulda'
   gem 'webmock'
   # Capybara-webkit breaks with capybara 3, so we'll stay at the latest version 2
-  gem 'capybara', '2.18.0'
+  gem 'capybara', '3.32.0'
   # upgrades are unstable for getting webkit running in all test environments,
   # will need to upgrade capybara-webkit as it's own commit and step up background
   # dependencies (like QT & xvfb) on all platforms that run cucumber tests as part of a single
