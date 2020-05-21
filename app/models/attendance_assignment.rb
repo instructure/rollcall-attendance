@@ -45,18 +45,13 @@ class AttendanceAssignment
   def fetch(try_update: true)
     assignments = canvas.get_assignments(course_id)
     assignment = assignments&.find { |a| a['name'] == name }
-    update_if_needed(assignment: assignment) if assignment && try_update
+    update_cached_assignment_if_needed(assignment) if assignment && try_update
     assignment
   end
 
   def fetch_from_cache
-    canvas_assignment = redis.get(cache_key)
-    canvas_assignment = if canvas_assignment.blank?
-      nil
-    else
-      update_if_needed(assignment: JSON.parse(canvas_assignment), update_cache: true)
-    end
-    canvas_assignment
+    cached_assignment = redis.get(cache_key)
+    cached_assignment.blank? ? nil : JSON.parse(cached_assignment)
   end
 
   def create
@@ -76,16 +71,19 @@ class AttendanceAssignment
     canvas.create_assignment(course_id, options)
   end
 
-  def update_if_needed(assignment:, update_cache: false)
-    return nil unless assignment
+  def update_cached_assignment_if_needed(fresh_assignment)
+    return nil unless fresh_assignment
 
-    canvas_assignment_omit_from_final_grade = !!assignment['omit_from_final_grade']
-    return assignment if canvas_assignment_omit_from_final_grade == course_config_omit_from_final_grade
+    fresh_assignment_omit_from_final_grade = !!fresh_assignment['omit_from_final_grade']
+    return fresh_assignment if fresh_assignment_omit_from_final_grade == course_config_omit_from_final_grade
 
-    options = { omit_from_final_grade: course_config_omit_from_final_grade }
-    updated_assignment = canvas.update_assignment(course_id, assignment['id'], options)
-    cache_assignment(updated_assignment.to_json) if update_cache
-    assignment
+    CourseConfig.
+      find_by(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid).
+      update!(omit_from_final_grade: fresh_assignment_omit_from_final_grade)
+
+    course_config_omit_from_final_grade = fresh_assignment_omit_from_final_grade
+    cache_assignment(fresh_assignment.to_json)
+    fresh_assignment
   end
 
   def course_config_omit_from_final_grade
@@ -95,6 +93,10 @@ class AttendanceAssignment
         find_by(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid)&.omit_from_final_grade)
     end
     @omit_from_final_grade
+  end
+
+  def course_config_omit_from_final_grade=(omit_from_final_grade)
+    @omit_from_final_grade = omit_from_final_grade
   end
 
   def name

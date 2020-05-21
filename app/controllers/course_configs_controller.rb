@@ -21,18 +21,22 @@ class CourseConfigsController < ApplicationController
   respond_to :json
 
   def create
-    config = CourseConfig.new(course_config_params)
+    config_params = course_config_params
+    config = CourseConfig.new(config_params)
     config.tool_consumer_instance_guid = tool_consumer_instance_guid
     saved = config.save if authorized_to_update_config?(config)
     resubmit_all_grades!(config) if saved && config.needs_regrade
+    update_canvas_assignment(config_params, config.course_id) if saved
     respond_with config
   end
 
   def update
     if config = CourseConfig.find_by(id: params[:id])
-      config.attributes = course_config_params
+      config_params = course_config_params
+      config.attributes = config_params
       saved = config.save if authorized_to_update_config?(config)
       resubmit_all_grades!(config) if saved && config.needs_regrade
+      update_canvas_assignment(config_params, config.course_id) if saved
       respond_with config
     else
       head :not_found
@@ -40,6 +44,22 @@ class CourseConfigsController < ApplicationController
   end
 
   protected
+
+  def update_canvas_assignment(config_params, course_id)
+    return unless config_params.key? :omit_from_final_grade
+    omit_from_final_grade = !!ActiveModel::Type::Boolean.new.cast(config_params[:omit_from_final_grade])
+
+    updater_params = {
+      canvas_url: canvas_url,
+      course_id: course_id,
+      options: { omit_from_final_grade: omit_from_final_grade },
+      tool_consumer_instance_guid: tool_consumer_instance_guid,
+      tool_launch_url: launch_url,
+      user_id: user_id
+    }
+
+    Resque.enqueue(CanvasAssignmentUpdater, updater_params)
+  end
 
   def authorized_to_update_config?(config)
     config.course_id && load_and_authorize_course(config.course_id)

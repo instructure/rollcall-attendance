@@ -140,7 +140,7 @@ describe AttendanceAssignment do
     end
   end
 
-  describe "update_if_needed" do
+  describe "update_cached_assignment_if_needed" do
 
     let!(:course_config) {
       CourseConfig.create!(
@@ -153,63 +153,33 @@ describe AttendanceAssignment do
     let(:assignment) { { 'id' => '123', 'omit_from_final_grade' => true} }
 
     it "returns nil if no assignment is passed in" do
-      expect(attendance_assignment.update_if_needed(assignment: nil)).to be_nil
+      expect(attendance_assignment.update_cached_assignment_if_needed(nil)).to be_nil
     end
 
-    it "doesn't update the assignment in canvas if canvas and course config omit_from_final_grade matches" do
-      expect(canvas).not_to receive(:update_assignment)
-
-      attendance_assignment.update_if_needed(assignment: assignment)
+    it "doesn't update the assignment in cache if canvas and course config omit_from_final_grade matches" do
+      expect(attendance_assignment).not_to receive(:cache_assignment)
+      attendance_assignment.update_cached_assignment_if_needed(assignment)
     end
 
     it "returns the assignment when it doesn't update" do
-      expect(canvas).not_to receive(:update_assignment)
-
-      expect(attendance_assignment.update_if_needed(assignment: assignment)).to eq(assignment)
+      expect(attendance_assignment.update_cached_assignment_if_needed(assignment)).to eq(assignment)
     end
 
-    it "doesn't update canvas if assignment is missing omit_from_final_grade and course config's is false" do
+    it "doesn't update cache if assignment is missing omit_from_final_grade and course config's is false" do
+      expect(attendance_assignment).not_to receive(:cache_assignment).with(assignment.to_json)
       course_config.update!(omit_from_final_grade: false)
-      expect(canvas).not_to receive(:update_assignment)
-
-      attendance_assignment.update_if_needed(assignment: { 'id' => '123' })
+      attendance_assignment.update_cached_assignment_if_needed({ 'id' => '123' })
     end
 
-    it "updates the assignment in canvas if course config and canvas omit_from_final_grade differs" do
-      expect(canvas).to receive(:update_assignment).with(course_id, '123', { omit_from_final_grade: true })
-
+    it "updates the assignment in cache if course config and canvas omit_from_final_grade differs" do
       assignment['omit_from_final_grade'] = false
-      attendance_assignment.update_if_needed(assignment: assignment)
+      expect(attendance_assignment).to receive(:cache_assignment).with(assignment.to_json)
+      attendance_assignment.update_cached_assignment_if_needed(assignment)
     end
 
     it "returns the assignment when it updates" do
       assignment['omit_from_final_grade'] = false
-      allow(canvas).to receive(:update_assignment).with(course_id, '123', { omit_from_final_grade: true }).and_return(assignment)
-
-      expect(attendance_assignment.update_if_needed(assignment: assignment)).to eq(assignment)
-    end
-
-    it "doesn't updates the cache when not specified" do
-      expect(canvas).to receive(:update_assignment).with(course_id, '123', { omit_from_final_grade: true })
-      redis = double();
-      allow(attendance_assignment).to receive(:redis).and_return(redis)
-      expect(redis).not_to receive(:set)
-
-      attendance_assignment.update_if_needed(assignment: { 'id' => '123', 'omit_from_final_grade' => false })
-    end
-
-    it "updates the cache when specified" do
-      expect(canvas).to receive(:update_assignment).with(course_id, '123', { omit_from_final_grade: true })
-      redis = double();
-      allow(attendance_assignment).to receive(:redis).and_return(redis)
-
-      updated_assignment = { 'id' => '123', 'omit_from_final_grade' => true }
-
-      allow(canvas).to receive(:update_assignment).and_return(updated_assignment)
-
-      expect(redis).to receive(:set).with(attendance_assignment.cache_key, updated_assignment.to_json, ex: 900)
-      attendance_assignment.update_if_needed(assignment: { 'id' => '123', 'omit_from_final_grade' => false },
-        update_cache: true)
+      expect(attendance_assignment.update_cached_assignment_if_needed(assignment)).to eq(assignment)
     end
   end
 end

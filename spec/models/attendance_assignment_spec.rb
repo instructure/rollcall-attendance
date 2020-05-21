@@ -18,55 +18,77 @@
 require 'spec_helper'
 
 describe AttendanceAssignment do
-  context(:update) do
+  describe "#fetch" do
+    let(:canvas_assign) { {"id" => 45, "name" => "Roll Call Attendance", "omit_from_final_grade" => false } }
+    let(:assign_hashes) { [canvas_assign] }
+    let(:canvas) { double("canvas double", canvas_url: "url") }
     let(:cid) { 1 }
     let(:guid) { "guid" }
 
     before do
-      CourseConfig.create!(
+      @course_config = CourseConfig.create!(
         course_id: cid,
         tool_consumer_instance_guid: guid,
         omit_from_final_grade: true
       )
     end
 
-    it "should try to update the assignment" do
-      canvas = double()
-      assign = AttendanceAssignment.new(canvas, cid, "url", guid)
-      assign_hashes = [{
-        'id' => 45,
-        'name' =>  "Roll Call Attendance",
-        'omit_from_final_grade' => false
-      }]
-      expect(canvas).to receive(:get_assignments).with(cid).and_return(assign_hashes)
-      expect(canvas).to receive(:update_assignment).with(cid, 45, { omit_from_final_grade: true })
-      assign.fetch
+    context "when try_update is true" do
+      let(:attendance_assignment) { AttendanceAssignment.new(canvas, cid, "url", "guid") }
+
+      before do
+        # Populate the cache with an outdated value
+        attendance_assignment.cache_assignment(
+          canvas_assign.merge({"omit_from_final_grade" => true}).to_json
+        )
+
+        allow(canvas).to receive(:get_assignments).with(cid).and_return(assign_hashes)
+      end
+
+      it "updates the cached assignment if the given assignment's omit_from_final_grade differs" do
+        expect {
+          attendance_assignment.fetch(try_update: true)
+        }.to change {
+          attendance_assignment.fetch_from_cache["omit_from_final_grade"]
+        }.from(true).to(false)
+      end
+
+      it "updates the CourseConfig if the given assignment's omit_from_final_grade differs" do
+        expect {
+          attendance_assignment.fetch(try_update: true)
+        }.to change {
+          @course_config.reload.omit_from_final_grade
+        }.from(true).to(false)
+      end
     end
 
-    it "should not try to update the assignment if not needed" do
-      canvas = double()
-      assign = AttendanceAssignment.new(canvas, cid, "url", guid)
-      assign_hashes = [{
-        'id' => 45,
-        'name' =>  "Roll Call Attendance",
-        'omit_from_final_grade' => true
-      }]
-      expect(canvas).to receive(:get_assignments).with(cid).and_return(assign_hashes)
-      expect(canvas).not_to receive(:update_assignment).with(cid, 45, { omit_from_final_grade: true })
-      assign.fetch
-    end
+    context "when try_update is false" do
+      let(:attendance_assignment) { AttendanceAssignment.new(canvas, cid, "url", "guid") }
 
-    it "should not try to update the assignment if explicitly asked not to" do
-      canvas = double()
-      assign = AttendanceAssignment.new(canvas, cid, "url", guid)
-      assign_hashes = [{
-        'id' => 45,
-        'name' =>  "Roll Call Attendance",
-        'omit_from_final_grade' => false
-      }]
-      expect(canvas).to receive(:get_assignments).with(cid).and_return(assign_hashes)
-      expect(canvas).not_to receive(:update_assignment).with(cid, 45, { omit_from_final_grade: true })
-      assign.fetch(try_update: false)
+      before do
+        # Populate the cache with an outdated value
+        attendance_assignment.cache_assignment(
+          canvas_assign.merge({"omit_from_final_grade" => true}).to_json
+        )
+
+        allow(canvas).to receive(:get_assignments).with(cid).and_return(assign_hashes)
+      end
+
+      it "does not update the cached assignment if the given assignment's omit_from_final_grade differs" do
+        expect {
+          attendance_assignment.fetch(try_update: false)
+        }.not_to change {
+          attendance_assignment.fetch_from_cache["omit_from_final_grade"]
+        }
+      end
+
+      it "does not update the CourseConfig if the given assignment's omit_from_final_grade differs" do
+        expect {
+          attendance_assignment.fetch(try_update: false)
+        }.not_to change {
+          @course_config.reload.omit_from_final_grade
+        }
+      end
     end
   end
 end
