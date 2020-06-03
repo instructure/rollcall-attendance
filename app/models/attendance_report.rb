@@ -96,11 +96,15 @@ class AttendanceReport
   end
 
   def relevant_awards
-    awards = Award.where(course_id: course_ids, tool_consumer_instance_guid: @params[:tool_consumer_instance_guid])
+    # Only account-wide badges ever get shown in reports, whether they are
+    # course-level or account-level reports.
+    awards = Award.joins(:badge).
+      where(course_id: course_ids, tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]).
+      where(badges: {course_id: nil})
     awards = awards.where(["class_date >= ?", Chronic.parse(@filters[:start_date]).to_date]) if @filters[:start_date].present?
     awards = awards.where(["class_date <= ?", Chronic.parse(@filters[:end_date]).to_date]) if @filters[:end_date].present?
     awards = awards.where(student_id: student_filter.id) if student_filter
-    return awards
+    awards
   end
 
   def get_courses
@@ -193,10 +197,7 @@ class AttendanceReport
     users = get_users
     teachers = get_teacher_enrollments
 
-    attendance_collection = AttendanceCollection.new
-    relevant_statuses.each { |status| attendance_collection.add_status status }
-
-    relevant_awards.each { |award| attendance_collection.add_award award }
+    attendance_collection = AttendanceCollection.new(statuses: relevant_statuses, awards: relevant_awards)
 
     CSV.generate do |csv|
       csv << header
@@ -231,15 +232,10 @@ class AttendanceReport
     columns = [attendance.class_date, attendance.status_description, attendance.last_updated_at]
     columns << ''
     @account.badges.each do |badge|
-      if attendance.awards[badge.id]
-        columns << badge.name
-      else
-        columns << ''
-      end
+      columns << (attendance.badge_ids.include?(badge.id) ? badge.name : '')
     end
     columns
   end
-
 
   class SisFilterNotFound < StandardError;
   end

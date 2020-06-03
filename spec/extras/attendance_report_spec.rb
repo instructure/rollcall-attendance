@@ -104,7 +104,6 @@ describe AttendanceReport do
       end
     end
 
-
     describe "relevant_statuses" do
       before do
         allow(report).to receive(:course_ids) { [1, 2] }
@@ -156,6 +155,7 @@ describe AttendanceReport do
           allow(report).to receive(:course_ids) { [4] }
         end
         let(:result) { report.relevant_statuses }
+
         it "includes separate statuses for each section" do
           expect(result).to include @status6, @status7
         end
@@ -164,22 +164,72 @@ describe AttendanceReport do
   end
 
   describe "awards" do
-    before do
-      allow(report).to receive(:course_ids) { [1, 2] }
+    let(:account_report) { report }
 
-      @award1 = create(:award, student_id: 1, course_id: 1, class_date: 5.days.ago, tool_consumer_instance_guid: tci_guid)
-      @award2 = create(:award, student_id: 1, course_id: 1, class_date: 4.days.ago, tool_consumer_instance_guid: tci_guid)
-      @award3 = create(:award, student_id: 2, course_id: 2, class_date: 3.days.ago, tool_consumer_instance_guid: tci_guid)
-      @award4 = create(:award, student_id: 2, course_id: 2, class_date: 2.days.ago, tool_consumer_instance_guid: tci_guid)
-      @award5 = create(:award, student_id: 1, course_id: 3, class_date: 1.day.ago, tool_consumer_instance_guid: tci_guid)
+    before do
+      badge = create(:badge, account_id: @account.account_id, course_id: nil)
+      @award1 = create(:award, student_id: 1, course_id: 1, class_date: 5.days.ago, badge_id: badge.id, tool_consumer_instance_guid: tci_guid)
+      @award2 = create(:award, student_id: 1, course_id: 1, class_date: 4.days.ago, badge_id: badge.id, tool_consumer_instance_guid: tci_guid)
+      @award3 = create(:award, student_id: 2, course_id: 2, class_date: 3.days.ago, badge_id: badge.id, tool_consumer_instance_guid: tci_guid)
+      @award4 = create(:award, student_id: 2, course_id: 2, class_date: 2.days.ago, badge_id: badge.id, tool_consumer_instance_guid: tci_guid)
+      @award5 = create(:award, student_id: 1, course_id: 3, class_date: 1.day.ago, badge_id: badge.id, tool_consumer_instance_guid: tci_guid)
     end
+
     describe "relevant_awards" do
-      let(:result) { report.relevant_awards }
+      let(:result) { account_report.relevant_awards }
+
+      before do
+        allow(report).to receive(:course_ids).and_return([1, 2])
+      end
+
+      describe "for an account report" do
+        it "includes awards for account-level badges" do
+          expect(report.relevant_awards).to contain_exactly(@award1, @award2, @award3, @award4)
+        end
+
+        it "never includes awards for course-level badges within the account" do
+          course_badge = create(:badge, account_id: @account.account_id, course_id: 1)
+          course_award = create(:award, student_id: 1, course_id: 1, class_date: 3.days.ago, badge_id: course_badge.id, tool_consumer_instance_guid: tci_guid)
+
+          expect(report.relevant_awards).not_to include(course_award)
+        end
+      end
+
+      describe "for a course report" do
+        let(:course_report) do
+          AttendanceReport.new(canvas, {course_id: 1, account_id: @account.account_id, tool_consumer_instance_guid: tci_guid})
+        end
+
+        let(:course_api_result) do
+          result = single_api_result.merge({'id' => '1'})
+          allow(result).to receive(:not_found?).and_return(false)
+
+          result
+        end
+
+        before do
+          # The course needs at least one status to be included in the results
+          # from AttendanceReport#course_ids
+          create(:status, student_id: 1, course_id: 1, account_id: @account.account_id, class_date: 3.days.ago, tool_consumer_instance_guid: tci_guid)
+
+          course_badge = create(:badge, account_id: @account.account_id, course_id: 1)
+          @course_award = create(:award, student_id: 1, course_id: 1, class_date: 3.days.ago, badge_id: course_badge.id, tool_consumer_instance_guid: tci_guid)
+
+          allow(canvas).to receive(:get_course).and_return(course_api_result)
+        end
+
+        it "includes relevant awards for account-level badges" do
+          expect(course_report.relevant_awards).to contain_exactly(@award1, @award2)
+        end
+
+        it "never includes awards for badges defined on the course" do
+          expect(course_report.relevant_awards).not_to include(@course_award)
+        end
+      end
 
       describe "no filters" do
         it "doesn't filter" do
-          expect(result).to include @award1, @award2, @award3, @award4
-          expect(result).not_to include @award5
+          expect(report.relevant_awards).to contain_exactly(@award1, @award2, @award3, @award4)
         end
       end
 
@@ -188,8 +238,7 @@ describe AttendanceReport do
           report.instance_variable_set(:@filters, {start_date: 4.days.ago.strftime("%m/%d/%Y"), end_date: 2.days.ago.strftime("%m/%d/%Y")})
         end
         it "filters by date" do
-          expect(result).to include @award2, @award3, @award4
-          expect(result).not_to include @award1, @award5
+          expect(result).to contain_exactly(@award2, @award3, @award4)
         end
       end
 
@@ -201,11 +250,9 @@ describe AttendanceReport do
         end
 
         it "filters by student" do
-          expect(result).to include @award1, @award2
-          expect(result).not_to include @award3, @award4, @award5
+          expect(result).to contain_exactly(@award1, @award2)
         end
       end
-
     end
   end
 
