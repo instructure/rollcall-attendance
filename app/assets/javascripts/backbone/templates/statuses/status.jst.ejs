@@ -1,5 +1,5 @@
 <% if(student.avatar_url != undefined) { %>
-  <img class="student-pic" width="50" height="50" src="<%= student.avatar_url %>" alt="<%= student.name %>">
+  <img class="student-pic" width="50" height="50" src="<%= student.avatar_url %>" alt="<%= escaped_student_name %>">
 <% } %>
 
 <a role="button" href="#" tabindex="0" class="student-toggle" title="Click to toggle attendance">
@@ -11,4 +11,4 @@
   <div class="replace-text student-status" tabindex="-1"><%= attendance || 'unmarked' %></div>
     <div class="section-id"><i><%= section_name %></i></div>
 </a>
-<a role="button" href="#" class="btn btn-mini icon icon-right-arrow student-detail-toggle-link" aria-label="Click to view more information about <%= student.name %>">More</a>
+<a role="button" href="#" class="btn btn-mini icon icon-right-arrow student-detail-toggle-link" aria-label="Click to view more information about <%= escaped_student_name %>">More</a>

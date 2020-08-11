@@ -71,18 +71,13 @@ class InstructureRollcall.Views.Statuses.StatusView extends Backbone.View
   updateStatusText: =>
     @$('.student-status').text(@model.attendance())
 
-  formatStudentName: (name) ->
-    if name.indexOf(' ') >= 0
-      split_name = name.split(/([^ ][\w\-\']+)$/).map (part) -> _.escape(part)
-      return "#{split_name[0]}<strong>#{split_name[1]}</strong>" if split_name[1]
-    _.escape(name)
-
   sectionName: (section_id) ->
     $('#section_select').find("option[value=#{section_id}]").text()
 
   templateOptions: ->
     options = @model.toJSON()
     options.formatted_student_name = @formatStudentName(options.student.name)
+    options.escaped_student_name = _.escape(options.student.name)
     options.section_name = @sectionName(@model.sectionId())
     options.default_section_id = @indexView.sectionId
     return options
@@ -91,3 +86,5 @@ class InstructureRollcall.Views.Statuses.StatusView extends Backbone.View
     @$el.html(@template(@templateOptions()))
     @setClass()
     return this
+
+_.extend InstructureRollcall.Views.Statuses.StatusView.prototype, InstructureRollcall.Mixins.Formatting.prototype

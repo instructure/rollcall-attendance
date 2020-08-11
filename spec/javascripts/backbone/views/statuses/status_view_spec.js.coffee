@@ -1,39 +1,4 @@
 describe "StatusView", ->
-  describe ".formatStudentName", ->
-    beforeEach ->
-      indexView = {}
-      @statusView = new InstructureRollcall.Views.Statuses.StatusView(
-        model: new InstructureRollcall.Models.Status(),
-        indexView: indexView
-      )
-
-    describe "with one word", ->
-      it "does not make it strong", ->
-        expect(@statusView.formatStudentName("test")).toEqual("test")
-
-    describe "with two words", ->
-      it "makes the last name strong", ->
-        expect(@statusView.formatStudentName("test test")).toEqual("test <strong>test</strong>")
-
-    describe "with a dash", ->
-      it "makes the hyphenated last name strong", ->
-        expect(@statusView.formatStudentName("test test-test")).toEqual("test <strong>test-test</strong>")
-
-    describe "with an apostrophe", ->
-      it "makes the apostrophe'd last name strong", ->
-        expect(@statusView.formatStudentName("test test'test")).toEqual("test <strong>test&#x27;test</strong>")
-
-    describe "with a final word in parentheses or non-word characters", ->
-      it "does not make any word strong with parentheses", ->
-        expect(@statusView.formatStudentName("test test (test)")).toEqual("test test (test)")
-
-      it "does not make any word strong if they are non-word characters", ->
-        expect(@statusView.formatStudentName("test test $$$$")).toEqual("test test $$$$")
-
-    describe "XSS", ->
-      it "escapes the name to avoid XSS issues", ->
-        expect(@statusView.formatStudentName("<script>window.alert('display');</script>")).toEqual("&lt;script&gt;window.alert(&#x27;display&#x27;);&lt;&#x2F;script&gt;")
-
   describe "#clickTogglePresence", ->
     beforeEach ->
       @fixtures = document.createElement 'div'

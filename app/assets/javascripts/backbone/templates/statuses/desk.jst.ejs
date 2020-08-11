@@ -5,7 +5,7 @@
 <div class="student-seated">
   <a href="#" class="no-select student-attendance-display student-toggle">
     <% if(student.avatar_url != undefined) { %>
-      <img src="<%= student.avatar_url %>" class="student-pic" alt="<%= student.name %>" />
+      <img src="<%= student.avatar_url %>" class="student-pic" alt="<%= escaped_student_name %>" />
     <% } %>
     <div class="student-status replace-text"><%= attendance || 'unmarked' %></div>
   </a>

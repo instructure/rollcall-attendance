@@ -81,8 +81,6 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
         value = 'N/A'
 
       @$(".stats-#{key}").text(value)
-      
-  formatStudentName: (name) -> name.replace /([^ ][\w\-\']+)$/, "<strong>$1</strong>"
 
   refreshAwards: =>
     @awards.fetchForStudent(@model.get('course_id'), @model.get('student_id'), @indexView.classDate.toString("yyyy-MM-dd"))
@@ -105,7 +103,7 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
   templateOptions: ->
     options = @model.toJSON()
     options.formatted_student_name = @formatStudentName(options.student.name)
-    options.first_name = @model.firstName()
+    options.first_name = _.escape(@model.firstName())
     options.attendance = @model.attendance()
     options.class_date = @indexView.prettyClassDate()
     return options
@@ -119,3 +117,5 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
     @updateStats()
     @setActiveToggle()
     return this
+
+_.extend InstructureRollcall.Views.Statuses.DetailsView.prototype, InstructureRollcall.Mixins.Formatting.prototype
