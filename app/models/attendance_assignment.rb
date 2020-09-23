@@ -76,11 +76,8 @@ class AttendanceAssignment
 
     fresh_assignment_omit_from_final_grade = !!fresh_assignment['omit_from_final_grade']
     return fresh_assignment if fresh_assignment_omit_from_final_grade == course_config_omit_from_final_grade
-
-    CourseConfig.
-      find_by(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid).
-      update!(omit_from_final_grade: fresh_assignment_omit_from_final_grade)
-
+    config = CourseConfig.find_or_initialize_by(course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid)
+    config.update!(omit_from_final_grade: fresh_assignment_omit_from_final_grade)
     course_config_omit_from_final_grade = fresh_assignment_omit_from_final_grade
     cache_assignment(fresh_assignment.to_json)
     fresh_assignment
