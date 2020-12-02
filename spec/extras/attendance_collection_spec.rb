@@ -45,13 +45,28 @@ describe "AttendanceCollection" do
   end
 
   def make_status(**params)
-    default_params = {course_id: course_id, student_id: first_student_id, teacher_id: first_teacher_id, class_date: date, attendance: "present"}
+    default_params = {
+      course_id: course_id,
+      student_id: first_student_id,
+      teacher_id: first_teacher_id,
+      class_date: date,
+      attendance: "present",
+      updated_at: Time.zone.now
+    }
+
     status_params = default_params.merge(params)
     Status.new(**status_params)
   end
 
   def make_award(**params)
-    default_params = {course_id: course_id, student_id: first_student_id, teacher_id: first_teacher_id, class_date: date, badge_id: 1}
+    default_params = {
+      course_id: course_id,
+      student_id: first_student_id,
+      teacher_id: first_teacher_id,
+      class_date: date,
+      badge_id: 1,
+      updated_at: Time.zone.now
+    }
     award_params = default_params.merge(params)
     Award.new(**award_params)
   end
@@ -154,6 +169,54 @@ describe "AttendanceCollection" do
           collection.add_status(make_status(class_date: 1.day.ago(now).to_date, student_id: 30, course_id: 400, teacher_id: 101, section_id: 3))
 
           expect(collection_items.pluck(:section_id)).to eq [1, 2, 3, 0]
+      end
+    end
+
+    describe "last_updated_at" do
+      let(:now) { Time.zone.now }
+
+      let(:status) { make_status(class_date: now.to_date, updated_at: now, section_id: 101) }
+      let(:old_award) { make_award(badge_id: 2, class_date: now.to_date, updated_at: 1.day.ago(now)) }
+      let(:new_award) { make_award(class_date: now.to_date, updated_at: 1.day.from_now(now)) }
+
+      it "returns the time the student's attendance for the section was last updated if there are no badges" do
+        collection.add_status(status)
+        expect(collection_items.first.last_updated_at).to eq now
+      end
+
+      context "when the student has at least one badge for the current date" do
+        it "returns the timestamp of the status if updated more recently than badges" do
+          collection.add_status(status)
+          collection.add_award(old_award)
+
+          expect(collection_items.first.last_updated_at).to eq status.updated_at
+        end
+
+        it "returns the timestamp of the latest badge award if updated more recently than section attendance" do
+          collection.add_status(status)
+          collection.add_award(old_award)
+          collection.add_award(new_award)
+
+          expect(collection_items.first.last_updated_at).to eq new_award.updated_at
+        end
+
+        it "calculates timestamps separately for attendance for multiple sections" do
+          other_section_status = make_status(
+            class_date: now.to_date,
+            updated_at: 2.days.from_now(now),
+            section_id: 102
+          )
+
+          collection.add_status(status)
+          collection.add_status(other_section_status)
+          collection.add_award(old_award)
+          collection.add_award(new_award)
+
+          expect(collection_items.pluck(:section_id, :last_updated_at)).to contain_exactly(
+            [101, new_award.updated_at],
+            [102, other_section_status.updated_at]
+          )
+        end
       end
     end
   end

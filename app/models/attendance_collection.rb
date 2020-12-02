@@ -66,7 +66,7 @@ class AttendanceCollection
   # (Note that the above only applies to account-wide badges;
   # course-level badges are not shown at all.)
   class Entry
-    attr_accessor :course_id, :student_id, :teacher_id, :class_date
+    attr_accessor :course_id, :student_id, :teacher_id, :class_date, :last_award_updated_at
 
     def initialize(course_id:, class_date:, student_id:, teacher_id:)
       self.course_id = course_id
@@ -84,6 +84,8 @@ class AttendanceCollection
 
     def add_award(award)
       @badge_ids.add(award.badge_id)
+
+      self.last_award_updated_at = [award.updated_at, last_award_updated_at].compact.max
     end
 
     def each_line
@@ -97,7 +99,8 @@ class AttendanceCollection
         fields_for_status = base_fields.merge({
           badge_ids: @badge_ids,
           section_id: status.section_id,
-          status_description: status.attendance || "unmarked"
+          status_description: status.attendance || "unmarked",
+          last_updated_at: [status.updated_at, last_award_updated_at].compact.max
         })
 
         yield OpenStruct.new(**fields_for_status)
