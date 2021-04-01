@@ -74,7 +74,7 @@ group :development, :test do
   gem 'guard-jasmine', '~> 2.0'
   # We can relax this brakeman dependency after we have deployed a hybrid
   # cookie serializer and allowed a chance for cookies to be stored as JSON.
-  gem 'brakeman', '4.5.1', require: false
+  gem 'brakeman', '4.7.1', require: false
   gem 'rubocop', '0.52.1', require: false
   gem 'rubocop-rspec', '1.22.2', require: false
 end
