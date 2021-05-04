@@ -23,6 +23,7 @@ class AttendanceReport
     @params = params
     @canvas = canvas
     @account = find_account
+    @tool_consumer_instance_guid = @params[:tool_consumer_instance_guid]
     @filters = @params[:filters] || {}
     begin
       SyncAccountRelationships.perform(@params)
@@ -204,7 +205,8 @@ class AttendanceReport
       attendance_collection.each do |attendance|
         teacher_id = attendance.teacher_id || teachers[attendance.course_id]
         next unless users[attendance.student_id]
-        csv << course_columns(courses[attendance.course_id], attendance.section_id) +
+        csv << course_columns(courses[attendance.course_id]) + 
+            section_columns(attendance.section_id) +
             user_columns(users[teacher_id]) +
             user_columns(users[attendance.student_id]) +
             attendance_columns(attendance)
@@ -212,10 +214,18 @@ class AttendanceReport
     end
   end
 
-  def course_columns(course, section_id)
-    return ['', '', '', '', '', '', ''] if course.nil?
-    section = @canvas.get_section(section_id)
-    return [course.id, course.sis_id, course.course_code, course.name, section['name'], section_id, section['sis_section_id']]
+  def course_columns(course)
+    return ['', '', '', ''] if course.nil?
+    [course.id, course.sis_id, course.course_code, course.name]
+  end
+
+  def section_columns(section_id)
+    if section_id.nil?
+      Array.new(3) {''}
+    else
+      section = cached_section(section_id)
+      [section['name'], section_id, section['sis_section_id']]
+    end
   end
 
   def user_columns(user)
@@ -237,6 +247,32 @@ class AttendanceReport
     columns
   end
 
+  def cached_section(section_id)
+    cached_response redis_key(:section, section_id), lambda { @canvas.get_section(section_id) }
+  end
+
   class SisFilterNotFound < StandardError;
+  end
+
+  private
+
+  def redis
+    $REDIS
+  end
+  
+  def redis_key(entity, *ids)
+    "#{@params[:tool_consumer_instance_guid]}:#{entity}:#{ids.join(':')}"
+  end
+
+  def cached_response(key, request)
+    json = redis.get(key)
+    return JSON.parse(json) if redis && json
+    json = request.call
+    if json.nil?
+      JSON.parse("{}")
+    else
+      redis.setex key, 1.hours.to_i, json.to_json
+      json
+    end
   end
 end
