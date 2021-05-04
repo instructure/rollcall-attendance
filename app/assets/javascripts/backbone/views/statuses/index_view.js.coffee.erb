@@ -86,18 +86,24 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
     @$('#student-details').html('')
     @$('#student-list').removeClass('details-open')
     @$('#student-list li').removeClass('details-active')
-    
-  goToDate: (date) ->
-    @classDate = date
+
+  # If the picker variable is provided, it means we are calling this function from the date picker
+  # If the picker is not provided, it checks if there's a date in the session storage, in case
+  # there was a section change in rollcall, just so it doesn't snap to today's date when the page is refreshed.
+  goToDate: (date, picker = false) ->
+    if sessionStorage.hasOwnProperty('date') && !picker
+      @classDate = new Date(sessionStorage.getItem('date'))
+    else
+      @classDate = date
     @resetClassDate()
 
   previousDay: (event) ->
     event.preventDefault()
-    @goToDate @classDate.previous().day()
+    @goToDate(@classDate.previous().day(), true)
 
   nextDay: (event) ->
     event.preventDefault()
-    @goToDate @classDate.next().day()
+    @goToDate(@classDate.next().day(), true)
 
   resetList: => @subView.addAll()
 
@@ -117,20 +123,22 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
       $("#ui-datepicker-div").attr('tabindex', '0').focus()
 
   resetClassDate: ->
+    sessionStorage.setItem('date', @classDate.toString('yyyy/MM/dd'))
+
     @$("#student-list").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box" alt="Loading" />'
     @$("#date").html(@prettyClassDate())
 
     @statuses.fetch
       data:
         section_id: @sectionId
-        class_date: @classDate.toString("yyyy-MM-dd")
+        class_date: @classDate.toString('yyyy-MM-dd')
 
   sectionId: ->
     @sectionId
 
   prettyClassDate: ->
-    day = @classDate.toString("ddd")
-    date = @classDate.toString("MMM dd")
+    day = @classDate.toString('ddd')
+    date = @classDate.toString('MMM dd')
     "#{day} <strong>#{date}</strong>"
 
   render: =>
@@ -138,5 +146,4 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
     @initializeCalendar()
     @switchView(@courseConfig.get('view_preference'))
     @goToDate(Date.today())
-
     return this
