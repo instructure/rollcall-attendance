@@ -384,4 +384,44 @@ describe AttendanceReport do
       report.get_courses
     end
   end
+
+  describe 'Correct formation of Section Columns in report #section_columns' do
+    context 'when section id is null' do
+      let(:section_id) { nil }
+      before do
+        @columns = report.section_columns(section_id)
+      end
+
+      it "returns an empty array" do
+        expect(@columns).to eq(Array.new(3) {''})
+      end
+
+      it "does not call canvas api for section information" do
+        expect(report).not_to receive(:get_section)
+      end
+    end
+
+    context 'when section id is not null' do
+      let(:section_id) { 1 }
+      before do
+        allow(report).to receive(:get_section).and_return({"name" => "Test", "sis_section_id" => ""})
+      end
+
+      it "returns the section information" do
+        @columns = report.section_columns(section_id)
+        expect(@columns).to eq(['Test', 1, ''])
+      end
+    end
+  end
+
+  describe "Check if section infotmation is cached #get_section" do
+    let(:redis) { $REDIS }
+    let(:section_id) { 1 }
+
+    it "does not call the canvas api if chached" do
+      allow(redis).to receive(:get).and_return('{"name" : "Test", "sis_section_id" : ""}')
+      expect(canvas).not_to receive(:get_section)
+      report.get_section(section_id)
+    end
+  end
 end
