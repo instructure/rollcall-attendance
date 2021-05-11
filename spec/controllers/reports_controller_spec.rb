@@ -19,13 +19,13 @@ require 'spec_helper'
 
 describe ReportsController do
   let(:course_id) { 123 }
+
   let :valid_attrs do
     {
       course_id: course_id,
       email: "foo@bar.com"
     }
   end
-
 
   let :course do
     Course.new(id: course_id)
@@ -45,7 +45,7 @@ describe ReportsController do
                     can_grade: true)
   end
 
-  describe "GET #course" do
+  describe "Perform GET request on #course" do
     context "the you shouldn't be here path" do
       before { allow(controller).to receive_messages(load_and_authorize_course: nil) }
 
@@ -94,7 +94,11 @@ describe ReportsController do
     end
   end
 
-  describe "POST #create" do
+  describe "Perform POST request on #create" do
+    after(:each) do
+      Redis.current.del("abc123:report:0:foo@bar.com::")
+    end
+
     it "generates a report for the given course" do
       expect(Resque).to receive(:enqueue).with(AttendanceReportGenerator, kind_of(Hash))
       post :create, params: { course_id: course_id, report: valid_attrs }
@@ -103,6 +107,13 @@ describe ReportsController do
     it "sets the flash notice" do
       post :create, params: { course_id: course_id, report: valid_attrs }
       expect(flash[:notice]).to eql("Thank you, your report should arrive in your inbox shortly.")
+    end
+
+    it "not generate a report with an existing cache with key/value" do
+      post :create, params: { course_id: course_id, report: valid_attrs }
+
+      post :create, params: { course_id: course_id, report: valid_attrs }
+      expect(flash[:notice]).to eql("Your report is already being processed.")
     end
   end
 end

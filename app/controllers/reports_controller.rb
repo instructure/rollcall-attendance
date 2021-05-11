@@ -16,6 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class ReportsController < ApplicationController
+  include RedisCache
   before_action :can_grade
   before_action :setup_report
   before_action :load_course_or_account
@@ -29,10 +30,15 @@ class ReportsController < ApplicationController
 
   def create
     if @report.valid?
-      @report.generate
-      flash.now[:notice] = "Thank you, your report should arrive in your inbox shortly."
+      if is_cached?(report_redis_key)
+        flash.now[:notice] = 'Your report is already being processed.'
+      else
+        cache_value(report_redis_key, 10, true)
+        @report.generate
+        flash.now[:notice] = 'Thank you, your report should arrive in your inbox shortly.'
+      end
     else
-      flash.now[:error] = "Please double-check the marked report fields."
+      flash.now[:error] = 'Please double-check the marked report fields.'
     end
 
     render @report.type
@@ -68,5 +74,14 @@ class ReportsController < ApplicationController
     @report = Report.new(params[:report])
     @report.canvas_url = canvas_url
     @report.user_id = user_id.to_i
+  end
+
+  def report_redis_key
+    redis_key(@report.tool_consumer_instance_guid,
+              :report,
+              @report.user_id,
+              @report.email,
+              @report.start_date,
+              @report.end_date)
   end
 end
