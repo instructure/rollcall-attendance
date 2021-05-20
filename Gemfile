@@ -76,7 +76,7 @@ group :development, :test do
   # cookie serializer and allowed a chance for cookies to be stored as JSON.
   gem 'brakeman', '4.5.1', require: false
   gem 'rubocop', '0.52.1', require: false
-  gem 'rubocop-rspec', '1.22.2', require: false
+  gem 'rubocop-rspec', '1.23.0', require: false
 end
 
 group :test do
