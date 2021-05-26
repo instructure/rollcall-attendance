@@ -165,13 +165,14 @@ class AttendanceReport
         hash[course_filter.id] = user['id']
       end
     else
-      report = @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[enrollments]' => true)
+      params = {
+        'parameters[enrollments]' => true,
+        'parameters[enrollment_filter]' => 'TeacherEnrollment,TaEnrollment',
+        'parameters[enrollment_states]' => 'active'
+      }
+      report = @canvas.get_report(@account.account_id, :provisioning_csv, params)
       report.each do |teacher|
-        valid_roles = %w(teacher ta)
-
-        if teacher['status'] == 'active' && teacher['role'].in?(valid_roles)
-          hash[teacher['canvas_course_id'].to_i] = teacher['canvas_user_id'].to_i
-        end
+        hash[teacher['canvas_course_id'].to_i] = teacher['canvas_user_id'].to_i
       end
     end
 
