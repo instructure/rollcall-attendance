@@ -21,7 +21,7 @@ module RedisCache
     Redis.current
   end
 
-  def redis_key(*params)
+  def redis_cache_key(*params)
     "#{params.join(':')}"
   end
 
@@ -37,7 +37,7 @@ module RedisCache
     redis.setex key, expiration, value
   end
 
-  def cached_response(key, request)
+  def redis_cache_response(key, request)
     JSON.parse(cached_value(key) || fetch_from_api(key, request))
   end
 

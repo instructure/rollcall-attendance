@@ -246,9 +246,9 @@ class AttendanceReport
   end
 
   def get_section(section_id)
-    key = redis_key(@params[:tool_consumer_instance_guid], :section, section_id)
+    key = redis_cache_key(@params[:tool_consumer_instance_guid], :section, section_id)
     request = lambda { @canvas.get_section(section_id) }
-    cached_response key, request
+    redis_cache_response key, request
   end
 
   class SisFilterNotFound < StandardError;

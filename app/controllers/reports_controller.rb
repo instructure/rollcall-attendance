@@ -17,6 +17,8 @@
 
 class ReportsController < ApplicationController
   include RedisCache
+  include CanvasCache
+
   before_action :can_grade
   before_action :setup_report
   before_action :load_course_or_account
@@ -77,7 +79,7 @@ class ReportsController < ApplicationController
   end
 
   def report_redis_key
-    redis_key(@report.tool_consumer_instance_guid,
+    redis_cache_key(@report.tool_consumer_instance_guid,
               :report,
               @report.user_id,
               @report.email,

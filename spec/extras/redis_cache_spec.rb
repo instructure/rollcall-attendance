@@ -27,7 +27,7 @@ describe RedisCache do
   }
 
   describe "Build Redis key" do
-    it { expect(object.redis_key("abc123", :section, 1)).to eq(key) }
+    it { expect(object.redis_cache_key("abc123", :section, 1)).to eq(key) }
   end
 
   describe "Value gets saved in cache" do
@@ -121,19 +121,19 @@ describe RedisCache do
       it "fetches api response from cache" do
         object.redis.setex(key, 5, response.to_json)
         expect(object).to receive(:cached_value).with(key).and_return(response.to_json)
-        object.cached_response(key, request)
+        object.redis_cache_response(key, request)
       end
     end
 
     context "when response is not cached" do
       it "fetches response form API" do
         expect(object).to receive(:fetch_from_api).with(key,request).and_return(request_response)
-        object.cached_response(key, request)
+        object.redis_cache_response(key, request)
       end
 
       it "redis returns nil" do
         expect(object).to receive(:cached_value).with(key).and_return(nil)
-        object.cached_response(key, request)
+        object.redis_cache_response(key, request)
       end
     end
   end
