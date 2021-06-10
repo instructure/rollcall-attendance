@@ -18,8 +18,10 @@
 require 'health_check'
 
 class HomeController < ApplicationController
-  skip_before_action :request_canvas_authentication, :only => [:health_check]
-  skip_before_action :require_lti_launch, :only => [:health_check]
+  include ReadinessCheck
+
+  skip_before_action :request_canvas_authentication, :only => [:health_check, :readiness, :liveness]
+  skip_before_action :require_lti_launch, :only => [:health_check, :readiness, :liveness]
 
   def index
     if student_launch?
@@ -43,5 +45,31 @@ class HomeController < ApplicationController
       format.html { render plain: message, status: status }
       format.json { render json: { message: message }, status: status }
     end
+  end
+
+  def liveness
+    healthy = HealthCheck.new.healthy?
+    message = healthy ? 'ok' : 'down'
+    status = healthy ? 200 : 500
+
+    render json: { message: message }, status: status
+
+  end
+
+  # NOTE: Need to check for S3 instances/buckets
+  def readiness
+    message = {}
+
+    if app_healthy?
+      components = components_json
+
+      message[:status] = components.any? {|component| status_unhealthy?(component[:status])} ? HTTP_503 : HTTP_200
+      message[:components] = components
+    else
+      message[:status] = HTTP_503
+      message[:components] = []
+    end
+
+    render json: message, status: message[:status]
   end
 end
