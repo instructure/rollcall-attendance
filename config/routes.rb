@@ -51,7 +51,6 @@ InstructureRollcall::Application.routes.draw do
 
   get 'liveness', to: 'home#liveness'
   get 'readiness', to: 'home#readiness'
-  get 'health_check', to: 'home#health_check'
   root to: 'home#index'
 
   mount SecureResqueServer.new, at: "/resque"

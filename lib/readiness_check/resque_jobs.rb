@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-module ReadinessCheck::RedisReadinessCheck
-  class Redis
+module ReadinessCheck
+  class ResqueJobs
     def method
       begin
-        return ($REDIS.ping == 'PONG')
-      rescue StandardError
+        return (Resque.redis.ping == 'PONG')
+      rescue StandardError => err
         return false
       end
     end

@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-module ReadinessCheck::DbReadinessCheck
-  class PostgreSQL
+module ReadinessCheck
+  class Redis
     def method
       begin
-        (ActiveRecord::Base.connection.select_value('SELECT 1') == 1)
-      rescue StandardError => err
+        return ($REDIS.ping == 'PONG')
+      rescue StandardError
         return false
       end
     end

@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-module ReadinessCheck::ResqueReadinessCheck
-  class ResqueJobs
+module ReadinessCheck
+  class PostgreSql
     def method
       begin
-        return (Resque.redis.ping == 'PONG')
+        (ActiveRecord::Base.connection.select_value('SELECT 1') == 1)
       rescue StandardError => err
         return false
       end

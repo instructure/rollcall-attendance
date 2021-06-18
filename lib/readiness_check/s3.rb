@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-module ReadinessCheck::AwsReadinessCheck
+module ReadinessCheck
   class S3
     def method
       !Aws::S3::Bucket.new(s3_config[:bucket], client: s3_client).nil?

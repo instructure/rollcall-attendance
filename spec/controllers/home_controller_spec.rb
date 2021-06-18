@@ -16,41 +16,28 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 'spec_helper'
-require 'health_check'
 
 describe HomeController do
-  describe 'health_check' do
-
-    it "returns 200  under normal circumstances" do
-      get :health_check
-      expect(response.body).to eq('ok')
-      expect(response.status).to eq(200)
-    end
-
-    it "returns a 500 under unhealthy circumstances" do
-      allow_any_instance_of(HealthCheck).to receive(:healthy?).and_return(false)
-      get :health_check
-      expect(response.body).to eq('down')
-      expect(response.status).to eq(500)
-    end
-
-  end
 
   describe 'liveness' do
-    it 'returns a JSON in a specific format' do
+    it 'returns 200 if healthy' do
+      allow(controller).to receive(:app_healthy?).and_return(true)
       get:liveness
 
-      expect(response.status). to eq(200)
+      expect(response).to have_http_status(:ok)
+    end
 
-      json_response = JSON.parse(response.body, symbolize_name:true)
+    it 'returns 500 if healthy' do
+      allow(controller).to receive(:app_healthy?).and_return(false)
+      get:liveness
 
-      json_response['message'].should == ('ok' || 'down')
+      expect(response).to have_http_status(:service_unavailable)
     end
   end
 
   describe 'readiness' do
-    let(:method) { [ReadinessCheck::RedisReadinessCheck::Redis, 
-      ReadinessCheck::ResqueReadinessCheck::ResqueJobs]}
+    let(:method) { [ReadinessCheck::Redis,
+      ReadinessCheck::ResqueJobs]}
 
     it 'returns a JSON in a specific format' do
       allow(controller).to receive(:app_healthy?).and_return(true)
@@ -66,29 +53,34 @@ describe HomeController do
       expect(json_response['components'][0]['response_time_ms'].class).to eq(Float)
     end
 
+    it 'returns 200 if healthy' do
+      allow(controller).to receive(:app_healthy?).and_return(true)
+      allow(controller).to receive(:status_unhealthy?).and_return(false)
+
+      get :readiness
+      expect(response).to have_http_status(:ok)
+    end
+
     it 'returns 503 if unhealthy' do
       allow(controller).to receive(:app_healthy?).and_return(false)
       get :readiness
       expect(response).to have_http_status(:service_unavailable)
     end
 
-    it 'returns 200 if healthy' do
-      allow(controller).to receive(:app_healthy?).and_return(true)
-      get :readiness
-      expect(response).to have_http_status(:ok)
-    end
-
     it 'returns 200 if components are healthy' do
-      allow(ReadinessCheck::RedisReadinessCheck::Redis).to receive(:method).and_return(true)
-      allow(ReadinessCheck::ResqueReadinessCheck::ResqueJobs).to receive(:method).and_return(true)
+      allow(controller).to receive(:app_healthy?).and_return(true)
+      allow(controller).to receive(:status_unhealthy?).and_return(false)
+      allow(ReadinessCheck::Redis).to receive(:method).and_return(true)
+      allow(ReadinessCheck::ResqueJobs).to receive(:method).and_return(true)
 
       get :readiness
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns 503 if components are unhealthy' do
-      allow(ReadinessCheck::RedisReadinessCheck::Redis).to receive(:method).and_return(false)
-      allow(ReadinessCheck::ResqueReadinessCheck::ResqueJobs).to receive(:method).and_return(false)
+      allow(ReadinessCheck::Redis).to receive(:method).and_return(false)
+      allow(ReadinessCheck::ResqueJobs).to receive(:method).and_return(false)
+      allow(controller).to receive(:app_healthy?).and_return(true)
       allow(controller).to receive(:status_unhealthy?).and_return(true)
 
       get :readiness

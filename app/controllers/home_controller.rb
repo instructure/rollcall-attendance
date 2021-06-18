@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-require 'health_check'
+require 'readiness_check'
 
 class HomeController < ApplicationController
   include ReadinessCheck
 
-  skip_before_action :request_canvas_authentication, :only => [:health_check, :readiness, :liveness]
-  skip_before_action :require_lti_launch, :only => [:health_check, :readiness, :liveness]
+  skip_before_action :request_canvas_authentication, :only => [:readiness,
+    :liveness]
+  skip_before_action :require_lti_launch, :only => [:readiness, :liveness]
 
   def index
     if student_launch?
@@ -35,35 +36,20 @@ class HomeController < ApplicationController
     end
   end
 
-  # NOTE: this action is publically available and should not do anything that
-  # would require authentication
-  def health_check
-    healthy = HealthCheck.new.healthy?
-    message = healthy ? 'ok' : 'down'
-    status = healthy ? 200 : 500
-    respond_to do |format|
-      format.html { render plain: message, status: status }
-      format.json { render json: { message: message }, status: status }
-    end
-  end
-
   def liveness
-    healthy = HealthCheck.new.healthy?
-    message = healthy ? 'ok' : 'down'
-    status = healthy ? 200 : 500
+    return head :ok if app_healthy?
 
-    render json: { message: message }, status: status
-
+    head :service_unavailable
   end
 
-  # NOTE: Need to check for S3 instances/buckets
   def readiness
     message = {}
 
     if app_healthy?
       components = components_json
 
-      message[:status] = components.any? {|component| status_unhealthy?(component[:status])} ? HTTP_503 : HTTP_200
+      message[:status] = components.any? {
+        |component| status_unhealthy?(component[:status])} ? HTTP_503 : HTTP_200
       message[:components] = components
     else
       message[:status] = HTTP_503
