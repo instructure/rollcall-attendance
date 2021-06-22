@@ -49,6 +49,7 @@ InstructureRollcall::Application.routes.draw do
   resources :course_configs
   resources :reports, only: [:create, :new]
 
+  get 'health_check', to: 'home#liveness'
   get 'liveness', to: 'home#liveness'
   get 'readiness', to: 'home#readiness'
   root to: 'home#index'
