@@ -16,10 +16,26 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 module Authorization
-  def load_and_authorize_enrollments(user_id)
-    if user_id && (authorize_resource :user_enrollment, user_id, lambda { canvas.get_user_enrollments(user_id) })
-      cached_user_enrollments(user_id)
+  def load_and_authorize_enrollments(user_id, course_id)
+    if user_id &&
+      authorize_resource(
+        :user_enrollment,
+        user_id,
+        lambda { get_course_enrollments_for_user(user_id, course_id) }
+      )
+      get_course_enrollments_for_user(user_id, course_id)
     end
+  end
+
+  def get_course_enrollments_for_user(user_id, course_id)
+    query_options = {
+      query: {
+        type: ['TeacherEnrollment', 'TaEnrollment'],
+        state: ['active', 'completed'],
+        user_id: user_id.to_s
+      }
+    }
+    canvas.authenticated_get "/api/v1/courses/#{course_id}/enrollments", query_options
   end
 
   def load_and_authorize_section(section_id)

@@ -59,25 +59,13 @@ class SectionsController < ApplicationController
     refresh_course!(params[:course_id])
   end
 
-  def course_enrollments(course_id)
-    enrollments = load_and_authorize_enrollments(user_id) || []
-
-    enrollments.select do |enrollment|
-      type = enrollment['type']
-      course_id = course_id.to_i
-
-      course_id == enrollment['course_id'] &&
-        (type == 'TeacherEnrollment' || type == 'TaEnrollment')
-    end
-  end
-
   def enrollments_section_ids(course_id)
-    enrollments = course_enrollments course_id
+    enrollments = load_and_authorize_enrollments(user_id, course_id) || []
     enrollments.map { |enrollment| enrollment['course_section_id'] }
   end
 
   def section_limited?(course_id)
-    enrollments = course_enrollments course_id
+    enrollments = load_and_authorize_enrollments(user_id, course_id) || []
     enrollments.present? &&
       enrollments.all?{ |e| e['limit_privileges_to_course_section'] }
   end

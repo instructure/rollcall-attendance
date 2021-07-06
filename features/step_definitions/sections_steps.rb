@@ -50,6 +50,17 @@ Given /^I am a teacher with (\d+) sections? and (\d+) (cross-shard )?students(?:
     with(:headers => {'Authorization'=>'Bearer'}).
     to_return(:status => 200, :body => enrollments_json(enrollment_hashes), headers: {'Content-Type' => 'application/json'})
 
+  # The enrollments 2
+  stub_request(:get, "http://test.canvas/api/v1/courses/1/enrollments?state"\
+                     "%5B%5D=active&state%5B%5D=completed&type%5B%5D="\
+                     "TaEnrollment&type%5B%5D=TeacherEnrollment&user_id=2").
+    with(:headers => {'Authorization'=>'Bearer'}).
+    to_return(
+      :status => 200,
+      :body => enrollments_json(enrollment_hashes),
+      headers: {'Content-Type' => 'application/json'}
+    )
+
   # Response for when the course is queried
   stub_request(:get, "http://test.canvas/api/v1/courses/1").
         with(:headers => {'Authorization'=>'Bearer'}).
