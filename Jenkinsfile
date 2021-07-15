@@ -4,8 +4,7 @@ pipeline {
   agent { label 'docker' }
 
   environment {
-    COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}".
-                          replaceAll("/", "-").replaceAll(" ", "").toLowerCase()
+    COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}".replaceAll("/", "-").replaceAll(" ", "").toLowerCase()
     COMPOSE_FILE = "docker-compose.yml:docker-compose.test.yml"
     RAILS_ENV = "test"
     DOCKER_REF = "${(env.GERRIT_EVENT_TYPE == 'change-merged') ? env.GERRIT_BRANCH : env.GERRIT_REFSPEC}"

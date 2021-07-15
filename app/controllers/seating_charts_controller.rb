@@ -25,6 +25,7 @@ class SeatingChartsController < ApplicationController
       chart = SeatingChart.where({
         section_id: seating_chart_params[:section_id],
         class_date: seating_chart_params[:class_date],
+        course_id: seating_chart_params[:course_id],
         tool_consumer_instance_guid: tool_consumer_instance_guid
       }).first
       chart ||= SeatingChart.new

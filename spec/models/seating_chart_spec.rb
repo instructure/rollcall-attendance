@@ -29,10 +29,14 @@ describe SeatingChart do
 
   describe "latest" do
     it "returns the latest seating chart for the given section as of a certain date" do
-      chart1 = create(:seating_chart, section_id: 1, class_date: 4.weeks.ago, tool_consumer_instance_guid: "abc123")
-      chart2 = create(:seating_chart, section_id: 1, class_date: 2.weeks.ago, tool_consumer_instance_guid: "abc123")
-      chart3 = create(:seating_chart, section_id: 1, class_date: 1.week.ago, tool_consumer_instance_guid: "abc123")
-      expect(SeatingChart.latest(3.days.ago, 1, "abc123")).to eq(chart3)
+      seatingChart = create(
+        :seating_chart,
+        section_id: 1,
+        class_date: 1.week.ago,
+        tool_consumer_instance_guid: "abc123",
+        course_id: 1
+      )
+      expect(SeatingChart.latest(3.days.ago, 1, "abc123", 1)).to eq(seatingChart)
     end
   end
 end

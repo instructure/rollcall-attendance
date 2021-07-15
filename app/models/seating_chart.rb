@@ -30,10 +30,11 @@ class SeatingChart < ApplicationRecord
     assignments[student_id.to_s]
   end
 
-  def self.latest(class_date, section_id, tool_consumer_instance_guid)
+  def self.latest(class_date, section_id, tool_consumer_instance_guid, course_id)
     where({
       section_id: section_id,
-      tool_consumer_instance_guid: tool_consumer_instance_guid
+      tool_consumer_instance_guid: tool_consumer_instance_guid,
+      course_id: course_id
     }).where("class_date <= ?", class_date).order("class_date DESC").first
   end
 end

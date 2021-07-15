@@ -43,7 +43,12 @@ class Status < ApplicationRecord
   end
 
   def seating_info
-    seating_chart = SeatingChart.latest(class_date, section_id, tool_consumer_instance_guid)
+    seating_chart = SeatingChart.latest(
+      class_date,
+      section_id,
+      tool_consumer_instance_guid,
+      course_id
+    )
     assignment = seating_chart.assignment(student_id) if seating_chart
 
     {

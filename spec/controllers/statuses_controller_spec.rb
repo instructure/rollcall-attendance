@@ -40,7 +40,7 @@ describe StatusesController do
   end
 
   describe "create" do
-    let(:course) { Course.new(account_id: 3) }
+    let(:course) { Course.new(account_id: 3, id: 1) }
 
     it "loads and authorizes the course" do
       expect(controller).to receive(:load_and_authorize_course).with('1')
