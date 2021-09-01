@@ -40,7 +40,9 @@ class StatusesController < ApplicationController
       status = Status.where(
         student_id: params[:status][:student_id],
         section_id: params[:status][:section_id],
-        class_date: params[:status][:class_date]
+        class_date: params[:status][:class_date],
+        course_id: params[:status][:course_id],
+        tool_consumer_instance_guid: tool_consumer_instance_guid
       ).first
 
       status ||= Status.new(status_params)
