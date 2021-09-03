@@ -32,7 +32,8 @@ module Authorization
       query: {
         type: ['TeacherEnrollment', 'TaEnrollment'],
         state: ['active', 'completed'],
-        user_id: user_id.to_s
+        user_id: user_id.to_s,
+        per_page: 100
       }
     }
     canvas.authenticated_get "/api/v1/courses/#{course_id}/enrollments", query_options
