@@ -47,11 +47,8 @@ class AttendanceReport
     if @course_filter.nil?
       sis_course_id = @filters[:sis_course_id]
 
-      course_id = if sis_course_id.present?
-                    course_id = @canvas.hex_sis_id("sis_course_id", sis_course_id)
-                  else
-                    @params[:course_id]
-                  end
+      course_id = @canvas.hex_sis_id("sis_course_id", sis_course_id) if sis_course_id.present?
+      course_id ||= @params[:course_id]
 
       if course_id.present?
         course = @canvas.get_course(course_id)
@@ -59,7 +56,7 @@ class AttendanceReport
         @course_filter = Course.new(id: course['id'].to_i, sis_id: course['sis_course_id'], course_code: course['course_code'], name: course['name'])
       end
     end
-    return @course_filter
+    @course_filter
   end
 
   def student_filter
@@ -206,7 +203,7 @@ class AttendanceReport
       attendance_collection.each do |attendance|
         teacher_id = attendance.teacher_id || teachers[attendance.course_id]
         next unless users[attendance.student_id]
-        csv << course_columns(courses[attendance.course_id]) + 
+        csv << course_columns(courses[attendance.course_id]) +
             section_columns(attendance.section_id) +
             user_columns(users[teacher_id]) +
             user_columns(users[attendance.student_id]) +
