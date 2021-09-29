@@ -202,7 +202,7 @@ class AttendanceReport
       csv << header
       attendance_collection.each do |attendance|
         teacher_id = attendance.teacher_id || teachers[attendance.course_id]
-        next unless users[attendance.student_id]
+        next unless users[attendance.student_id] && section_exists?(attendance.section_id)
         csv << course_columns(courses[attendance.course_id]) +
             section_columns(attendance.section_id) +
             user_columns(users[teacher_id]) +
@@ -215,6 +215,13 @@ class AttendanceReport
   def course_columns(course)
     return Array.new(4) {''} if course.nil?
     [course.id, course.sis_id, course.course_code, course.name]
+  end
+
+  def section_exists?(section_id)
+    return true if section_id.nil?
+    section = get_section(section_id)
+    return false if section['name'].nil?
+    true
   end
 
   def section_columns(section_id)

@@ -44,11 +44,23 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
     @$('#student-details').html('')
     @indexView.statuses.each(@addOne)
 
-  addOne: (status) =>
-    view = new InstructureRollcall.Views.Statuses.StatusView({model : status, indexView: @indexView})
-    @$("#student-list").append(view.render().el)
+  checkSection: (sectionId) =>
+    sectionOption = $('#section_select')
+      .find("option[value=#{sectionId}]")
+    selected = sectionOption.is(':selected')
+    name = sectionOption.text()
+    return true if name != '' and selected
+    false
 
-    view.showDetails() if @indexView.detailsView? and status.get('student_id') == @indexView.detailsView.model.get('student_id')
+  addOne: (status) =>
+    view = new InstructureRollcall.Views.Statuses.StatusView({
+      model : status,
+      indexView: @indexView
+    })
+    if @checkSection(status.get('section_id'))
+      @$("#student-list").append(view.render().el)
+      view.showDetails() if @indexView.detailsView? and
+        status.get('student_id') == @indexView.detailsView.model.get('student_id')
 
   render: =>
     @$el.html(@template())
