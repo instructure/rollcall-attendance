@@ -37,6 +37,8 @@ class StatusesController < ApplicationController
   def create
     course_id = params[:status][:course_id]
     if course = load_and_authorize_course(course_id)
+      #This makes sure that the Status is unique for the student and
+      #the corresponding course.
       status = Status.where(
         student_id: params[:status][:student_id],
         section_id: params[:status][:section_id],
