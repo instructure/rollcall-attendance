@@ -40,6 +40,14 @@ class Award < ApplicationRecord
     }).order(:name)
     badges |= account.all_badges
 
+    unless course.root_account_id.nil?
+      root_account = CachedAccount.where(
+        account_id: course.root_account_id,
+        tool_consumer_instance_guid: tool_consumer_instance_guid
+      ).first_or_create
+      badges |= root_account.badges
+    end
+
     badges.each do |badge|
       unless awarded_badges.include?(badge.id)
         award = Award.new({

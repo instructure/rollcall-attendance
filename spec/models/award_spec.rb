@@ -63,23 +63,24 @@ describe Award do
     end
 
     before do
-      @double_course = double(:course, :id => 1, :account_id => 1)
+      @double_course = double(:course, :id => 1, :account_id => 1, :root_account_id => 2)
 
       @badge1 = Badge.create!(course_id: course_id, name: 'Participation', icon: '+', color: 'red', tool_consumer_instance_guid: tool_consumer_instance_guid)
       @badge2 = Badge.create!(course_id: course_id, name: 'Good Citizen', icon: '!', color: 'blue', tool_consumer_instance_guid: tool_consumer_instance_guid)
       @badge3 = Badge.create!(course_id: 2, name: 'Participation', icon: '+', color: 'red', tool_consumer_instance_guid: tool_consumer_instance_guid)
       @badge4 = Badge.create!(account_id: @double_course.account_id, name: 'Participation', icon: '+', color: 'red', tool_consumer_instance_guid: tool_consumer_instance_guid)
+      @badge5 = Badge.create!(account_id: @double_course.root_account_id, name: 'Participation Root', icon: '-', color: 'blue', tool_consumer_instance_guid: tool_consumer_instance_guid)
     end
 
     context "when the student has no awards" do
-      its(:size) { should == 3 }
+      its(:size) { should == 4 }
       specify { expect(subject.all?(&:new_record?)).to be_truthy }
     end
 
     context "when the student has awards" do
       before { create(:award, course_id: course_id, student_id: student_id, class_date: class_date, badge_id: @badge1.id, tool_consumer_instance_guid: tool_consumer_instance_guid) }
 
-      its(:size) { should == 3 }
+      its(:size) { should == 4 }
       specify { expect(subject.all?(&:new_record?)).to be_falsey }
       specify { expect(subject.map(&:badge)).to include @badge1, @badge2, @badge4 }
 
