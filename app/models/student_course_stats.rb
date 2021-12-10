@@ -54,6 +54,7 @@ class StudentCourseStats
     options = {
       student_id: student_id,
       section_id: section_ids,
+      course_id: course_id,
       tool_consumer_instance_guid: tool_consumer_instance_guid
     }
     options[:attendance] = attendance if attendance.present?
