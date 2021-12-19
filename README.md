@@ -26,7 +26,7 @@ https://github.com/instructure/canvas-lms/blob/stable/doc/docker/developing_with
 Once you have a dockerized Canvas up and running, you need to add a
 developer key to Canvas for rollcall to connect with. As an admin
 account, go to `http://canvas.docker/accounts/<id>/developer_keys`,
-create an API key with a `tool_id` of "rollcall" and a redirect url of
+create an API key with a `tool_id` of "rollcall" and a redirect URL of
 `http://rollcall.docker/canvas_oauth`. Ensure the key state is `ON`.
 Once it's been created, get the ID number (an integer) from the index
 page along with the token and add them as `CANVAS_KEY` and
@@ -48,11 +48,11 @@ outgoing address parameter to an email address on your own domain; otherwise,
 your reports will be sent from "`Roll Call <notifications@instructure.com>`",
 which is most certainly not what you want.
 
-### 3. Configure your docker environment for SSL
+### 3. Configure your Docker environment for SSL
 
-Do to recent changes in browsers, the session cookies for rollcall are required to have `SaveSite=None` and `secure`.
+Due to recent changes in browsers, the session cookies for rollcall are required to have `SaveSite=None` and `secure`.
 Due to `secure` local development is easier if you configure your dockerized canvas and rollcall to use SSL. If you are
-using dinghy for OS X based development. You can find instructions on how to create self signed certificates at
+using dinghy for OS X based development. You can find instructions on how to create self-signed certificates at
 https://github.com/codekitchen/dinghy-http-proxy/blob/master/README.md#ssl-support
 
 The default docker-compose.override.yml file will share your ~/.dinghy/cert directory into the docker containers and add
@@ -60,7 +60,7 @@ the certifications in that directory as trusted certificates to the container.
 
 ### 4. Docker build + Database migrations:
 
-NOTE: By default this setup uses postgres. To use mysql instead, export:
+NOTE: By default this setup uses Postgres. To use MySQL instead, export:
 
     COMPOSE_FILE=docker-compose.yml:docker-compose.override.yml:docker-compose.mysql.yml
 
@@ -82,8 +82,8 @@ You should be able to start everything with:
     docker-compose up
 
 This will start up 5 containers: a web process to hit with your browser, a
-worker process to consume jobs, a postgres data store, a redis cache, and a
-minio server so you don't need a real AWS S3 bucket. When they're running, you
+worker process to consume jobs, a Postgres data store, a Redis cache, and a
+Minio server so you don't need a real AWS S3 bucket. When they're running, you
 can visit your app in the browser by going to:
 
 `http://rollcall.docker`
@@ -125,7 +125,7 @@ but that kind of sucks for rerunning. Run your javascript tests from the command
 
     docker-compose run --rm web bundle exec rake jasmine:ci
 
-Finally, you can run your cucumber tests, but it's kind of hacky.  For linux
+Finally, you can run your cucumber tests, but it's kind of hacky.  For Linux
 (which the container is) you need to wrap a cucumber run in "xvfb-run" for
 capybara-webkit to work correctly, but something in that process is
 making output redirection not work right, so you won't see the output if you
@@ -143,7 +143,7 @@ If you want to run the whole suite of tests, like a CI would, just run:
 
     ./build.sh
 
-and watch the output fly by. It builds the docker image and runs in sequence the rspec tests,
+and watch the output fly by. It builds the Docker image and runs in sequence the rspec tests,
 the jasmine tests, and the cukes. Failures in any should exit the script with a non-zero exit code.
 
 ### Avatars
