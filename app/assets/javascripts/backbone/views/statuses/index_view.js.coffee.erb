@@ -23,19 +23,82 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
   events:
     'click #previous-day': 'previousDay'
     'click #next-day': 'nextDay'
+    'click .paginate-attendance-next': 'nextPage'
+    'click .paginate-attendance-previous': 'previousPage'
+    'change .per_page_select': 'listenForPerPageChange'
 
   initialize: () ->
+    window.page = 1
+    window.page_section = 1
+    window.loading = false
+    window.per_page_section = 10
+    window.per_page = 50
+    window.endOfList = false
+    window.nextPageSection = ''
+    window.previousPageSection = ''
+    window.bookMarkPages = ['first']
+
     @statuses = @options.statuses
+    @section_list = @options.section_list
     @sectionId = @options.sectionId
     @courseId = @options.courseId
     @courseConfig = @options.courseConfig
     @bindViewToggles()
     @listenForSectionChange()
     @statuses.bind 'reset', @resetList
+    @sectionsModalMethods()
+    @resetSectionList()
+    @selectSection()
+    $('.per_page_section_select').change(() => @listenForPerPageSectionChange(@))
+    $('.paginate-section-next').click(() => @nextPageSectionList(@))
+    $('.paginate-section-previous').click(() => @previousPageSectionList(@))
 
   bindViewToggles: ->
     $("#show-list a").click(@showListView)
     $("#show-class a").click(@showClassView)
+
+  sectionsModalMethods: ->
+    $("#sections-select-modal").click(@openSectionsModal)
+    $("#section-list-modal .backdrop").click(@closeSectionsModal)
+    $("#section-list-modal .close-modal").click(@closeSectionsModal)
+    $("#section-list-modal .cancel").click(@closeSectionsModal)
+
+  closeSectionsModal: ->
+    $("#section-list-modal").hide(200)
+
+  openSectionsModal: ->
+    $("#section-list-modal").show(500)
+
+  selectSection: ->
+    $('#section-list-modal .content .footer button.submit').on 'click', () ->
+      active = $(".section-item.active")
+      if active.length != 0
+        $("#section-list-modal").hide(1500)
+        $(".sections-select").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner-left" alt="Loading" />'
+
+        sid = active[0].id.replace('section-item-', '')
+        window.location = '/sections/' + sid
+
+  listenForPerPageChange: ->
+    sid = $(".per_page_select").find(":selected").val()
+    $(".per_page_select").val(sid)
+
+    if sid == 10
+      $('#pagination_container_bottom').hide()
+    else
+      $('#pagination_container_bottom').show()
+
+    window.page = 1
+    window.per_page = Number(sid)
+    @resetClassDate()
+
+  listenForPerPageSectionChange: (e) ->
+    sid = $(".per_page_section_select").find(":selected").val()
+    $(".per_page_section_select").val(sid)
+
+    window.page_section = 1
+    window.per_page_section = Number(sid)
+    @resetSectionList()
 
   listenForSectionChange: ->
     $('#section_select').on 'change', ->
@@ -45,6 +108,9 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
   showListView: (event) =>
     event.preventDefault() if event?
     @switchView('list')
+    if window.page == 1
+      @$("#paginate-attendance-previous").addClass("disabled")
+      @$("#paginate-attendance-previous").attr('disabled', 'disabled')
 
   showClassView: (event) =>
     event.preventDefault() if event?
@@ -64,12 +130,42 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
       $("#show-list").addClass("active-toggle").attr("aria-selected", true)
       $("#show-class").attr("aria-selected", false)
 
-
     @$("#subview-container").html(@subView.render().el)
+    @resetPaginationButtons()
 
     if view?
       @courseConfig.set('view_preference', view)
       @courseConfig.save()
+
+  resetPaginationButtons: ->
+    if window.classDate
+      $("#date").html(@prettyClassDate())
+
+    $(".per_page_select").val(window.per_page)
+
+    if window.per_page == 10
+      $('#pagination_container_bottom').hide()
+    else
+      $('#pagination_container_bottom').show()
+
+    page = window.page
+
+
+    @setPageCounter(page)
+
+    if page < window.bookMarkPages.length
+      $(".paginate-attendance-next").removeClass("disabled")
+      $(".paginate-attendance-next").attr('disabled', '')
+    else
+      $(".paginate-attendance-next").addClass("disabled")
+      $(".paginate-attendance-next").attr('disabled', 'disabled')
+
+    if page == 1
+      $(".paginate-attendance-previous").addClass("disabled")
+      $(".paginate-attendance-previous").attr('disabled', 'disabled')
+    else
+      $(".paginate-attendance-previous").removeClass("disabled")
+      $(".paginate-attendance-previous").attr('disabled', '')
 
   attachDetailsView: (newDetailsView) ->
     @detachDetailsView(@detailsView) if @detailsView?
@@ -122,21 +218,340 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
       $(this).click()
       $("#ui-datepicker-div").attr('tabindex', '0').focus()
 
+  toggleSectionSelection: (event) =>
+
+  nextPageSectionList:  ->
+    disabled = $('.paginate-section-next.disabled').length
+
+    if !disabled
+      @changePageSectionList(window.page_section + 1)
+
+  previousPageSectionList:  ->
+    disabled = $('.paginate-section-previous.disabled').length
+
+    if window.page_section != 1 && !disabled
+      @changePageSectionList(window.page_section - 1)
+
+  changePageSectionList: (page) ->
+    $('.no-more-notice').remove()
+    @loadingSpinnerSectionList()
+    @setSectionPageCounter(page)
+    $('#section-list-modal .content .footer button.submit').addClass('disabled')
+
+    @section_list.fetch
+      data:
+        page: page
+        per_page: window.per_page_section
+        section_id: @sectionId
+        course_id: @courseId
+      success: (collection, response, options) ->
+        $(".loading-spinner-section").hide()
+        window.page_section = page
+
+        if page == 1
+          $(".paginate-section-previous").addClass("disabled")
+        else
+          $(".paginate-section-previous").removeClass("disabled")
+
+        if response.length == 0
+          $('div#section-list-modal .body').after("<div class='no-more-notice'><h3>No more items</h3></div>")
+
+        if response.length == window.per_page_section
+          $(".paginate-section-next").removeClass("disabled")
+        else
+          $(".paginate-section-next").addClass("disabled")
+
+        response.map (section) ->
+          { table } = section
+          $('#section-list-modal .body').append("
+            <button id='section-item-" + table.id + "' class='section-item'>
+              <h5>" + table.name + "</h5>
+            </button>
+          ")
+
+        $(".section-item").on 'click', (e) ->
+          { id } = e.currentTarget
+
+          active = $('#' + id + '.active')
+
+          if active.length != 0
+            activeId = active[0].id
+
+          $('.section-item').removeClass('active')
+
+          if id != activeId
+            $('#' + id).addClass('active')
+
+          sectionId = id.replace('section-item-', '')
+
+          newActive = $('#' + id + '.active')
+
+          if newActive.length
+            $('#section-list-modal .content .footer button.submit').removeClass('disabled')
+          else
+            $('#section-list-modal .content .footer button.submit').addClass('disabled')
+
+  resetSectionList: ->
+    $('.no-more-notice').remove()
+    @loadingSpinnerSectionList()
+    @setSectionPageCounter(1)
+    $('#section-list-modal .content .footer button.submit').addClass('disabled')
+
+    @section_list.fetch
+      data:
+        page: window.page_section
+        per_page: window.per_page_section
+        section_id: @sectionId
+        course_id: @courseId
+      success: (collection, response, options) ->
+        $(".loading-spinner-section").remove()
+        $('.no-more-notice').remove()
+        $("img.pad-box.loading-spinner-left").remove()
+
+        if response.length < 10
+          $('#section_select').show()
+          $('#sections-select-modal').hide()
+        else
+          $('#section_select').hide()
+          $('#sections-select-modal').show()
+
+        if response.length == window.per_page_section
+          $(".paginate-section-previous").addClass("disabled")
+          $(".paginate-section-next").removeClass("disabled")
+
+        response.map (section) ->
+          { table } = section
+          $('#section-list-modal .body').append("
+            <button id='section-item-" + table.id + "' class='section-item'>
+              <h5>" + table.name + "</h5>
+            </button>
+          ")
+
+        $(".section-item").on 'click', (e) ->
+          { id } = e.currentTarget
+
+          active = $('#' + id + '.active')
+
+          if active.length != 0
+            activeId = active[0].id
+
+          $('.section-item').removeClass('active')
+
+          if id != activeId
+            $('#' + id).addClass('active')
+
+          sectionId = id.replace('section-item-', '')
+
+          newActive = $('#' + id + '.active')
+
+          if newActive.length
+            $('#section-list-modal .content .footer button.submit').removeClass('disabled')
+          else
+            $('#section-list-modal .content .footer button.submit').addClass('disabled')
+
   resetClassDate: ->
+    window.bookMarkPages = ['first']
+    window.loading = true
     sessionStorage.setItem('date', @classDate.toString('yyyy/MM/dd'))
+    $("#date").html(@prettyClassDate(window.classDate || @classDate.toString('yyyy-MM-dd')))
 
-    @$("#student-list").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box" alt="Loading" />'
-    @$("#date").html(@prettyClassDate())
+    @$(".paginate-attendance-previous").addClass("disabled")
+    @$(".paginate-attendance-previous").attr('disabled', 'disabled')
+    @$(".pagination_container").hide()
 
-    @statuses.fetch
+    @endOfList = false
+
+    window.sectionId = @sectionId
+    window.classDate = @classDate.toString('yyyy-MM-dd')
+
+    @setPageCounter(1)
+    @loadingSpinner()
+
+    jqXHR = @statuses.fetch
       data:
         section_id: @sectionId
         class_date: @classDate.toString('yyyy-MM-dd')
+        per_page: window.per_page
+      success: (collection, response, options) ->
+
+        window.loading = false
+        $("img.loading-spinner").remove()
+        @$(".pagination_container").show()
+
+        if response.length > 15
+          $("#pagination_container_bottom").show()
+        else
+          $("#pagination_container_bottom").hide()
+
+        if response.length == window.per_page
+          $(".paginate-attendance-next").removeClass("disabled")
+          $(".paginate-attendance-next").attr('disabled', '')
+        else
+          $(".paginate-attendance-next").addClass("disabled")
+          $(".paginate-attendance-next").attr('disabled', 'disabled')
+          window.endOfList = true
+    jqXHR.done =>
+      $("#date").html(@prettyClassDate())
+      @setLinkHeaders(jqXHR.getResponseHeader('link-headers'))
+
+    @statuses.bind 'add', @resetList
+
+  setLinkHeaders: (link_headers, order = 'forward') ->
+    { next } = JSON.parse(link_headers)
+
+    next_page = @getPageBookMark(next)
+
+    havePage = window.bookMarkPages.some((page) -> page == next_page)
+
+    if !havePage && next
+      window.bookMarkPages.push(@getPageBookMark(next))
+
+  getPageBookMark: (param) ->
+    if param
+      if !param.includes('?')
+        param
+      else
+        parsedParam = param.slice(param.indexOf('?'))
+        searchParams = new URLSearchParams(parsedParam)
+        searchParams.get('page')
+    else
+      ''
+
+  setPageCounter: (page) ->
+    @$("#page_counter h3").text('Page ' + page || window.page)
+
+  setSectionPageCounter: (page) ->
+    $("#section_page_counter h3").text('Page ' + page || window.page_section)
+
+  nextPage: ->
+    if !!$(".paginate-attendance-next.disabled").length
+      return
+    else
+      window.loading = true
+      @loadingSpinner()
+
+      @setPageCounter(window.page + 1)
+      @scrollTop()
+
+      jqXHR = @statuses.fetch
+        data:
+          page: window.bookMarkPages[window.page]
+          section_id: window.sectionId
+          class_date: window.classDate
+          per_page: window.per_page,
+        success: (collection, response, options) ->
+          $(".paginate-attendance-previous").removeClass("disabled")
+          $(".paginate-attendance-previous").attr('disabled', '')
+          $("img.loading-spinner").hide()
+
+          window.page = window.page + 1
+
+          if response.length > 15
+            $("#pagination_container_bottom").show()
+          else
+            $("#pagination_container_bottom").hide()
+
+          if response.length == window.per_page
+            window.endOfList = false
+            $(".paginate-attendance-next").removeClass("disabled")
+            $(".paginate-attendance-next").attr('disabled', '')
+          else
+            $(".paginate-attendance-next").addClass("disabled")
+            $(".paginate-attendance-next").attr('disabled', 'disabled')
+            window.endOfList = true
+      jqXHR.done =>
+        @setLinkHeaders(jqXHR.getResponseHeader('link-headers'))
+
+  previousPage: ->
+    if !!$(".paginate-attendance-previous.disabled").length
+      return
+    else
+      if window.page != 1
+        @loadingSpinner()
+        @setPageCounter(window.page - 1)
+        @scrollTop()
+
+        jqXHR = @statuses.fetch
+          data:
+            page: window.bookMarkPages[window.page - 2]
+            section_id: window.sectionId
+            class_date: window.classDate
+            per_page: window.per_page
+          success: (collection, response, options) ->
+            $(".paginate-attendance-next").removeClass("disabled")
+            $(".paginate-attendance-next").attr('disabled', '')
+            $("img.loading-spinner").remove()
+
+            if window.page == 2
+              $(".paginate-attendance-previous").addClass("disabled")
+              $(".paginate-attendance-previous").attr('disabled', 'disabled')
+            else
+              $(".paginate-attendance-previous").removeClass("disabled")
+              $(".paginate-attendance-previous").attr('disabled', '')
+            window.page = window.page - 1
+
+        jqXHR.done =>
+          @setLinkHeaders(jqXHR.getResponseHeader('link-headers'), 'previous')
+
+  fetchForMore: (statuses) ->
+    $(window).on 'scroll': ->
+      @d = document;
+      @getDocHeight = Math.max(
+        @d.body.scrollHeight, @d.documentElement.scrollHeight,
+        @d.body.offsetHeight, @d.documentElement.offsetHeight,
+        @d.body.clientHeight, @d.documentElement.clientHeight
+      )
+
+      if $(window).scrollTop() + $(window).height() >= @getDocHeight * 0.75
+        if window.endOfList == false && window.loading == false
+          window.loading = true
+          window.previousScrollPosition = $(window).scrollTop()
+          statuses.fetch
+            add: true
+            data:
+              page: window.page + 1
+              section_id: window.sectionId
+              class_date: window.classDate
+              per_page: window.per_page
+            success: (collection, response, options) ->
+              newPage = Number(window.page) + 1
+              $("#page_counter h3").text('Page ' + newPage)
+              window.page = newPage
+              window.loading = false
+              if response.length <= window.per_page
+                window.endOfList = false
+              else
+                window.endOfList = true
 
   sectionId: ->
     @sectionId
 
+  loadingSpinner: ->
+    $(".paginate-attendance-previous").addClass("disabled")
+    $(".paginate-attendance-previous").attr('disabled', 'disabled')
+
+    $(".paginate-attendance-next").addClass("disabled")
+    $(".paginate-attendance-next").attr('disabled', 'disabled')
+
+    $("#student-list").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner" alt="Loading" />'
+    $("div.unassigned-list").html '<img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner" alt="Loading" />'
+
+  loadingSpinnerSectionList: ->
+    $(".paginate-section-previous").addClass("disabled")
+    $(".paginate-section-next").addClass("disabled")
+
+    $("#section-list-modal .body button").remove()
+    $("#section-list-modal .body").after('<img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner-section" alt="Loading" />')
+
+  scrollTop: ->
+    window.scrollTo(
+      top: 0
+      behavior: 'smooth'
+    )
+
   prettyClassDate: ->
+    @classDate = @classDate || window.classDate
+
     day = @classDate.toString('ddd')
     date = @classDate.toString('MMM dd')
     "#{day} <strong>#{date}</strong>"

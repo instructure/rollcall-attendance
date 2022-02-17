@@ -18,6 +18,7 @@
 class InstructureRollcall.Routers.StatusesRouter extends Backbone.Router
   initialize: (options) ->
     @statuses = new InstructureRollcall.Collections.StatusesCollection()
+    @section_list = new InstructureRollcall.Collections.SectionsCollection()
     @sectionId = options.sectionId
     @courseId = options.courseId
     @courseConfig = options.courseConfig
@@ -27,10 +28,10 @@ class InstructureRollcall.Routers.StatusesRouter extends Backbone.Router
     "index"    : "index"
     ":id/edit" : "edit"
     ":id"      : "show"
-    ".*"        : "index"
+    ".*"       : "index"
 
   index: ->
-    @view = new InstructureRollcall.Views.Statuses.IndexView(statuses: @statuses, sectionId: @sectionId, courseId: @courseId, courseConfig: @courseConfig)
+    @view = new InstructureRollcall.Views.Statuses.IndexView(statuses: @statuses, sectionId: @sectionId, courseId: @courseId, courseConfig: @courseConfig, section_list: @section_list)
     $("#statuses").html(@view.render().el)
 
   show: (id) ->

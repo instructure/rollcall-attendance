@@ -3,8 +3,23 @@
     <a role="button" href="#" class="icon icon-left-arrow date-picker-arrow" id="previous-day" title="Go to previous day"></a>
     <div class="date-picker-date" id="date"></div>
     <a role="button" href="#" class="icon icon-right-arrow date-picker-arrow" id="next-day" title="Go to next day"></a>
-  </div>  
+  </div>
   <input type="hidden" id="datepicker" />
 </section>
-    
+
 <div id="subview-container"></div>
+
+
+<script>
+  $( document ).ready(function() {
+    var classDate =  new Date()
+
+    if(classDate) {
+      day = classDate.toString('ddd')
+      date = classDate.toString('MMM dd')
+      var prettyClassDate = `${day} <strong>${date}</strong>`
+
+      $("#date").html(prettyClassDate)
+    }
+  });
+</script>

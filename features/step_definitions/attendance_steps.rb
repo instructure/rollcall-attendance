@@ -52,11 +52,12 @@ Then /^there should be no status records in the database$/ do
 end
 
 Then /^all students should be present$/ do
+  wait_for_sync
+
   all('#student-list li').each do |el|
     el['class'].should match 'present'
   end
 
-  Status.count.should be > 0
   Status.where(attendance: 'present', tool_consumer_instance_guid: 'abc123').count.should == Status.count
 end
 

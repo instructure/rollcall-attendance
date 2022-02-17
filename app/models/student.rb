@@ -53,4 +53,9 @@ class Student
     return true if enrollments.nil?
     enrollments.any?{|e| ["active","invited"].include?(e["enrollment_state"])}
   end
+
+  def to_h
+    self
+  end
+
 end

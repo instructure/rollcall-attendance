@@ -1,9 +1,7 @@
 <div class="block-box one-half last-box" id="student-details" style="display: none;"></div>
 
 <section class="content-box clearfix last first" id="class-view-container">
-  
   <div class="clearfix classroom-control-bar">
-    
     <div class="clearfix secondary-controls">
       <div class="classroom-scale-container">
         <div id="classroom-slider"></div>
@@ -18,13 +16,28 @@
       <a role="button" href="#" class="header-tab header-tab-dark icon icon-user" id="take-attendance-toggle">Take attendance</a>
       <a role="button" href="#" class="header-tab header-tab-dark icon icon-move active-toggle" id="move-students-toggle">Edit seating chart</a>
     </div>
-        
-  </div>  
-  
+  </div>
+
+  <div class="pagination_container">
+    <div class="per_page_list-select">
+      <select class='per_page_select' value='50'>
+        <option value='10'> Rendering <b>10</b> items per page </option>
+        <option selected value='50'> Rendering <b>50</b> items per page </option>
+      </select>
+      <div id="page_counter">
+        <h3>Page 1</h3>
+      </div>
+    </div>
+    <div id="paginate-attendance">
+      <a type="button" role="button" class="btn paginate-attendance-previous"><span>Previous Page</span></a>
+      <a type="button" role="button" class="btn paginate-attendance-next"><span>Next Page</span></a>
+    </div>
+  </div>
+
   <div class="clearfix grid-container">
-  
+
     <div class="unassigned-list-container">
-      
+
       <div title="Click to hide this notice" class="fineprint center-box user-message message-deletable icon icon-info" id="classroom-instructions"><strong>To create your seating chart, drag students onto the grid</strong></div>
 
       <div class="no-select unassigned-list">
@@ -32,7 +45,7 @@
       </div>
 
     </div>
-  
+
     <div class="classroom-container small-grid">
       <% for(var row=0; row < 25; row++) { %>
         <div class="clearfix classroom-row">
@@ -43,9 +56,9 @@
       <% } %>
 
     </div>
-  
+
   </div>
-  
+
 </section>
 
 <script>

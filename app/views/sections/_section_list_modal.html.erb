@@ -1,0 +1,53 @@
+<%
+# Copyright (C) 2014 - present Instructure, Inc.
+#
+# This file is part of Rollcall.
+#
+# Rollcall is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, version 3 of the License.
+#
+# Rollcall is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+%>
+
+<div id='section-list-modal'>
+  <div class='content'>
+    <header id="app-header">
+      <div class="block-box one-half first-box">
+        <h1 class="light-text-color">Sections in this course</h1>
+      </div>
+      <button class='close-modal'>
+        <i class="fa fa-times"></i>
+      </button>
+    </header>
+    <div class="section_pagination_container">
+      <div class="per_page_list-select">
+        <select class='per_page_section_select'>
+          <option selected value='10'> Rendering <b>10</b> items per page </option>
+          <option value='50'> Rendering <b>50</b> items per page </option>
+        </select>
+        <div id="section_page_counter">
+          <h3>Page 1</h3>
+        </div>
+      </div>
+      <div id="paginate-attendance">
+        <a type="button" role="button" class="btn paginate-section-previous"><span>Previous Page</span></a>
+        <a type="button" role="button" class="btn paginate-section-next"><span>Next Page</span></a>
+      </div>
+    </div>
+    <div class='body'></div>
+    <div class='footer'>
+      <button class='cancel'>Cancel</button>
+      <button class='submit disabled'>Choose section</button>
+    </div>
+  </div>
+
+  <div class='backdrop backdrop-sections'></div>
+  <input class='selected-section'></div>
+</div>

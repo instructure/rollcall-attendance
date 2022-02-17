@@ -32,7 +32,7 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
 
   unmarkAll: (event) ->
     event.preventDefault()
-    
+
     @indexView.statuses.each (status) ->
       status.unmark()
 
@@ -45,11 +45,12 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
     @indexView.statuses.each(@addOne)
 
   checkSection: (sectionId) =>
+    sectionButton = $('#sections-select-modal')
     sectionOption = $('#section_select')
       .find("option[value=#{sectionId}]")
     selected = sectionOption.is(':selected')
-    name = sectionOption.text()
-    return true if name != '' and selected
+    name = sectionOption.text() || $('#sections-select-modal').text().trim()
+    return true if name != ''
     false
 
   addOne: (status) =>
@@ -65,5 +66,4 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
   render: =>
     @$el.html(@template())
     @addAll()
-
     return this

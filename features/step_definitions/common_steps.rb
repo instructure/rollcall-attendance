@@ -28,7 +28,7 @@ When /^I wait a second$/ do
 end
 
 def first_student
-  find('#student-list li', text: 'student1')
+  find('#student-list li', match: :first)
 end
 
 def first_student_status(class_date)

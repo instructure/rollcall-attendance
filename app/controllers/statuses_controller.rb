@@ -14,20 +14,38 @@
 #
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
+require 'net/http'
 
 class StatusesController < ApplicationController
   before_action :can_grade
-
   respond_to :json
 
+  include HttpCanvasHelper
+
   def index
-    if section = load_and_authorize_full_section(params[:section_id])
+    page = params[:page] || 'first'
+    per_page = params[:per_page] || 50
+
+    section = HttpCanvasAuthorizedRequest
+      .new(canvas, "/api/v1/sections/#{params[:section_id]}")
+      .send_request
+
+    if section
+      students, links = HttpCanvasAuthorizedRequest
+        .new(canvas, "/api/v1/sections/#{params[:section_id]}/enrollments?per_page=#{per_page}&page=#{page}")
+        .send_request_with_link_headers
+
+      response.set_header('link-headers', links.to_json)
+
+      section.students = students
+
       statuses = Status.initialize_list(
         section,
         params[:class_date],
         user_id,
         tool_consumer_instance_guid
       )
+
       respond_with statuses
     else
       not_acceptable

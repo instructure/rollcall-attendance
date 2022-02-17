@@ -67,7 +67,7 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
       badge.off('sync', null, this)
     ), this
     new InstructureRollcall.Views.Badges.EditView(model: badge)
-    
+
   manageBadgesDialog: =>
     new InstructureRollcall.Views.Badges.IndexView(badges: @badges).renderDialog()
 
@@ -102,7 +102,8 @@ class InstructureRollcall.Views.Statuses.DetailsView extends Backbone.View
 
   templateOptions: ->
     options = @model.toJSON()
-    options.formatted_student_name = @formatStudentName(options.student.name)
+    student = if options.student.user then options.student.user.table else options.student
+    options.formatted_student_name = @formatStudentName(student.name)
     options.first_name = _.escape(@model.firstName())
     options.attendance = @model.attendance()
     options.class_date = @indexView.prettyClassDate()

@@ -72,12 +72,19 @@ class InstructureRollcall.Views.Statuses.StatusView extends Backbone.View
     @$('.student-status').text(@model.attendance())
 
   sectionName: (section_id) ->
-    $('#section_select').find("option[value=#{section_id}]").text()
+    name = ''
+    name = $('#section_select').find("option[value=#{section_id}]").text()
+    if !name
+      $('#sections-select-modal').text().trim()
+    else
+      name
+
 
   templateOptions: ->
     options = @model.toJSON()
-    options.formatted_student_name = @formatStudentName(options.student.name)
-    options.escaped_student_name = _.escape(options.student.name)
+    student = if options.student.name then options.student else options.student.user.table
+    options.formatted_student_name = @formatStudentName(student.name)
+    options.escaped_student_name = _.escape(student.name)
     options.section_name = @sectionName(@model.sectionId())
     options.default_section_id = @indexView.sectionId
     return options

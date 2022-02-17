@@ -14,13 +14,29 @@
 #
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
+require 'net/http'
 
 class SectionsController < ApplicationController
   before_action :can_grade
+  respond_to :json
+
+  include HttpCanvasHelper
+
+  def index
+    @course_id = params[:course_id]
+    @per_page = params[:per_page]
+    @page = params[:page]
+
+    @section_list = get_section_list_service
+
+    @section_list.each do |section|
+      section = Section.new(section)
+    end
+
+    respond_with @section_list
+  end
 
   def course
-    prepare_course
-
     if section_id = enrollments_section_ids(params[:course_id]).first
       redirect_to section_path(section_id)
     elsif section = load_and_authorize_sections(params[:course_id]).first
@@ -30,11 +46,24 @@ class SectionsController < ApplicationController
     end
   end
 
+  def get_section_service(params)
+    service = HttpCanvasAuthorizedRequest.new(canvas, "/api/v1/sections/#{params[:section_id]}")
+    service.send_request
+  end
+
+  def get_section_list_service
+    service = HttpCanvasAuthorizedRequest.new(canvas, "/api/v1/courses/#{@course_id}/sections?per_page=#{@per_page || 50}&page=#{@page || 1}")
+    service.send_request
+  end
+
   def show
-    @section = load_and_authorize_full_section(params[:section_id])
+    @section = get_section_service(params)
+
     return render_error if @section.blank?
 
-    @sections = load_and_authorize_sections(@section.course_id)
+    @course_id = @section.course_id
+
+    @sections = get_section_list_service
 
     if section_limited?(@section.course_id)
       authorized_section_ids = enrollments_section_ids(@section.course_id)

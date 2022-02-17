@@ -70,6 +70,7 @@ class Status < ApplicationRecord
       students_table = {}
 
       section.students.each do |student|
+
         students_table[student.id] = student
         unless lookup_table.key?(student.id)
           default_status = new(
@@ -91,6 +92,10 @@ class Status < ApplicationRecord
 
       statuses.reject! { |status| status.student.nil? }
       statuses.sort_by! { |status| status.student.sortable_name }
+
+      statuses.each do |status|
+        status.student = status.student.to_h
+      end
     end
 
     def existing_for_course_and_date(course_id, class_date, tool_consumer_instance_guid)

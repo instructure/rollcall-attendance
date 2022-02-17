@@ -5,7 +5,36 @@
 
 <section class="content-box clearfix last first" id="list-view-container">
   <div class="block-box one-half first-box">
+    <div class="pagination_container">
+      <div class="per_page_list-select">
+        <select class='per_page_select'>
+          <option value='10'> Rendering <b>10</b> items per page </option>
+          <option selected value='50'> Rendering <b>50</b> items per page </option>
+        </select>
+        <div id="page_counter">
+          <h3>Page 1</h3>
+        </div>
+      </div>
+      <div id="paginate-attendance">
+        <a type="button" role="button" class="btn paginate-attendance-previous"><span>Previous Page</span></a>
+        <a type="button" role="button" class="btn paginate-attendance-next"><span>Next Page</span></a>
+      </div>
+    </div>
+
     <ol id="student-list" class="unstyled-list student-list-display"></ol>
+
+    <div class="pagination_container" id="pagination_container_bottom">
+      <div class="per_page_list-select">
+        <div></div>
+        <div id="page_counter">
+          <h3>Page 1</h3>
+        </div>
+      </div>
+      <div id="paginate-attendance">
+        <a type="button" role="button" class="btn paginate-attendance-previous"><span>Previous Page</span></a>
+        <a type="button" role="button" class="btn paginate-attendance-next"><span>Next Page</span></a>
+      </div>
+    </div>
   </div>
   <div class="block-box one-half last-box" id="student-details"></div>
 </section>
