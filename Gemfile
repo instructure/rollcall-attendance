@@ -19,15 +19,15 @@ source 'https://rubygems.org'
 
 gem 'bundler', '>= 1.7.10'
 
-gem 'rails', '~> 5.2.6'
+gem 'rails', '6.0.4.2'
 gem 'rack', '~> 2.1'
 gem 'bootsnap', '~> 1.0', require: false
 
 gem 'thin', '~> 1.0'
 
 gem 'ims-lti', '~> 1.0', require: 'ims'
-gem 'lti_provider_engine', '~> 1.1.0', require: 'lti_provider'
-gem 'canvas_oauth_engine', '~> 2.1.3', require: 'canvas_oauth'
+gem 'lti_provider_engine', '~> 1.2.0', require: 'lti_provider'
+gem 'canvas_oauth_engine', '~> 2.2.0', require: 'canvas_oauth'
 gem 'httparty', '~> 0.15'
 
 gem 'aws-sdk-s3', '~> 1.0'
@@ -41,7 +41,7 @@ gem 'resque-retry', '~> 1.0'
 gem 'resque-sentry', '~> 1.0'
 gem 'chronic', '~> 0.10'
 gem 'json', '~> 2.0'
-gem 'responders', '~> 2.0'
+gem 'responders', '3.0.1'
 
 gem 'sentry-raven', '~> 2.0'
 gem 'inst_statsd', '~> 2.1.4'
@@ -71,7 +71,7 @@ group :development, :test do
   gem 'rspec-collection_matchers'
   gem 'jasmine-rails'
   gem 'phantomjs', '1.9.7.1'
-  gem 'guard-jasmine', '~> 2.0'
+  gem 'guard-jasmine', '1.19.2'
   # We can relax this brakeman dependency after we have deployed a hybrid
   # cookie serializer and allowed a chance for cookies to be stored as JSON.
   gem 'brakeman', '4.5.1', require: false

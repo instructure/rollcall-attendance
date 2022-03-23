@@ -52,7 +52,7 @@ class BadgesController < ApplicationController
         (load_and_authorize_course(badge.course_id) ||
          load_and_authorize_account(badge.account_id, tool_consumer_instance_guid)
         )
-      badge.update_attributes(update_badge_params)
+      badge.update(update_badge_params)
       respond_with badge
     else
       head :not_acceptable
