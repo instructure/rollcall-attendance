@@ -47,17 +47,38 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
     @listenForSectionChange()
     @statuses.bind 'reset', @resetList
     @sectionsModalMethods()
-    @resetSectionList()
     @selectSection()
+    @selectSectionItem()
     $('.per_page_section_select').change(() => @listenForPerPageSectionChange(@))
-    $('.paginate-section-next').click(() => @nextPageSectionList(@))
-    $('.paginate-section-previous').click(() => @previousPageSectionList(@))
+
+
+  gridListing: ->
+    $("#listing-type .listing-type-grid").attr('disabled', '')
+    $("#listing-type .listing-type-list").attr('disabled', 'disabled')
+
+    $("#listing-type .listing-type-list").addClass('disabled')
+    $("#listing-type .listing-type-grid").removeClass('disabled')
+
+    $("#section-list-modal .content .body").addClass('grid')
+    $("#section-list-modal .content .body").removeClass('list')
+
+  listListing: ->
+    $("#listing-type .listing-type-list").attr('disabled', '')
+    $("#listing-type .listing-type-grid").attr('disabled', 'disabled')
+
+    $("#listing-type .listing-type-grid").addClass('disabled')
+    $("#listing-type .listing-type-list").removeClass('disabled')
+
+    $("#section-list-modal .content .body").addClass('list')
+    $("#section-list-modal .content .body").removeClass('grid')
 
   bindViewToggles: ->
     $("#show-list a").click(@showListView)
     $("#show-class a").click(@showClassView)
 
   sectionsModalMethods: ->
+    $('.listing-type-grid').click(@gridListing)
+    $('.listing-type-list').click(@listListing)
     $("#sections-select-modal").click(@openSectionsModal)
     $("#section-list-modal .backdrop").click(@closeSectionsModal)
     $("#section-list-modal .close-modal").click(@closeSectionsModal)
@@ -68,6 +89,29 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
 
   openSectionsModal: ->
     $("#section-list-modal").show(500)
+
+  selectSectionItem: ->
+    $(".section-item").on 'click', (e) ->
+      { id } = e.currentTarget
+
+      active = $('#' + id + '.active')
+
+      if active.length != 0
+        activeId = active[0].id
+
+      $('.section-item').removeClass('active')
+
+      if id != activeId
+        $('#' + id).addClass('active')
+
+      sectionId = id.replace('section-item-', '')
+
+      newActive = $('#' + id + '.active')
+
+      if newActive.length
+        $('#section-list-modal .content .footer button.submit').removeClass('disabled')
+      else
+        $('#section-list-modal .content .footer button.submit').addClass('disabled')
 
   selectSection: ->
     $('#section-list-modal .content .footer button.submit').on 'click', () ->
@@ -218,80 +262,12 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
       $(this).click()
       $("#ui-datepicker-div").attr('tabindex', '0').focus()
 
-  toggleSectionSelection: (event) =>
-
-  nextPageSectionList:  ->
-    disabled = $('.paginate-section-next.disabled').length
-
-    if !disabled
-      @changePageSectionList(window.page_section + 1)
-
-  previousPageSectionList:  ->
-    disabled = $('.paginate-section-previous.disabled').length
-
-    if window.page_section != 1 && !disabled
-      @changePageSectionList(window.page_section - 1)
-
   changePageSectionList: (page) ->
-    $('.no-more-notice').remove()
-    @loadingSpinnerSectionList()
-    @setSectionPageCounter(page)
-    $('#section-list-modal .content .footer button.submit').addClass('disabled')
-
-    @section_list.fetch
-      data:
-        page: page
-        per_page: window.per_page_section
-        section_id: @sectionId
-        course_id: @courseId
-      success: (collection, response, options) ->
-        $(".loading-spinner-section").hide()
-        window.page_section = page
-
-        if page == 1
-          $(".paginate-section-previous").addClass("disabled")
-        else
-          $(".paginate-section-previous").removeClass("disabled")
-
-        if response.length == 0
-          $('div#section-list-modal .body').after("<div class='no-more-notice'><h3>No more items</h3></div>")
-
-        if response.length == window.per_page_section
-          $(".paginate-section-next").removeClass("disabled")
-        else
-          $(".paginate-section-next").addClass("disabled")
-
-        response.map (section) ->
-          { table } = section
-          $('#section-list-modal .body').append("
-            <button id='section-item-" + table.id + "' class='section-item'>
-              <h5>" + table.name + "</h5>
-            </button>
-          ")
-
-        $(".section-item").on 'click', (e) ->
-          { id } = e.currentTarget
-
-          active = $('#' + id + '.active')
-
-          if active.length != 0
-            activeId = active[0].id
-
-          $('.section-item').removeClass('active')
-
-          if id != activeId
-            $('#' + id).addClass('active')
-
-          sectionId = id.replace('section-item-', '')
-
-          newActive = $('#' + id + '.active')
-
-          if newActive.length
-            $('#section-list-modal .content .footer button.submit').removeClass('disabled')
-          else
-            $('#section-list-modal .content .footer button.submit').addClass('disabled')
+    console.debug(page)
 
   resetSectionList: ->
+
+    window.fetching_section = true
     $('.no-more-notice').remove()
     @loadingSpinnerSectionList()
     @setSectionPageCounter(1)
@@ -541,7 +517,6 @@ class InstructureRollcall.Views.Statuses.IndexView extends Backbone.View
     $(".paginate-section-next").addClass("disabled")
 
     $("#section-list-modal .body button").remove()
-    $("#section-list-modal .body").after('<img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner-section" alt="Loading" />')
 
   scrollTop: ->
     window.scrollTo(

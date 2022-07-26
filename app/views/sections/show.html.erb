@@ -18,9 +18,10 @@
 <%= render "header", course_id: @section.course_id %>
 
 <div class="sections-select">
-  <img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner-left" alt="Loading" />
   <button id="sections-select-modal">
-    <%= @section.name %>
+    <div class='name-container'>
+      <%= @section.name %>
+    </div>
     <i class="fa fa-angle-down"></i>
   </button>
   <select id='section_select'>
@@ -33,7 +34,7 @@
 
 </div>
 
-<%= render 'section_list_modal' %>
+<%= render 'section_list_modal', :locals => {:sections => @sections} %>
 
 <div id="statuses" class="clearfix"></div>
 

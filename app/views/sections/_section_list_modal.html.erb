@@ -36,12 +36,22 @@
           <h3>Page 1</h3>
         </div>
       </div>
-      <div id="paginate-attendance">
-        <a type="button" role="button" class="btn paginate-section-previous"><span>Previous Page</span></a>
-        <a type="button" role="button" class="btn paginate-section-next"><span>Next Page</span></a>
+      <div id="listing-type">
+        <a type="button" role="button" class="btn listing-type-grid">
+          <i class="fa fa-table"></i>
+        </a>
+        <a type="button" role="button" class="btn listing-type-list disabled" disabled="disabled">
+          <i class="fa fa-list"></i>
+        </a>
       </div>
     </div>
-    <div class='body'></div>
+    <div class='body grid'>
+      <% locals[:sections].each do |section| %>
+        <button id="section-item-<%= section.id %>" class='section-item'>
+          <h5><%= section.name %></h5>
+        </button>
+      <% end %>
+    </div>
     <div class='footer'>
       <button class='cancel'>Cancel</button>
       <button class='submit disabled'>Choose section</button>

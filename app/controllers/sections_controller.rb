@@ -27,7 +27,7 @@ class SectionsController < ApplicationController
     @per_page = params[:per_page]
     @page = params[:page]
 
-    @section_list = get_section_list_service
+    @section_list = load_and_authorize_sections(params[:course_id])
 
     @section_list.each do |section|
       section = Section.new(section)
