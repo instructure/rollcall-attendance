@@ -21,7 +21,7 @@ class AwardsController < ApplicationController
   respond_to :json
 
   def index
-    course = load_and_authorize_course(params[:course_id])
+    course = load_and_authorize_course(params[:course_id], tool_consumer_instance_guid)
     if course
       respond_with Award.build_list_for_student(
         course,
@@ -36,7 +36,10 @@ class AwardsController < ApplicationController
   end
 
   def create
-    if award_params.present? && load_and_authorize_course(award_params[:course_id])
+    if award_params.present? && load_and_authorize_course(
+      award_params[:course_id],
+      tool_consumer_instance_guid
+    )
       respond_with Award.create(award_params)
     else
       not_acceptable
@@ -46,7 +49,7 @@ class AwardsController < ApplicationController
   def destroy
     award = Award.find(params[:id])
 
-    if award && load_and_authorize_course(award.course_id)
+    if award && load_and_authorize_course(award.course_id, tool_consumer_instance_guid)
       award.destroy
       respond_with award
     else
@@ -55,7 +58,10 @@ class AwardsController < ApplicationController
   end
 
   def stats
-    if params[:course_id] && load_and_authorize_course(params[:course_id])
+    if params[:course_id] && load_and_authorize_course(
+      params[:course_id],
+      tool_consumer_instance_guid
+    )
       respond_with Award.student_stats(
         params[:course_id],
         params[:student_id],

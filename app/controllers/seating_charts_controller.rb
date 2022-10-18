@@ -21,7 +21,7 @@ class SeatingChartsController < ApplicationController
   respond_to :json
 
   def create
-    if load_and_authorize_course(seating_chart_params[:course_id])
+    if load_and_authorize_course(seating_chart_params[:course_id], tool_consumer_instance_guid)
       chart = SeatingChart.where({
         section_id: seating_chart_params[:section_id],
         class_date: seating_chart_params[:class_date],

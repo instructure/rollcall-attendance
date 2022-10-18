@@ -27,6 +27,12 @@ end
 Then /^I should see a list of my sections$/ do
   page.should have_content "Section 1"
   page.should have_content "Section 2"
+
+  select "Section 1", :from => "section_select"
+  select "Section 2", :from => "section_select"
+
+  find('#section_select option', text: 'Section 1').text.should match 'Section 1'
+  find('#section_select option', text: 'Section 2').text.should match 'Section 2'
 end
 
 When /^I click the first section$/ do
@@ -63,18 +69,37 @@ Given /^I am a teacher with (\d+) sections? and (\d+) (cross-shard )?students(?:
 
   # Response for when the course is queried
   stub_request(:get, "http://test.canvas/api/v1/courses/1").
-        with(:headers => {'Authorization'=>'Bearer'}).
-        to_return(:status => 200, :body => '{"account_id":3, "id":1}', headers: {'Content-Type' => 'application/json'})
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(
+    :status => 200,
+    :body => '{"account_id":3, "id":1}',
+    headers: {'Content-Type' => 'application/json'}
+  )
 
   # The attendance assignment exists, but make the ID nil, so we can skip the grade passback
   stub_request(:get, "http://test.canvas/api/v1/courses/1/assignments?per_page=50").
-        with(:headers => {'Authorization'=>'Bearer'}).
-        to_return(:status => 200, :body => '[{"id":null,"name":"Roll Call Attendance"}]', headers: {'Content-Type' => 'application/json'})
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(:status => 200, :body => '[{"id":null,"name":"Roll Call Attendance"}]', headers: {'Content-Type' => 'application/json'})
+
+  # Send the section list?
+  stub_request(:get, "http://test.canvas/api/v1/courses/1/sections").
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
 
   # Send the section list
   stub_request(:get, "http://test.canvas/api/v1/courses/1/sections?include%5B0%5D=students&include%5B1%5D=avatar_url&include%5B2%5D=enrollments&per_page=50").
-        with(:headers => {'Authorization'=>'Bearer'}).
-        to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
+
+  # Send the section list with no more data
+  stub_request(:get, "http://test.canvas/api/v1/courses/1/sections?&page=1&per_page=50").
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
+
+  # Send the full section
+  stub_request(:get, "http://test.canvas/api/v1/sections/1?include%5B0%5D=students&include%5B1%5D=avatar_url&include%5B2%5D=enrollments").
+  with(:headers => {'Authorization'=>'Bearer'}).
+  to_return(:status => 200, :body => create_section, headers: {'Content-Type' => 'application/json'})
 
 end
 
@@ -103,5 +128,28 @@ def create_sections(section_count, student_count)
     sections << "{\"name\":\"Section #{section_num}\",\"course_id\":1,\"sis_section_id\":null,\"id\":#{section_num},\"students\":[#{students.join(',')}]}"
   end
 
-  "[" + sections.join(",") + "]"
+  response = "[" + sections.join(",") + "]"
+
+  response
+end
+
+
+def create_students_to_section(student_count)
+  students = []
+  student_count.times do |student_num|
+    i = student_num+1
+    students << "{\"name\":\"student#{i}@12spokes.com\",\"short_name\":\"student#{i}@12spokes.com\",\"sortable_name\":\"student#{i}@12spokes.com\",\"id\":#{i}}"
+  end
+
+  students
+end
+
+def create_section
+  students = create_students_to_section(3)
+
+  students_parsed = students.join(',')
+
+  section = "{\"name\" : \"Section 1\",\"course_id\" : 1,\"sis_section_id\" : null,\"id\" : 1,\"students\" : [#{students_parsed}]}"
+
+  section
 end

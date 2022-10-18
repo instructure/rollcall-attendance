@@ -17,14 +17,24 @@
 %>
 <script type="text/javascript">
   $(function() {
+    if (
+      !InstructureRollcall.Models ||
+      !InstructureRollcall.Models.CourseConfig ||
+      !InstructureRollcall.Routers ||
+      !InstructureRollcall.Routers.StatusesRouter ||
+      !InstructureRollcall.Views.Statuses.IndexView
+    ) {
+      return window.location.reload()
+    }
+
     config = new InstructureRollcall.Models.CourseConfig(<%= @course_config.to_json.html_safe %>);
-    
-    window.router = new InstructureRollcall.Routers.StatusesRouter(
-      { sectionId: <%= @section.id %>,
-        courseId: <%= @section.course_id %>,
-        courseConfig: config
+
+    window.router = new InstructureRollcall.Routers.StatusesRouter({
+      sectionId: <%= @section.id %>,
+      courseId: <%= @section.course_id %>,
+      courseConfig: config
     });
 
-    Backbone.history.start();    
+    Backbone.history.start();
   });
 </script>

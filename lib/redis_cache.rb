@@ -38,14 +38,39 @@ module RedisCache
   end
 
   def redis_cache_response(key, request)
-    JSON.parse(cached_value(key) || fetch_from_api(key, request))
+    response_cached_value = cached_value(key)
+
+    JSON.parse(response_cached_value || fetch_from_api(key, request))
   end
 
   def fetch_from_api(key, request)
     response = request.call
+
     return "{}" if response.blank?
-    response = response.to_json
+
+
+    if response.class == HTTParty::Response
+      return "{}" if response.body.blank?
+      response = response.body
+    else
+      response = response.to_json
+    end
+
     cache_value key, 1.hours.to_i, response
+
     response
   end
+
+  # def get_section_student_enrollments(section_id, tool_consumer_instance_guid)
+  #   # key = redis_cache_key(tool_consumer_instance_guid, :section_students, section_id)
+
+  #   lambda { canvas.authenticated_get("/api/v1/sections/#{section_id}", query_options) }
+  #   # redis_cache_response key, request
+  # end
+
+  # def get_course_sections(course_id, tool_consumer_instance_guid)
+  #   query_options = { query: { include: [] } }
+  #   request = lambda { canvas.authenticated_get("/api/v1/courses/#{course_id}/sections", query_options) }
+  #   # redis_cache_response key, request
+  # end
 end
