@@ -34,32 +34,9 @@ describe SeatingChart do
         section_id: 1,
         class_date: 1.week.ago,
         tool_consumer_instance_guid: "abc123",
-        course_id: 1,
-        assignments:  {"1"=>{"row"=>1, "col"=>2}, "2"=>{"row"=>1, "col"=>5}}
+        course_id: 1
       )
       expect(SeatingChart.latest(3.days.ago, 1, "abc123", 1)).to eq(seatingChart)
     end
-
-    it "returns the latest seating assignment chart for the given section as of a certain date" do
-      seatingChart_1 = create(
-        :seating_chart,
-        section_id: 1,
-        class_date: 1.week.ago,
-        tool_consumer_instance_guid: "abc123",
-        course_id: 1,
-        assignments:  {"1"=>{"row"=>1, "col"=>2}, "2"=>{"row"=>1, "col"=>5}}
-      )
-
-      seatingChart_2 = create(
-        :seating_chart,
-        section_id: 1,
-        class_date: 1.week.ago,
-        tool_consumer_instance_guid: "abc123",
-        course_id: 1,
-        assignments:  {}
-      )
-      expect(SeatingChart.latest(3.days.ago, 1, "abc123", 1)).to eq(seatingChart_1)
-    end
-
   end
 end
