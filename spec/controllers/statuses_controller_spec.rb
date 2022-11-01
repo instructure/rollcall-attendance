@@ -19,8 +19,6 @@ require 'spec_helper'
 include HttpCanvasHelper
 
 describe StatusesController do
-  let(:enrollment) { OpenStruct.new(id: 1, user: {id: 1, name: 'John'}) }
-  let(:enrollments) { [enrollment] }
   let(:section) { Section.new(id: 1, students: [{id: 1}]) }
   let(:sections) { [section] }
   let(:user_id) { 5 }
@@ -38,7 +36,7 @@ describe StatusesController do
   describe "index" do
     it "initializes the list of statuses for the day's section" do
       allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request) { section }
-      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request_with_link_headers) { enrollments }
+      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request_with_link_headers) { section }
       expect(Status).to receive(:initialize_list).with(section, '2012-08-17', user_id, "abc123")
       get :index, params: { section_id: 1, class_date: '2012-08-17' }, format: :json
     end

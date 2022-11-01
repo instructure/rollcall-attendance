@@ -599,26 +599,9 @@
   padding: 5px;
   border: 1px solid #000;
   border-radius: 4px;
-  justify-content: space-between;
-  width: calc(100% - 260px);
-
-  .name-container {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: initial;
-  }
 }
 
-.section_pagination_container .per_page_list-select{
-  display: none;
-}
-
-#sections-select-modal{
-  display: flex;
-}
-
-#section_select{
+#sections-select-modal, #section_select{
   display: none;
 }
 
@@ -685,21 +668,9 @@ img.pad-box.loading-spinner-left {
       overflow-y: auto;
       overflow-x: hidden;
       display: grid;
+      grid-template-columns: auto auto auto auto auto;
       gap: 12px;
       padding-bottom: 12px;
-      transition: all .5s;
-    }
-
-    .body.grid {
-      grid-template-columns: auto auto auto auto auto;
-    }
-
-    .body.list {
-      grid-template-columns: auto;
-
-      .section-item {
-        justify-content: flex-start;
-      }
     }
 
     .footer {
@@ -834,7 +805,6 @@ img.pad-box.loading-spinner-left {
   align-items: center;
   background: transparent;
   border-radius: 4px;
-  word-break: break-all;
 
   h5 {
     margin: 0
@@ -861,50 +831,6 @@ img.pad-box.loading-spinner-left {
 }
 
 
-#listing-type {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-
-  a{
-    color: #000;
-    border: 2px solid #a8cb39;
-    background: #a8cb3966;
-    animation-name: button-listing-fade-in;
-    animation-duration: 1s;
-  }
-
-  a.disabled {
-    border: 2px solid #55555554;
-    background: #dedede;
-    animation-name: button-listing-fade-out;
-    animation-duration: 1s;
-  }
-
-  @keyframes button-listing-fade-in {
-    from {
-      background: #dedede;
-      border: 2px solid #55555554;
-    }
-    to {
-      background: #a8cb3966;
-      border: 2px solid #a8cb39;
-      color: #000;
-    }
-  }
-
-  @keyframes button-listing-fade-out {
-    from {
-      background: #a8cb3966;
-      border: 2px solid #a8cb39;
-      color: #000;
-    }
-    to {
-      background: #dedede;
-      border: 2px solid #55555554;
-    }
-  }
-}
 #paginate-attendance {
   margin: 15px 0px 15px 15px;
   display: flex;

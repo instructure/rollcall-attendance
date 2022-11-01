@@ -31,22 +31,11 @@ class StatusesController < ApplicationController
       .send_request
 
     if section
-      enrollments, links = HttpCanvasAuthorizedRequest
-        .new(canvas, "/api/v1/sections/#{params[:section_id]}/enrollments?type=#{EnrollmentType::STUDENT}&per_page=#{per_page}&page=#{page}")
+      students, links = HttpCanvasAuthorizedRequest
+        .new(canvas, "/api/v1/sections/#{params[:section_id]}/enrollments?per_page=#{per_page}&page=#{page}")
         .send_request_with_link_headers
 
       response.set_header('link-headers', links.to_json)
-
-      students = []
-      enrollments.each do |enrollment|
-        if enrollment.role == 'StudentEnrollment'
-          user = enrollment.user
-          user.enrollments = []
-          user.enrollments << enrollment
-
-          students << Student.new(user)
-        end
-      end
 
       section.students = students
 

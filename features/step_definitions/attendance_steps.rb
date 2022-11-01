@@ -62,8 +62,7 @@ Then /^all students should be present$/ do
 end
 
 When /^I click the mark all as present button$/ do
-  click_link 'mark-all-present'
-  wait_for_sync
+  click_link 'mark-all-present' and wait_for_sync
 end
 
 When /^I click the unmark all button$/ do
