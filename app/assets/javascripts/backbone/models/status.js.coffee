@@ -83,7 +83,7 @@ class InstructureRollcall.Models.Status extends Backbone.Model
     else if @isUnmarked()
       @markAsPresent()
 
-  firstName: -> if @get('student').name then @get('student').name.split(' ')[0] else @get('student').user.table.name.split(' ')[0]
+  firstName: -> @get('student').name.split(' ')[0]
 
   sectionId: -> @get('section_id')
 

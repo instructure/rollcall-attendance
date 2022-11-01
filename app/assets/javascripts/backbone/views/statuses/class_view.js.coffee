@@ -34,7 +34,7 @@ class InstructureRollcall.Views.Statuses.ClassView extends Backbone.View
 
   unmarkAllSeated: (event) ->
     event.preventDefault()
-
+    
     _.each @desks, (desk) ->
       desk.model.unmark() if desk.seated()
 
@@ -104,7 +104,7 @@ class InstructureRollcall.Views.Statuses.ClassView extends Backbone.View
       @seatStudent(html, status)
     else
       @unseatStudent(html)
-
+  
   unseatStudent: (desk) =>
     added = false
 
@@ -169,22 +169,22 @@ class InstructureRollcall.Views.Statuses.ClassView extends Backbone.View
       value: 1800
       slide: (event, slider) =>
         magnify = slider.value
-        @$('div.grid-container').css({ width : magnify + 201, height : magnify + 201 })
+        @$('div.grid-container').css({ width : magnify + 201, height : magnify + 201 })     
         @$('div.classroom-container').css({ width : magnify, height : magnify })
-
+      
         if slider.value < 2300
           @$('div.classroom-container').removeClass('large-grid').addClass 'small-grid'
-
+      
         else if slider.value > 2800
           @$('div.classroom-container').removeClass('small-grid').addClass 'large-grid'
-
+      
         else
           @$('div.classroom-container').removeClass('small-grid').removeClass 'large-grid'
 
   setupUnassignedScroll: =>
     $(window).scroll =>
       dist = $(document).scrollTop()
-
+      
       if dist > 152
         scrollBy = dist - 152
       else

@@ -18,11 +18,6 @@
 <%= render "header", course_id: @section.course_id %>
 
 <div class="sections-select">
-  <img src="<%= asset_path("loading.gif") %>" class="pad-box loading-spinner-left" alt="Loading" />
-  <button id="sections-select-modal">
-    <%= @section.name %>
-    <i class="fa fa-angle-down"></i>
-  </button>
   <select id='section_select'>
   <% @sections.each do |section| %>
     <option value='<%= section.id %>' <%= 'selected' if section.id == @section.id %>>
@@ -30,10 +25,7 @@
     </option>
   <% end %>
   </select>
-
 </div>
-
-<%= render 'section_list_modal' %>
 
 <div id="statuses" class="clearfix"></div>
 

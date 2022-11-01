@@ -53,15 +53,8 @@ describe "StatusView", ->
       statuses.add(@status)
       statuses.add({student: { name: "Clairo" }})
 
-      @section = new InstructureRollcall.Models.Section()
-      @section.set { name: "Filling burritos" }
-      section_list = new InstructureRollcall.Collections.SectionsCollection()
-      section_list.add(@section)
-      section_list.add({ name: "Gaining aliens trust" })
-
       @indexView = new InstructureRollcall.Views.Statuses.IndexView(
         statuses: statuses,
-        section_list: section_list,
         sectionId: '1'
       )
 

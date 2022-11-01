@@ -500,11 +500,6 @@
   height: 65px;
 }
 
-.per_page_list-select{
-  display: flex;
-  justify-content: space-between;
-}
-
 .sections-select {
   border-bottom: 1px solid $border-color;
   position: absolute;
@@ -513,24 +508,10 @@
   margin: 0;
   width: 100%;
   height: 50px;
-  justify-content: flex-start;
-  align-items: baseline;
-  display: flex;
 
   select {
     display: inline-block;
     margin: 6px 0 0 10px;
-  }
-
-  > div > button {
-    margin-left: 15px
-  }
-}
-
-.per_page_list-select {
-  select {
-    display: inline-block;
-    margin: 0 0 0 15px;
   }
 }
 
@@ -591,260 +572,8 @@
     }
 
   }
-}
-
-#sections-select-modal{
-  background: none;
-  margin: auto 15px;
-  padding: 5px;
-  border: 1px solid #000;
-  border-radius: 4px;
-}
-
-#sections-select-modal, #section_select{
-  display: none;
-}
-
-img.pad-box.loading-spinner-left {
-  padding: 0;
-  margin: auto 0 auto 15px;
-}
-
-.no-more-notice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#section-list-modal {
-  display: none;
-  width: 100vw;
-  height: 100vh;
-  z-index: 75;
-  position: fixed;
-  top: 0;
-
-  .content {
-    display: flex;
-    position: fixed;
-    width: 75%;
-    height: 50%;
-    background-color: #fff;
-    z-index: 75;
-    top: 25%;
-    left: 15%;
-    flex-direction: column;
-
-    header {
-      width: 100%;
-      height: 30%;
-      max-height: 57px;
-      display: flex;
-      justify-content: space-between;
-
-      .block-box {
-        margin-bottom: 7.5px;
-      }
-
-      h1 {
-        color: #fff;
-      }
-
-      line-height: 1.3;
-
-      .close-modal {
-        color: #fff;
-        display: block;
-        height: fit-content;
-        margin: auto 12px;
-        background: transparent;
-        border: none;
-        font-size: 25px;
-      }
-    }
-
-    .body {
-      margin: 12px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      display: grid;
-      grid-template-columns: auto auto auto auto auto;
-      gap: 12px;
-      padding-bottom: 12px;
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 12px;
-      margin-top: auto;
-      margin-bottom: 12px;
-
-      button {
-        padding: 8px;
-        border-radius: 4px;
-        border: 2px solid #55555554;
-        font-weight: 700;
-      }
-
-      > button {
-        background: #dedede;
-      }
-
-      button.submit {
-        color: #555;
-        border: 2px solid #a8cb39;
-        background: #a8cb3966;
-        animation-name: button-fade-in;
-        animation-duration: 1s;
-      }
-
-      button.submit.disabled {
-        border: 2px solid #55555554;
-        color: #55555554;
-        background: #dedede;
-        animation-name: button-fade-out;
-        animation-duration: 1s;
-        cursor: not-allowed;
-      }
-    }
-  }
-
-  .sections-select .loading-spinner-left {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 15px;
-    padding: 0;
-  }
-
-  .loading-spinner-section {
-    width: 80px;
-    height: 80px;
-    margin: auto;
-  }
-
-
-  @keyframes button-fade-in {
-    from {
-      background: #dedede;
-      border: 2px solid #55555554;
-      color: #55555554;
-    }
-    to {
-      background: #a8cb3966;
-      border: 2px solid #a8cb39;
-      color: #000;
-    }
-  }
-
-  @keyframes button-fade-out {
-    from {
-      background: #a8cb3966;
-      border: 2px solid #a8cb39;
-      color: #000;
-    }
-    to {
-      background: #dedede;
-      border: 2px solid #55555554;
-      color: #55555554;
-    }
-  }
-
-  .backdrop {
-    position: fixed;
-    z-index: 70;
-    background-color: #000000ba;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    animation-name: overlay-fade-in;
-    animation-duration: 1s;
-  }
-
-  input {
-    display: none;
-  }
-}
-
-@keyframes overlay-fade-in {
-  from {
-    background-color: transparent;
-  }
-  to {
-    background-color: #000000ba;
-  }
-}
-
-.section_pagination_container {
-  margin: 0px 15px 0 0;
-  padding-top: 15px;
-
-  .per_page_section_list-select{
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
-.section-item.active {
-  border-color: #a8cb39;
-  box-shadow: none;
-  animation-name: shadow-fade-out;
-  animation-duration: .6s;
-  background: #a8cb3966;
 
 }
-.section-item {
-  animation-name: shadow-fade-in;
-  animation-duration: .2s;
-  padding: 16px;
-  border: 2px solid #dedede;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 45%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-  border-radius: 4px;
-
-  h5 {
-    margin: 0
-  }
-}
-
-
-@keyframes shadow-fade-in {
-  from {
-    box-shadow: none;
-  }
-  to {
-    box-shadow: 0px 3px 3px rgba(0, 0, 0, 45%);
-  }
-}
-
-@keyframes shadow-fade-out {
-  from {
-    box-shadow: 0px 3px 3px rgba(0, 0, 0, 45%);
-  }
-  to {
-    box-shadow: none;
-  }
-}
-
-
-#paginate-attendance {
-  margin: 15px 0px 15px 15px;
-  display: flex;
-  justify-content: space-between;
-
-  a.disabled {
-    opacity: 0.4 !important;
-  }
-
-  a span {
-    padding: 0;
-  }
-}
-
 
 .attendance-selector {
   margin: 0 0 $spacing-width $spacing-width;
@@ -952,18 +681,8 @@ a.date-picker-arrow {
 
 /* --- Main list of students --- */
 
-img.pad-box.loading-spinner {
-  background: #fff !important;
-  width: 100%;
-  object-fit: scale-down;
-}
-
-section#class-view-container .pagination_container {
-  margin: 15px 15px 0 0;
-}
-
 ol.student-list-display {
-  margin: 0 0 25px $spacing-width;
+  margin: 0 0 0 $spacing-width;
 
   a.student-toggle {
     display: block;

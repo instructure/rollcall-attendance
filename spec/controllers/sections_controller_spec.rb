@@ -16,7 +16,6 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 'spec_helper'
-include HttpCanvasHelper
 
 describe SectionsController do
   let(:section) { Section.new(id: 1) }
@@ -33,6 +32,11 @@ describe SectionsController do
     before do
       allow(controller).to receive(:load_and_authorize_sections).and_return(sections)
       allow(controller).to receive(:prepare_course)
+    end
+
+    it "prepares the course" do
+      expect(controller).to receive(:prepare_course)
+      get :course, params: { course_id: 1 }
     end
 
     it "redirects to the first section" do
@@ -55,29 +59,22 @@ describe SectionsController do
     end
 
     it "sets the @sections to the list of all sections" do
-      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request).and_return(sections, section, sections)
-      allow(controller).to receive(:get_section_service) { section }
-      allow(controller).to receive(:get_section_list_service) { sections }
       get :show, params: { section_id: '1' }
       expect(assigns(:sections)).to eq(sections)
     end
 
     it "sets the @section to the full section" do
-      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request).and_return(section)
       get :show, params: { section_id: '1' }
       expect(assigns(:section)).to eq(section)
     end
 
     it "renders an error if the section is nil" do
-      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request) { nil }
+      allow(controller).to receive(:load_and_authorize_full_section).and_return(nil)
       expect(controller).to receive(:render_error)
       get :show, params: { section_id: '1' }
     end
 
     it "should limit to specific section if flag is set" do
-      allow_any_instance_of(HttpCanvasAuthorizedRequest).to receive(:send_request) { section }
-      allow(controller).to receive(:get_section_service) { section }
-      allow(controller).to receive(:get_section_list_service) { sections }
       allow(controller).to receive(:section_limited?).and_return(true)
       get :show, params: { section_id: '1' }
       expect(assigns(:sections)).to eq([section])

@@ -40,23 +40,10 @@ Given /^I am a teacher with (\d+) sections? and (\d+) (cross-shard )?students(?:
     section = i + 1
     user_id = cross_shard ? 10610000000574765 : 1
     enrollment_hashes << { course_id: 1, section_id: section, user_id: user_id }
-
     stub_request(:get, "http://test.canvas/api/v1/sections/#{section}").
-      to_return(:status => 200, :body => create_section(section, students.to_i), headers: {'Content-Type' => 'application/json'})
-
-    stub_request(:get, "http://test.canvas/api/v1/sections/#{section}/enrollments?per_page=50&page=first").
-      to_return(:status => 200, :body => create_students(students.to_i), headers: {'Content-Type' => 'application/json'})
-
-    stub_request(:get, "http://test.canvas/api/v1/courses/1/sections").
-      to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
-
-    stub_request(:get, "http://test.canvas/api/v1/courses/1/sections?page=1&per_page=50").
-      to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
+      with(:headers => {'Authorization'=>'Bearer'}).
+      to_return(:status => 200, :body => '{"course_id":1}', headers: {'Content-Type' => 'application/json'})
   end
-
-  # # The Students
-  stub_request(:get, "http://test.canvas/api/v1/courses/1/users?include%5B%5D=avatar_url&include%5B%5D=enrollments&include%5B%5D=email&include%5B%5D=observed_users&include%5B%5D=can_be_removed&include%5B%5D=custom_links&include_inactive=true&page=1&per_page=50").
-    to_return(:status => 200, :body => create_students(students.to_i), headers: {'Content-Type' => 'application/json'})
 
   # The enrollments
   stub_request(:get, "http://test.canvas/api/v1/users/2/enrollments?per_page=50").
@@ -100,30 +87,8 @@ end
 
 def enrollment_json(course_id, section_id, user_id)
   <<-EOS.chomp
-{"associated_user_id": null, "course_id": #{course_id}, "course_section_id": #{section_id}, "id": 1, "limit_privileges_to_course_section": false, "root_account_id": 1, "type": "TeacherEnrollment", "updated_at": "2013-03-15T12:33:14-06:00", "user_id": #{user_id}, "enrollment_state": "active", "role": "TeacherEnrollment", "html_url": "http://test.canvas/courses/#{course_id}/users/#{user_id}", "user": {"id": #{user_id}, "name": "foo@bar.com", "sortable_name": "foo@bar.com", "short_name": "foo@bar.com", "login_id": "foo@bar.com"}}
+{"associated_user_id": null, "course_id": #{course_id}, "course_section_id": #{section_id}, "id": 1, "limit_privileges_to_course_section": false, "root_account_id": 1, "type": "TeacherEnrollment", "updated_at": "2013-03-15T12:33:14-06:00", "user_id": #{user_id}, "enrollment_state": "active", "role": "TeacherEnrollment", "html_url": "http://test.canvas/courses/#{course_id}/users/#{user_id}", "user": {"id": #{user_id}1, "name": "foo@bar.com", "sortable_name": "foo@bar.com", "short_name": "foo@bar.com", "login_id": "foo@bar.com"}}
   EOS
-end
-
-def create_students(student_count)
-    enrollment_hashes = []
-    students = []
-    student_count.times do |student_num|
-      i = student_num+1
-      enrollment_hashes << { course_id: 1, section_id: 1, user_id: i }
-
-      enrollments = enrollments_json(enrollment_hashes)
-
-      students << "{\"name\":\"student#{i}@12spokes.com\",\"short_name\":\"student#{i}@12spokes.com\",\"sortable_name\":\"student#{i}@12spokes.com\",\"id\":#{i}, \"enrollments\": #{enrollments}}"
-    end
-
-  "[" + students.join(",") + "]"
-end
-
-def create_section(section_num, student_count)
-
-  students = create_students(student_count)
-
-  "{\"name\":\"Section #{section_num}\",\"course_id\":1,\"sis_section_id\":null,\"id\":#{section_num},\"students\": #{students} }"
 end
 
 def create_sections(section_count, student_count)

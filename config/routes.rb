@@ -23,7 +23,6 @@ InstructureRollcall::Application.routes.draw do
   resources :statuses
 
   get '/courses/:course_id',   to: 'sections#course', as: 'course'
-  get '/sections', to: 'sections#index', as: 'sections'
   get '/sections/:section_id', to: 'sections#show', as: 'section'
   scope '/courses/:course_id' do
     resources :students, only: [:show] do
