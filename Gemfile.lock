@@ -484,7 +484,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    will_paginate (3.1.8)
+    will_paginate (3.3.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.5.4)
@@ -555,7 +555,7 @@ DEPENDENCIES
   thin (~> 1.0)
   uglifier (~> 4.0)
   webmock
-  will_paginate (~> 3.1.0)
+  will_paginate (~> 3.3.0)
 
 BUNDLED WITH
    1.17.3
