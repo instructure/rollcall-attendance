@@ -19,33 +19,25 @@ class SectionsController < ApplicationController
   before_action :can_grade
 
   def course
-    begin
-      section_id = enrollments_section_ids(params[:course_id], tool_consumer_instance_guid).first
-      if !section_id
-        section_id = load_and_authorize_sections(params[:course_id], tool_consumer_instance_guid).first.id
-      end
+    prepare_course
 
-      if section_id
-        redirect_to section_path(section_id)
-      else
-        render_error
-      end
-    rescue => e
-      Rails.logger.error "Exception fetching course: #{e.to_s}"
+    if section_id = enrollments_section_ids(params[:course_id]).first
+      redirect_to section_path(section_id)
+    elsif section = load_and_authorize_sections(params[:course_id]).first
+      redirect_to section_path(section.id)
+    else
+      render_error
     end
   end
 
   def show
-    @section = load_and_authorize_full_section(params[:section_id], tool_consumer_instance_guid)
+    @section = load_and_authorize_full_section(params[:section_id])
     return render_error if @section.blank?
 
-    @sections = load_and_authorize_sections(@section.course_id, tool_consumer_instance_guid)
+    @sections = load_and_authorize_sections(@section.course_id)
 
-    if section_limited?(@section.course_id, tool_consumer_instance_guid)
-      authorized_section_ids = enrollments_section_ids(
-        @section.course_id,
-        tool_consumer_instance_guid
-      )
+    if section_limited?(@section.course_id)
+      authorized_section_ids = enrollments_section_ids(@section.course_id)
       @sections.select! { |sec| authorized_section_ids.include?(sec.id) }
       @section = nil unless authorized_section_ids.include?(@section.id)
     end
@@ -67,20 +59,13 @@ class SectionsController < ApplicationController
     refresh_course!(params[:course_id])
   end
 
-  def enrollments_section_ids(course_id, tool_consumer_instance_guid)
-    enrollments = load_and_authorize_enrollments(
-      user_id, course_id,
-      tool_consumer_instance_guid
-    ) || []
+  def enrollments_section_ids(course_id)
+    enrollments = load_and_authorize_enrollments(user_id, course_id) || []
     enrollments.map { |enrollment| enrollment['course_section_id'] }
   end
 
-  def section_limited?(course_id, tool_consumer_instance_guid)
-    enrollments = load_and_authorize_enrollments(
-      user_id,
-      course_id,
-      tool_consumer_instance_guid
-    ) || []
+  def section_limited?(course_id)
+    enrollments = load_and_authorize_enrollments(user_id, course_id) || []
     enrollments.present? &&
       enrollments.all?{ |e| e['limit_privileges_to_course_section'] }
   end

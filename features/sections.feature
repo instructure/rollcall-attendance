@@ -21,7 +21,7 @@ Feature: Sections
     Given I am a teacher with 1 section and 2 students
     When I go to take attendance
     Then I should be on my first section and it should be the active tab
-
+    
   Scenario: When I have multiple sections
     Given I am a teacher with 2 sections and 2 students in each
     When I go to take attendance

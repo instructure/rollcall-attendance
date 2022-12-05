@@ -131,7 +131,7 @@ end
 Then /^they should be in alphabetical order$/ do
   unassigned = all(".unassigned-list .student-desk")
   unassigned.first.text.should == 'student1@12spokes.com'
-  unassigned.last.text.should == 'student3@12spokes.com'
+  unassigned.last.text.should == 'student2@12spokes.com'
 end
 
 Then /^I should see instructions on how to create my seating chart$/ do

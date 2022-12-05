@@ -21,27 +21,22 @@ class StatusesController < ApplicationController
   respond_to :json
 
   def index
-    section = load_and_authorize_full_section(params[:section_id], tool_consumer_instance_guid)
-    begin
-      if section
-        statuses = Status.initialize_list(
-          section,
-          params[:class_date],
-          user_id,
-          tool_consumer_instance_guid
-        )
-        respond_with statuses
-      else
-        not_acceptable
-      end
-    rescue => e
-      Rails.logger.error "Exception: #{e.class.name} - #{e.message}"
+    if section = load_and_authorize_full_section(params[:section_id])
+      statuses = Status.initialize_list(
+        section,
+        params[:class_date],
+        user_id,
+        tool_consumer_instance_guid
+      )
+      respond_with statuses
+    else
+      not_acceptable
     end
   end
 
   def create
     course_id = params[:status][:course_id]
-    if course = load_and_authorize_course(course_id, tool_consumer_instance_guid)
+    if course = load_and_authorize_course(course_id)
       #This makes sure that the Status is unique for the student and
       #the corresponding course.
       status = Status.where(
@@ -71,7 +66,7 @@ class StatusesController < ApplicationController
 
   def update
     if status = Status.find_by(id: params[:id])
-      if load_and_authorize_section(status.section_id, status.tool_consumer_instance_guid)
+      if load_and_authorize_section(status.section_id)
         status.attendance = status_params[:attendance]
         status.teacher_id = user_id
         submit_grade!(status) if status.save
@@ -86,7 +81,7 @@ class StatusesController < ApplicationController
 
   def destroy
     if status = Status.find_by(id: params[:id])
-      if load_and_authorize_section(status.section_id, status.tool_consumer_instance_guid)
+      if load_and_authorize_section(status.section_id)
         submit_grade!(status) if status.destroy
         render_status(status)
       else

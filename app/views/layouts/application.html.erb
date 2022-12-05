@@ -26,10 +26,6 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   <%= javascript_include_tag "application" %>
-  <% if ENV['HEAP_ENABLED'] == "true" %>
-    <%= javascript_include_tag "heap" %>
-    <%= javascript_tag "heap.load(#{ENV['HEAP_ANALYTICS_APP_ID']});" %>
-  <% end %>
   <%= csrf_meta_tags %>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 </head>

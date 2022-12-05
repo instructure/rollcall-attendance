@@ -36,7 +36,7 @@ describe AwardsController do
   describe "index" do
     it "builds a list of awards for the student" do
       course3 = Course.new(:id => course_id)
-      expect(controller).to receive(:load_and_authorize_course).with(course_id, tool_consumer_instance_guid).and_return(course3)
+      expect(controller).to receive(:load_and_authorize_course).with(course_id).and_return(course3)
       expect(Award).to receive(:build_list_for_student).with(course3, student_id, '2012-08-02', teacher_id, tool_consumer_instance_guid)
       get :index, params: { student_id: student_id, course_id: course_id, class_date: '2012-08-02' }, format: 'json'
     end

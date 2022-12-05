@@ -21,7 +21,7 @@ class BadgesController < ApplicationController
   respond_to :json
 
   def index
-    if course = load_and_authorize_course(params[:course_id], tool_consumer_instance_guid)
+    if course = load_and_authorize_course(params[:course_id])
       respond_with Badge.where({
         course_id: course.id,
         tool_consumer_instance_guid: tool_consumer_instance_guid
@@ -35,7 +35,7 @@ class BadgesController < ApplicationController
 
   def create
     if params[:badge] &&
-        (load_and_authorize_course(params[:badge][:course_id], tool_consumer_instance_guid) ||
+        (load_and_authorize_course(params[:badge][:course_id]) ||
          load_and_authorize_account(params[:badge][:account_id], tool_consumer_instance_guid)
         )
       badge = Badge.create(create_badge_params)
@@ -49,7 +49,7 @@ class BadgesController < ApplicationController
     badge = Badge.find(params[:id])
 
     if badge &&
-        (load_and_authorize_course(badge.course_id, tool_consumer_instance_guid) ||
+        (load_and_authorize_course(badge.course_id) ||
          load_and_authorize_account(badge.account_id, tool_consumer_instance_guid)
         )
       badge.update(update_badge_params)
@@ -63,7 +63,7 @@ class BadgesController < ApplicationController
     badge = Badge.find(params[:id])
 
     if badge &&
-        (load_and_authorize_course(badge.course_id, tool_consumer_instance_guid) ||
+        (load_and_authorize_course(badge.course_id) ||
          load_and_authorize_account(badge.account_id, tool_consumer_instance_guid)
         )
       badge.destroy

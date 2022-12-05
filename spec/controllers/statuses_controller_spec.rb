@@ -21,7 +21,6 @@ describe StatusesController do
   let(:section) { Section.new(id: 1, students: [{id: 1}]) }
   let(:sections) { [section] }
   let(:user_id) { 5 }
-  let(:tool_consumer_instance_guid) { 'abc123' }
 
   before do
     allow(controller).to receive(:require_lti_launch)
@@ -44,7 +43,7 @@ describe StatusesController do
     let(:course) { Course.new(account_id: 3, id: 1) }
 
     it "loads and authorizes the course" do
-      expect(controller).to receive(:load_and_authorize_course).with('1', tool_consumer_instance_guid)
+      expect(controller).to receive(:load_and_authorize_course).with('1')
       post :create, params: { status: { course_id: 1 } }, format: :json
     end
 
@@ -72,8 +71,8 @@ describe StatusesController do
 
   describe "update" do
     it "authorizes the section on the found status" do
-      allow(Status).to receive(:find_by) { Status.new(section_id: 1, tool_consumer_instance_guid: tool_consumer_instance_guid ) }
-      expect(controller).to receive(:load_and_authorize_section).with(1, tool_consumer_instance_guid)
+      allow(Status).to receive(:find_by) { Status.new(section_id: 1) }
+      expect(controller).to receive(:load_and_authorize_section).with(1)
       put :update, params: { id: 1, status: {id: 1} }, format: :json
     end
 
@@ -89,14 +88,14 @@ describe StatusesController do
 
   describe "destroy" do
     it "authorizes the section on the found status" do
-      allow(Status).to receive(:find_by) { Status.new(section_id: 1, tool_consumer_instance_guid: tool_consumer_instance_guid) }
-      expect(controller).to receive(:load_and_authorize_section).with(1, tool_consumer_instance_guid)
+      allow(Status).to receive(:find_by) { Status.new(section_id: 1) }
+      expect(controller).to receive(:load_and_authorize_section).with(1)
       delete :destroy, params: { id: 1 }
     end
 
     it "posts a grade to canvas" do
       allow(controller).to receive(:load_and_authorize_section).and_return(Section.new)
-      status = double(destroy: true, section_id: 1, tool_consumer_instance_guid: tool_consumer_instance_guid)
+      status = double(destroy: true, section_id: 1)
       allow(Status).to receive(:find_by).and_return(status)
       expect(controller).to receive(:submit_grade!).with(status)
       delete :destroy, params: { id: 1 }, format: :json

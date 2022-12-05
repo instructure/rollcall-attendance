@@ -19,7 +19,6 @@ require 'spec_helper'
 
 describe ReportsController do
   let(:course_id) { 123 }
-  let(:tool_consumer_instance_guid) { 'abc123' }
 
   let :valid_attrs do
     {
@@ -74,7 +73,7 @@ describe ReportsController do
 
       it "loads the course" do
         expect(controller).to receive(:load_and_authorize_course).
-          with(course_id, tool_consumer_instance_guid).and_return(course)
+          with(course_id).and_return(course)
         get :new, params: { course_id: course_id }
       end
 

@@ -94,35 +94,39 @@ describe Authorization do
   end
 
 
-  describe "load_and_authorize_course" do
-    subject { object.load_and_authorize_course(1, :tool_consumer_instance_guid) }
+  def load_and_authorize_course(course_id)
+    if authorize_resource :course, course_id, lambda { canvas.get_course(course_id) }
+      Course.new(cached_course(course_id))
+    end
+  end
 
-    context "when course exists" do
+  describe "load_and_authorize_course" do
+    subject { object.load_and_authorize_course(1) }
+
+    context "when authorized" do
       before do
-        allow(object).to receive(:get_object).and_return({id: 1})
+        allow(object).to receive(:authorize_resource).with(:course, 1, anything()).and_return(true)
+        allow(object).to receive(:cached_course).and_return(id: 1)
       end
 
       it { is_expected.to be_a Course }
       its(:id) { should == 1 }
     end
 
-    context "when course doesn't exists" do
-      before do
-        allow(object).to receive(:get_object).and_return({})
-      end
+    context "when not authorized" do
+      before { allow(object).to receive(:authorize_resource).and_raise(CanvasOauth::CanvasApi::Unauthorized) }
 
-      it { is_expected.to be_nil }
+      specify { expect { subject }.to raise_error(CanvasOauth::CanvasApi::Unauthorized) }
     end
-
   end
 
   describe "load_and_authorize_sections" do
-    subject { object.load_and_authorize_sections(1, :tool_consumer_instance_guid) }
+    subject { object.load_and_authorize_sections(1) }
 
-    context "when course has sections" do
+    context "when authorized" do
       before do
-        allow(object).to receive(:load_and_authorize_course).with(1, :tool_consumer_instance_guid).and_return(true)
-        allow(object).to receive(:get_object).and_return([{id: 1}, {id: 2}])
+        allow(object).to receive(:load_and_authorize_course).with(1).and_return(true)
+        allow(object).to receive(:cached_sections).and_return([{id: 1}, {id: 2}])
       end
 
       it { is_expected.to be_an Array }
@@ -130,43 +134,30 @@ describe Authorization do
       its(:first) { should be_a Section }
     end
 
-    context "when course doesn't have sections" do
-      before do
-        allow(object).to receive(:load_and_authorize_course).with(1, :tool_consumer_instance_guid).and_return(true)
-        allow(object).to receive(:get_object).and_return({})
-      end
+    context "when not authorized" do
+      before { allow(object).to receive(:authorize_resource).and_raise(CanvasOauth::CanvasApi::Unauthorized) }
 
-      it { is_expected.to be_nil }
+      specify { expect { subject }.to raise_error(CanvasOauth::CanvasApi::Unauthorized) }
     end
-
-    context "when course doesn't have sections" do
-      before do
-        allow(object).to receive(:load_and_authorize_course).with(1, :tool_consumer_instance_guid).and_return(false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-
   end
 
   describe "load_and_authorize_section" do
-    subject { object.load_and_authorize_section(1, :tool_consumer_instance_guid) }
+    subject { object.load_and_authorize_section(1) }
 
-    context "when section exists" do
+    context "when authorized" do
       before do
-        allow(object).to receive(:get_object).and_return({ id: 1 })
+        allow(object).to receive(:authorize_resource).with(:section, 1, anything()).and_return(true)
+        allow(object).to receive(:cached_section).and_return(id: 1)
       end
 
       it { is_expected.to be_a Section }
       its(:id) { should == 1 }
     end
 
-    context "when section doesn't exist" do
-      before do
-        allow(object).to receive(:get_object).and_return({})
-      end
+    context "when not authorized" do
+      before { allow(object).to receive(:authorize_resource).and_raise(CanvasOauth::CanvasApi::Unauthorized) }
 
-      it { is_expected.to be_nil }
+      specify { expect { subject }.to raise_error(CanvasOauth::CanvasApi::Unauthorized) }
     end
 
   end
@@ -174,57 +165,40 @@ describe Authorization do
   describe "load_and_authorize_account" do
     subject { object.load_and_authorize_account(1, 'tci_guid') }
 
-    context "when account exists" do
+    context "when authorized" do
       before do
-        allow(object).to receive(:get_object).and_return({ id: 1 })
+        allow(object).to receive(:authorize_resource).with(:account, 1, anything()).and_return(true)
+        allow(object).to receive(:cached_account).and_return(id: 1)
       end
 
       it { is_expected.to be_an CachedAccount }
       its(:account_id) { should == 1 }
     end
 
-    context "when account does not exists" do
-      before do
-        allow(object).to receive(:get_object).and_return({})
-      end
+    context "when not authorized" do
+      before { allow(object).to receive(:authorize_resource).and_raise(CanvasOauth::CanvasApi::Unauthorized) }
 
-      it { is_expected.to be_nil }
+      specify { expect { subject }.to raise_error(CanvasOauth::CanvasApi::Unauthorized) }
     end
-
   end
 
   describe "load_and_authorize_full_section" do
-    subject { object.load_and_authorize_full_section(1, :tool_consumer_instance_guid) }
-    let(:full_section_api) { { id: 1, course_id: 2, students: [{ id: 1 }] } }
-    let(:full_section_api_no_students) { { id: 1, course_id: 2, students: [] } }
-    let(:empty_section_api) { {} }
+    subject { object.load_and_authorize_full_section(1) }
+    let(:full_section) { Section.new(id: 1, course_id: 2, students: []) }
 
-    context "when section exists and has students" do
+    context "when authorized" do
       before do
-        allow(object).to receive(:get_object).and_return(full_section_api)
+        allow(object).to receive(:load_and_authorize_section).with(1).and_return(Section.new(id: 1, course_id: 2))
+        allow(object).to receive(:load_and_authorize_sections).with(2).and_return([full_section, Section.new(id: 2)])
       end
 
-      it { is_expected.to be_a Section }
-      it { expect(subject.students).to be_an Array }
-      it { expect(subject.students.first).to be_a Student }
+      it { is_expected.to eq(full_section) }
     end
 
-    context "when section exists and has not students" do
-      before do
-        allow(object).to receive(:get_object).and_return(full_section_api_no_students)
-      end
+    context "when not authorized" do
+      before { allow(object).to receive(:load_and_authorize_section).and_raise(CanvasOauth::CanvasApi::Unauthorized) }
 
-      it { is_expected.to be_a Section }
-      it { expect(subject.students).to be_an Array }
-      it { expect(subject.students).to be_empty }
-    end
-
-    context "when section doesn't exists" do
-      before do
-        allow(object).to receive(:get_object).and_return(empty_section_api)
-      end
-
-      it { is_expected.to be_nil }
+      specify { expect { subject }.to raise_error(CanvasOauth::CanvasApi::Unauthorized) }
     end
   end
 

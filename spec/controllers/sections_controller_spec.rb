@@ -18,22 +18,25 @@
 require 'spec_helper'
 
 describe SectionsController do
-  let(:section) { Section.new(id: 1, course_id: 1 ) }
+  let(:section) { Section.new(id: 1) }
   let(:sections) { [section, Section.new(id: 2)] }
-  let(:tool_consumer_instance_guid) { 'abc123' }
 
   before do
     allow(controller).to receive(:require_lti_launch)
     allow(controller).to receive(:request_canvas_authentication)
     allow(controller).to receive_messages(enrollments_section_ids: [1])
     allow(controller).to receive(:can_grade)
-    session[:tool_consumer_instance_guid] = 'abc123'
   end
 
   describe "GET course" do
     before do
       allow(controller).to receive(:load_and_authorize_sections).and_return(sections)
       allow(controller).to receive(:prepare_course)
+    end
+
+    it "prepares the course" do
+      expect(controller).to receive(:prepare_course)
+      get :course, params: { course_id: 1 }
     end
 
     it "redirects to the first section" do
@@ -56,25 +59,11 @@ describe SectionsController do
     end
 
     it "sets the @sections to the list of all sections" do
-      allow(controller).to receive(:load_and_authorize_enrollments).and_return([{
-        'type' => 'TeacherEnrollment',
-        'course_id' => 1,
-        'course_section_id' => 1
-      }])
-      allow(controller).to receive(:load_and_authorize_full_section).with('1', tool_consumer_instance_guid).and_return(section)
-      allow(controller).to receive(:load_and_authorize_sections).with('1', tool_consumer_instance_guid).and_return(sections)
       get :show, params: { section_id: '1' }
       expect(assigns(:sections)).to eq(sections)
     end
 
     it "sets the @section to the full section" do
-      allow(controller).to receive(:load_and_authorize_enrollments).and_return([{
-        'type' => 'TeacherEnrollment',
-        'course_id' => 1,
-        'course_section_id' => 1
-      }])
-      allow(controller).to receive(:load_and_authorize_full_section).with('1', tool_consumer_instance_guid).and_return(section)
-      allow(controller).to receive(:load_and_authorize_sections).with('1', tool_consumer_instance_guid).and_return(sections)
       get :show, params: { section_id: '1' }
       expect(assigns(:section)).to eq(section)
     end
@@ -111,12 +100,12 @@ describe SectionsController do
         'course_id' => 1,
         'course_section_id' => 2
       }])
-      expect(controller.send(:enrollments_section_ids, 1, tool_consumer_instance_guid)).to eq([2])
+      expect(controller.send(:enrollments_section_ids, 1)).to eq([2])
     end
 
     it "should be empty if there are no authorized enrollments" do
       allow(controller).to receive(:load_and_authorize_enrollments).and_return(nil)
-      expect(controller.send(:enrollments_section_ids, 1, tool_consumer_instance_guid)).to eq([])
+      expect(controller.send(:enrollments_section_ids, 1)).to eq([])
     end
   end
 end

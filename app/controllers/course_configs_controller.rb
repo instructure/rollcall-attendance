@@ -62,14 +62,11 @@ class CourseConfigsController < ApplicationController
   end
 
   def authorized_to_update_config?(config)
-    config.course_id && load_and_authorize_course(
-      config.course_id,
-      config.tool_consumer_instance_guid
-    )
+    config.course_id && load_and_authorize_course(config.course_id)
   end
 
   def course_sections(config)
-    load_and_authorize_sections(config.course_id, config.tool_consumer_instance_guid)
+    load_and_authorize_sections(config.course_id)
   end
 
   def course_config_params

@@ -32,7 +32,7 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
 
   unmarkAll: (event) ->
     event.preventDefault()
-
+    
     @indexView.statuses.each (status) ->
       status.unmark()
 
@@ -53,17 +53,14 @@ class InstructureRollcall.Views.Statuses.ListView extends Backbone.View
     false
 
   addOne: (status) =>
-    try
-      view = new InstructureRollcall.Views.Statuses.StatusView({
-        model : status,
-        indexView: @indexView
-      })
-      if @checkSection(status.get('section_id'))
-        @$("#student-list").append(view.render().el)
-        view.showDetails() if @indexView.detailsView? and
-          status.get('student_id') == @indexView.detailsView.model.get('student_id')
-    catch error
-      alert error.message
+    view = new InstructureRollcall.Views.Statuses.StatusView({
+      model : status,
+      indexView: @indexView
+    })
+    if @checkSection(status.get('section_id'))
+      @$("#student-list").append(view.render().el)
+      view.showDetails() if @indexView.detailsView? and
+        status.get('student_id') == @indexView.detailsView.model.get('student_id')
 
   render: =>
     @$el.html(@template())
