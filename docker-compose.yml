@@ -44,6 +44,8 @@ services:
       LTI_KEY: '12345'
       LTI_SECRET: 'secret'
       LTI_REQUIRE_CANVAS: 'true'
+      HEAP_ENABLED: 'true'
+      HEAP_ANALYTICS_APP_ID: "123"
     external_links:
       - ${PROXY_CONTAINER:-dinghy_http_proxy}:bucket.minio.rollcall-attendance.docker
 

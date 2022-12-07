@@ -35,32 +35,36 @@ class StatusesController < ApplicationController
   end
 
   def create
-    course_id = params[:status][:course_id]
-    if course = load_and_authorize_course(course_id)
-      #This makes sure that the Status is unique for the student and
-      #the corresponding course.
-      status = Status.where(
-        student_id: params[:status][:student_id],
-        section_id: params[:status][:section_id],
-        class_date: params[:status][:class_date],
-        course_id: params[:status][:course_id],
-        tool_consumer_instance_guid: tool_consumer_instance_guid
-      ).first
+    begin
+      course_id = params[:status][:course_id]
+      if course = load_and_authorize_course(course_id)
+        #This makes sure that the Status is unique for the student and
+        #the corresponding course.
+        status = Status.where(
+          student_id: params[:status][:student_id],
+          section_id: params[:status][:section_id],
+          class_date: params[:status][:class_date],
+          course_id: params[:status][:course_id],
+          tool_consumer_instance_guid: tool_consumer_instance_guid
+        ).first
 
-      status ||= Status.new(status_params)
-      status.assign_attributes(
-        course_id: course.id,
-        account_id: course.account_id
-      )
+        status ||= Status.new(status_params)
+        status.assign_attributes(
+          course_id: course.id,
+          account_id: course.account_id
+        )
 
-      begin
-        submit_grade!(status) if status.save
-      rescue ActiveRecord::RecordNotUnique
-        # duplicate record - can happen with competing requests to the server
+        begin
+          submit_grade!(status) if status.save
+        rescue ActiveRecord::RecordNotUnique
+          # duplicate record - can happen with competing requests to the server
+        end
+        render_status(status)
+      else
+        not_acceptable
       end
-      render_status(status)
-    else
-      not_acceptable
+    rescue => e
+      Rails.logger.error "Exception creating attendance: #{e.to_s}"
     end
   end
 
