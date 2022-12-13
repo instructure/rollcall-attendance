@@ -35,6 +35,8 @@ class SeatingChart < ApplicationRecord
       section_id: section_id,
       tool_consumer_instance_guid: tool_consumer_instance_guid,
       course_id: course_id
-    }).where("class_date <= ?", class_date).order("class_date DESC").first
+    }).where("class_date <= ?", class_date)
+      .where.not(assignments: nil)
+      .order("class_date DESC").first
   end
 end
