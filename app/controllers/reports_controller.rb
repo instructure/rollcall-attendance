@@ -49,7 +49,7 @@ class ReportsController < ApplicationController
   private
   def load_course_or_account
     if @report.course_id.present?
-      @course = load_and_authorize_course(@report.course_id.to_i)
+      @course = load_and_authorize_course(@report.course_id.to_i, tool_consumer_instance_guid)
     elsif @report.account_id.present?
       # TODO: this is stupid, we should probably just be caching the data that
       # we need, or at the very least setting attributes on a CachedAccount

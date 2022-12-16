@@ -38,14 +38,27 @@ module RedisCache
   end
 
   def redis_cache_response(key, request)
-    JSON.parse(cached_value(key) || fetch_from_api(key, request))
+    response_cached_value = cached_value(key)
+
+    JSON.parse(response_cached_value || fetch_from_api(key, request))
   end
 
   def fetch_from_api(key, request)
     response = request.call
+
     return "{}" if response.blank?
-    response = response.to_json
+
+
+    if response.class == HTTParty::Response
+      return "{}" if response.body.blank?
+      response = response.body
+    else
+      response = response.to_json
+    end
+
     cache_value key, 1.hours.to_i, response
+
     response
   end
+
 end

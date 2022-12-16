@@ -18,9 +18,9 @@
 Feature: Attendance
 
   Background:
-    Given I am a teacher with 1 section and 2 students
+    Given I am a teacher with 2 sections and 2 students
     When I go to take attendance
-    
+
   @javascript
   Scenario: Clicking a student's name toggles their presence
     Then the first student should be unmarked
