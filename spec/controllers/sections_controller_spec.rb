@@ -94,7 +94,7 @@ describe SectionsController do
 
   describe "prepare_course" do
     it "refreshes the course info from canvas" do
-      expect(controller).to receive(:refresh_course!)
+      expect(controller).to receive(:refresh_course_with_sections!)
       controller.send(:prepare_course)
     end
   end

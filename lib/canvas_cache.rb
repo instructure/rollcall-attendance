@@ -64,6 +64,15 @@ module CanvasCache
     end
   end
 
+  def refresh_course_with_sections!(course_id, tool_consumer_instance_guid)
+    return unless redis
+
+    key = redis_cache_key(tool_consumer_instance_guid, 'sections_no_students', course_id)
+    redis.del key
+
+    load_and_authorize_sections(course_id, tool_consumer_instance_guid)
+  end
+
   def refresh_course!(course_id)
     return unless redis
     cache_response redis_key(:course, course_id), canvas.get_course(course_id)

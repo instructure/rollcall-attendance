@@ -74,15 +74,39 @@ module Authorization
 
   end
 
+  def load_and_agregate_sections(course_id)
+    page = 1
+    sections = []
+
+    loop do
+      sections_fetched = []
+      query_options = { query: { per_page: 50, page: page } }
+
+      sections_fetched = canvas.authenticated_get("/api/v1/courses/#{course_id}/sections", query_options)
+
+      sections_fetched.each do |section|
+        sections << section
+      end
+
+      page = page + 1
+
+      break if sections_fetched.count != 50
+    end
+
+    sections
+  end
+
   def load_and_authorize_sections(course_id, tool_consumer_instance_guid)
     if load_and_authorize_course(course_id, tool_consumer_instance_guid)
-      query_options = { query: { per_page: 50, page: 1 } }
+      sections = load_and_agregate_sections(course_id)
+
       object = get_object(
         tool_consumer_instance_guid,
         :sections_no_students,
         course_id,
-        lambda { canvas.authenticated_get("/api/v1/courses/#{course_id}/sections", query_options) }
+        lambda { sections }
       )
+
       Section.list_from_params(object)  unless object.empty?
     end
 

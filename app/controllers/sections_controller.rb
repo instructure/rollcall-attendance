@@ -20,9 +20,11 @@ class SectionsController < ApplicationController
 
   def course
     begin
-      section_id = enrollments_section_ids(params[:course_id], tool_consumer_instance_guid).first
+      prepare_course
+
+      section_id = load_and_authorize_sections(params[:course_id], tool_consumer_instance_guid).first.id
       if !section_id
-        section_id = load_and_authorize_sections(params[:course_id], tool_consumer_instance_guid).first.id
+        section_id = enrollments_section_ids(params[:course_id], tool_consumer_instance_guid).first
       end
 
       if section_id
@@ -64,7 +66,7 @@ class SectionsController < ApplicationController
   end
 
   def prepare_course
-    refresh_course!(params[:course_id])
+    refresh_course_with_sections!(params[:course_id], tool_consumer_instance_guid)
   end
 
   def enrollments_section_ids(course_id, tool_consumer_instance_guid)
