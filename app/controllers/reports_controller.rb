@@ -55,7 +55,7 @@ class ReportsController < ApplicationController
       # we need, or at the very least setting attributes on a CachedAccount
       # object
       if account = load_and_authorize_account(@report.account_id.to_i, tool_consumer_instance_guid)
-        @canvas_account_json = cached_account(account.account_id).parsed_response
+        @canvas_account_json = get_account(account.account_id)
       end
     end
 
@@ -85,5 +85,11 @@ class ReportsController < ApplicationController
               @report.email,
               @report.start_date,
               @report.end_date)
+  end
+
+  def get_account(account_id)
+    key = redis_cache_key(tool_consumer_instance_guid, :account, account_id)
+    request = lambda { canvas.get_account(account_id) }
+    redis_cache_response key, request
   end
 end

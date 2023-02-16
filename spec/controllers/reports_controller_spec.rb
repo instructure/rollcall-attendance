@@ -95,6 +95,31 @@ describe ReportsController do
     end
   end
 
+  describe "Perform GET request on #account" do
+    context "#get_account" do
+      let(:redis) { $REDIS }
+      let(:account_id) { 1 }
+      let(:canvas) {double(:canvas_api)}
+
+      before do
+        allow(controller).to receive(:load_and_authorize_account) { CachedAccount.new }
+      end
+
+      it "does not call the canvas api if chached" do
+        allow(redis).to receive(:get).and_return('{"id":1, "name":"School Name"}')
+        expect(canvas).not_to receive(:get_account)
+        get :new, params: { account_id: account_id }
+      end
+
+      it "fetches from api if not cached" do
+        allow(redis).to receive(:get).and_return(nil)
+        allow(controller).to receive(:get_account).and_return({"id" => 1, "name" => "School Name" })
+
+        get :new, params: { account_id: account_id }
+      end
+    end
+  end
+
   describe "Perform POST request on #create" do
     after(:each) do
       Redis.current.del("abc123:report:0:foo@bar.com::")
