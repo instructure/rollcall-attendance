@@ -38,11 +38,26 @@ describe BadgesController do
     end
 
     it "finds badges for the account" do
-      get :index, params: { account_id: course_id }, format: "json"
+      get :index, params: { account_id: course_id, course_id: course_id }, format: "json"
       expect(JSON.parse(response.body).class).to eq(Array)
     end
 
-    it "finds badges for the account" do
+    it "finds badges for the account with no course" do
+      get :index, params: { account_id: course_id, course_id: course_id }, format: "json"
+      expect(JSON.parse(response.body).class).to eq(Array)
+    end
+
+    it "does not find any badges for the incorrect account" do
+      get :index, params: { account_id: 321321 }, format: "json"
+      expect(response.body).to eq("[]")
+    end
+
+    it "does not find any badges for the incorrect course" do
+      get :index, params: { course_id: 123123 }, format: "json"
+      expect(response.body).to eq("[]")
+    end
+
+    it "does not find badges for the account or course" do
       get :index, format: "json"
       expect(response.response_code).to eq(406)
     end

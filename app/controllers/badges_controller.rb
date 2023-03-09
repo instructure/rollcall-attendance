@@ -21,12 +21,25 @@ class BadgesController < ApplicationController
   respond_to :json
 
   def index
-    if course = load_and_authorize_course(params[:course_id], tool_consumer_instance_guid)
+    if params[:course_id] &&
+    (
+      course = load_and_authorize_course(
+        params[:course_id],
+        tool_consumer_instance_guid
+      )
+    )
       respond_with Badge.where({
         course_id: course.id,
         tool_consumer_instance_guid: tool_consumer_instance_guid
       }).order(:name)
-    elsif account = load_and_authorize_account(params[:account_id], tool_consumer_instance_guid)
+    elsif params[:account_id] &&
+    (
+        account = load_and_authorize_account(
+          params[:account_id],
+          tool_consumer_instance_guid
+      )
+    )
+
       respond_with account.badges
     else
       head :not_acceptable
@@ -35,9 +48,22 @@ class BadgesController < ApplicationController
 
   def create
     if params[:badge] &&
-        (load_and_authorize_course(params[:badge][:course_id], tool_consumer_instance_guid) ||
-         load_and_authorize_account(params[:badge][:account_id], tool_consumer_instance_guid)
+    (
+      (
+        params[:badge][:course_id] &&
+        load_and_authorize_course(
+          params[:badge][:course_id],
+          tool_consumer_instance_guid
         )
+      ) ||
+      (
+        params[:badge][:account_id] &&
+        load_and_authorize_account(
+          params[:badge][:account_id],
+          tool_consumer_instance_guid
+        )
+      )
+    )
       badge = Badge.create(create_badge_params)
       respond_with badge
     else
@@ -48,9 +74,23 @@ class BadgesController < ApplicationController
   def update
     badge = Badge.find(params[:id])
     if badge &&
-        (load_and_authorize_course(badge.course_id, tool_consumer_instance_guid) ||
-         load_and_authorize_account(badge.account_id, tool_consumer_instance_guid)
+    (
+      (
+        badge.course_id &&
+        load_and_authorize_course(
+          badge.course_id,
+          tool_consumer_instance_guid
         )
+      ) ||
+      (
+        badge.account_id &&
+        load_and_authorize_account(
+          badge.account_id,
+          tool_consumer_instance_guid
+        )
+      )
+    )
+
       badge.update(update_badge_params)
       respond_with badge
     else
@@ -62,9 +102,23 @@ class BadgesController < ApplicationController
     badge = Badge.find(params[:id])
 
     if badge &&
-        (load_and_authorize_course(badge.course_id, tool_consumer_instance_guid) ||
-         load_and_authorize_account(badge.account_id, tool_consumer_instance_guid)
+    (
+      (
+        badge.course_id &&
+        load_and_authorize_course(
+          badge.course_id,
+          tool_consumer_instance_guid
         )
+      ) ||
+      (
+        badge.account_id &&
+        load_and_authorize_account(
+          badge.account_id,
+          tool_consumer_instance_guid
+        )
+      )
+    )
+
       badge.destroy
       respond_with badge
     else
