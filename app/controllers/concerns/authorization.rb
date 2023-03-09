@@ -129,7 +129,12 @@ module Authorization
   end
 
   def get_object(tool_consumer_instance_guid, resource_type, resource_id, canvas_request)
-    key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id)
+    if resource_type.equal? :account
+      key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id, user_id)
+    else
+      key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id)
+    end
+
     response = redis_cache_response key, canvas_request
     response
   end
