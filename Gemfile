@@ -20,7 +20,7 @@ source 'https://rubygems.org'
 gem 'bundler', '>= 1.7.10'
 
 gem 'rails', '6.0.4.2'
-gem 'rack', '~> 2.1'
+gem 'rack', '~> 2.2'
 gem 'bootsnap', '~> 1.0', require: false
 
 gem 'thin', '~> 1.0'

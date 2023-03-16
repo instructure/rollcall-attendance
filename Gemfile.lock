@@ -300,7 +300,7 @@ GEM
       method_source (~> 1.0)
     public_suffix (4.0.6)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.6.4)
     rack-protection (2.1.0)
       rack
     rack-test (1.1.0)
@@ -527,7 +527,7 @@ DEPENDENCIES
   paul_bunyan (~> 1.5)
   pg (~> 1.0)
   phantomjs (= 1.9.7.1)
-  rack (~> 2.1)
+  rack (~> 2.2)
   rails (= 6.0.4.2)
   rails-backbone (~> 0.7.2)
   rails-controller-testing
