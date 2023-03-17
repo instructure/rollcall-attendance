@@ -29,8 +29,8 @@ module Authorization
   def get_course_enrollments_for_user(user_id, course_id)
     query_options = {
       query: {
-        type: ['TeacherEnrollment', 'TaEnrollment'],
-        state: ['active', 'completed'],
+        type: %w[TeacherEnrollment TaEnrollment],
+        state: %w[active completed],
         user_id: user_id.to_s,
         per_page: 100
       }

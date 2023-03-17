@@ -19,37 +19,50 @@ class SectionsController < ApplicationController
   before_action :can_grade
 
   def course
-    begin
-      prepare_course
+    prepare_course
 
-      section_id = load_and_authorize_sections(params[:course_id], tool_consumer_instance_guid).first.id
-      if !section_id
-        section_id = enrollments_section_ids(params[:course_id], tool_consumer_instance_guid).first
-      end
+    section_id = load_and_authorize_sections(
+      params[:course_id],
+      tool_consumer_instance_guid
+    ).first.id
+    if !section_id
+      section_id = enrollments_section_ids(
+        params[:course_id],
+        tool_consumer_instance_guid
+      ).first
+    end
 
-      if section_id
-        redirect_to section_path(section_id)
-      else
-        render_error
-      end
+    if section_id
+      redirect_to section_path(section_id)
+    else
+      render_error
+    end
 
     rescue => e
       Rails.logger.error "Exception fetching course: #{e.to_s}"
-    end
-
   end
 
   def show
-    @section = load_and_authorize_full_section(params[:section_id], tool_consumer_instance_guid)
+    @section = load_and_authorize_full_section(
+      params[:section_id],
+      tool_consumer_instance_guid
+    )
+
     return render_error if @section.blank?
-    @sections = load_and_authorize_sections(@section.course_id, tool_consumer_instance_guid)
+
+    @sections = load_and_authorize_sections(
+      @section.course_id,
+      tool_consumer_instance_guid
+    )
+
     if section_limited?(@section.course_id, tool_consumer_instance_guid)
       authorized_section_ids = enrollments_section_ids(
         @section.course_id,
         tool_consumer_instance_guid
       )
       @sections.select! { |sec| authorized_section_ids.include?(sec.id) }
-      @section = nil unless authorized_section_ids.include?(@section.id)
+
+      @section = @sections.first unless authorized_section_ids.include?(@section.id) else nil
     end
 
     render_error if @section.blank? || @sections.blank?
@@ -58,6 +71,9 @@ class SectionsController < ApplicationController
       course_id: @section.course_id,
       tool_consumer_instance_guid: tool_consumer_instance_guid
     ).first_or_initialize
+
+    rescue => e
+      Rails.logger.error "Exception fetching section details: #{e.to_s}"
   end
 
   private
@@ -67,6 +83,7 @@ class SectionsController < ApplicationController
 
   def prepare_course
     refresh_course_with_sections!(params[:course_id], tool_consumer_instance_guid)
+    refresh_user_enrollments!(params[:course_id], tool_consumer_instance_guid)
   end
 
   def enrollments_section_ids(course_id, tool_consumer_instance_guid)
@@ -83,6 +100,7 @@ class SectionsController < ApplicationController
       course_id,
       tool_consumer_instance_guid
     ) || []
+
     enrollments.present? &&
       enrollments.all?{ |e| e['limit_privileges_to_course_section'] }
   end
