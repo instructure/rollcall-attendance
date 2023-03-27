@@ -21,7 +21,7 @@ module Authorization
     object = get_object(
       tool_consumer_instance_guid,
       :user_enrollment,
-      user_id,
+      course_id,
       lambda { get_course_enrollments_for_user(user_id, course_id) }
     )
   end
@@ -129,11 +129,7 @@ module Authorization
   end
 
   def get_object(tool_consumer_instance_guid, resource_type, resource_id, canvas_request)
-    if resource_type.equal? :account
-      key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id, user_id)
-    else
-      key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id)
-    end
+    key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id, user_id)
 
     response = redis_cache_response key, canvas_request
     response

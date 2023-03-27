@@ -48,7 +48,6 @@ module RedisCache
 
     return "{}" if response.blank?
 
-
     if response.class == HTTParty::Response
       return "{}" if response.body.blank?
       response = response.body
