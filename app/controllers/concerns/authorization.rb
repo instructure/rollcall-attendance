@@ -16,6 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 module Authorization
   include RedisCache
+  include HttpCanvasHelper
 
   def load_and_authorize_enrollments(user_id, course_id, tool_consumer_instance_guid)
     object = get_object(
@@ -26,16 +27,46 @@ module Authorization
     )
   end
 
-  def get_course_enrollments_for_user(user_id, course_id)
-    query_options = {
-      query: {
+  def aggregate_course_enrollments_for_user(user_id, course_id)
+    page = 1
+    enrollments = []
+    bookmark = 'first'
+
+    loop do
+      enrollments_fetched = []
+      query_options = {
         type: %w[TeacherEnrollment TaEnrollment],
         state: %w[active completed],
         user_id: user_id.to_s,
-        per_page: 100
+        per_page: 50,
+        page: bookmark
       }
-    }
-    canvas.authenticated_get "/api/v1/courses/#{course_id}/enrollments", query_options
+
+      enrollments_fetched, bookmarks = HttpCanvasAuthorizedRequest
+        .new(
+          canvas,
+          "/api/v1/courses/#{course_id}/enrollments",
+          query_options
+        )
+        .send_request_with_link_headers
+
+      bookmark = bookmarks['next']
+
+      page = page + 1
+      enrollments = enrollments + enrollments_fetched
+
+      break if enrollments_fetched.count != 50
+    end
+
+    enrollments
+    rescue => e
+      Rails.logger.error "Exception fetching enrollments list: #{e.to_s}"
+  end
+
+  def get_course_enrollments_for_user(user_id, course_id)
+    enrollments_list = aggregate_course_enrollments_for_user(user_id, course_id)
+
+    enrollments_list
   end
 
   def load_and_authorize_section(section_id, tool_consumer_instance_guid)
@@ -98,6 +129,7 @@ module Authorization
 
   def load_and_authorize_sections(course_id, tool_consumer_instance_guid)
     if load_and_authorize_course(course_id, tool_consumer_instance_guid)
+
       sections = load_and_agregate_sections(course_id)
 
       object = get_object(
@@ -129,7 +161,12 @@ module Authorization
   end
 
   def get_object(tool_consumer_instance_guid, resource_type, resource_id, canvas_request)
-    key = redis_cache_key(tool_consumer_instance_guid, resource_type, resource_id, user_id)
+    key = redis_cache_key(
+      tool_consumer_instance_guid,
+      resource_type,
+      resource_id,
+      user_id
+    )
 
     response = redis_cache_response key, canvas_request
     response

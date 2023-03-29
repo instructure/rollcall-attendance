@@ -21,16 +21,15 @@ class SectionsController < ApplicationController
   def course
     prepare_course
 
-    section_id = enrollments_section_ids(
+    section_id = load_and_authorize_sections(
       params[:course_id],
       tool_consumer_instance_guid
-    ).first
-
-    if section_id.blank?
-      section_id = load_and_authorize_sections(
+    ).first.id
+    if !section_id
+      section_id = enrollments_section_ids(
         params[:course_id],
         tool_consumer_instance_guid
-      ).first.id
+      ).first
     end
 
     if section_id
@@ -63,7 +62,7 @@ class SectionsController < ApplicationController
       )
       @sections.select! { |sec| authorized_section_ids.include?(sec.id) }
 
-      @section = @sections.first unless authorized_section_ids.include?(@section.id)
+      @section = @sections.first unless authorized_section_ids.include?(@section.id) else nil
     end
 
     render_error if @section.blank? || @sections.blank?
