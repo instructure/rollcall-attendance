@@ -9,7 +9,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg m
   && apt-get update -y \
   && apt-get install -y \
     mysql-client-5.7 \
-    postgresql-client-9.6 \
+    postgresql-client-13 \
   && ([ "$DEV_BUILD" = 'true' ] \
     && apt-get install -y \
       libqt4-dev \
