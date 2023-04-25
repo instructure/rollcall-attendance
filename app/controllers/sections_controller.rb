@@ -37,9 +37,6 @@ class SectionsController < ApplicationController
     else
       render_error
     end
-
-    rescue => e
-      Rails.logger.error "Exception fetching course: #{e.to_s}"
   end
 
   def show
@@ -65,15 +62,17 @@ class SectionsController < ApplicationController
       @section = @sections.first unless authorized_section_ids.include?(@section.id) else nil
     end
 
-    render_error if @section.blank? || @sections.blank?
+    return render_error if @section.blank? || @sections.blank?
 
-    @course_config = CourseConfig.where(
-      course_id: @section.course_id,
-      tool_consumer_instance_guid: tool_consumer_instance_guid
-    ).first_or_initialize
-
+    begin
+      @course_config = CourseConfig.where(
+        course_id: @section.course_id,
+        tool_consumer_instance_guid: tool_consumer_instance_guid
+      ).first_or_initialize
     rescue => e
       Rails.logger.error "Exception fetching section details: #{e.to_s}"
+      return render_error
+    end
   end
 
   private

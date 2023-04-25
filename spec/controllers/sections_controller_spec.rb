@@ -158,7 +158,7 @@ describe SectionsController do
       expect(assigns(:sections)).to eq([])
     end
 
-    it "renders an error for the section and the list of sections" do
+    it "renders an error when the teacher is not enrolled in any section of that course" do
       allow(controller).to receive(:load_and_authorize_enrollments).and_return([{
         'type' => 'TeacherEnrollment',
         'course_id' => 3,
@@ -171,6 +171,7 @@ describe SectionsController do
         .and_return(sections)
       allow(controller).to receive(:section_limited?).and_return(true)
       allow(controller).to receive(:enrollments_section_ids).and_return([3])
+
       expect(controller).to receive(:render_error)
 
       get :show, params: { section_id: 1 }

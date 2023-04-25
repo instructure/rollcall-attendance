@@ -34,9 +34,9 @@ class StatusesController < ApplicationController
       else
         not_acceptable
       end
-
     rescue => e
       Rails.logger.error "Exception: #{e.class.name} - #{e.message}"
+      not_acceptable
     end
   end
 
@@ -60,15 +60,13 @@ class StatusesController < ApplicationController
           account_id: course.account_id
         )
 
-        begin
-          submit_grade!(status) if status.save
-        rescue ActiveRecord::RecordNotUnique
-          # duplicate record - can happen with competing requests to the server
-        end
+        submit_grade!(status) if status.save
         render_status(status)
       else
         not_acceptable
       end
+    rescue ActiveRecord::RecordNotUnique
+      Rails.logger.error "Ruplicate record: #{e.to_s}"
     rescue => e
       Rails.logger.error "Exception creating attendance: #{e.to_s}"
     end
