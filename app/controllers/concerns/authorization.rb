@@ -130,13 +130,11 @@ module Authorization
   def load_and_authorize_sections(course_id, tool_consumer_instance_guid)
     if load_and_authorize_course(course_id, tool_consumer_instance_guid)
 
-      sections = load_and_agregate_sections(course_id)
-
       object = get_object(
         tool_consumer_instance_guid,
         :sections_no_students,
         course_id,
-        lambda { sections }
+        lambda { load_and_agregate_sections(course_id) }
       )
 
       Section.list_from_params(object)  unless object.empty?

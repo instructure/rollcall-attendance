@@ -22,11 +22,11 @@ class GradeUpdater
   @queue = :grade_updates
 
   # directly enqueue job when lock occurred
-  @retry_delay = 0
+  @retry_delay = 5
 
   # we don't need the limit because at some point the lock should be cleared
   # and because we are only catching LockTimeouts
-  @retry_limit = 10000
+  @retry_limit = 5
 
   # just catch lock timeouts
   @retry_exceptions = [Redis::Lock::LockTimeout]
@@ -38,18 +38,23 @@ class GradeUpdater
 
   def self.perform(params)
     params = params.with_indifferent_access
+    begin
+      canvas = CanvasOauth::CanvasApiExtensions.build(
+        params[:canvas_url],
+        params[:user_id],
+        params[:tool_consumer_instance_guid]
+      )
 
-    canvas = CanvasOauth::CanvasApiExtensions.build(
-      params[:canvas_url],
-      params[:user_id],
-      params[:tool_consumer_instance_guid]
-    )
-
-    assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
-    canvas_assignment = assignment.fetch_or_create
-    assignment.submit_grade(
-      canvas_assignment['id'],
-      params[:student_id]
-    )
+      assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
+      canvas_assignment = assignment.fetch_or_create
+      assignment.submit_grade(
+        canvas_assignment['id'],
+        params[:student_id]
+      )
+    rescue => e
+      msg = "Exception submitting grade: #{e.to_s} \nwith params:#{params.to_s}"
+      Rails.logger.error msg
+      raise
+    end
   end
 end

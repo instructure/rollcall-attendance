@@ -117,6 +117,16 @@ class AttendanceAssignment
         )
       rescue CanvasOauth::CanvasApi::Unauthorized
         # user is not authorized to update grades
+      rescue => e
+        params = {
+           student_id: student_id,
+           course_id: course_id,
+           active_section_ids: active_section_ids,
+           tool_consumer_instance_guid: tool_consumer_instance_guid
+        }
+        msg = "Exception when submitting grade: #{e.to_s} \nwith params:#{params.to_s}"
+        Rails.logger.error msg
+        raise
       end
     end
   end

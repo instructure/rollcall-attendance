@@ -66,20 +66,20 @@ NOTE: By default this setup uses postgres. To use mysql instead, export:
 
 Now you should be able to build your containers with:
 
-    docker-compose build
+    docker compose build
 
 You can get your database prepped for development with the normal
 rake tasks, you just have to run them in the container:
 
-    docker-compose run --rm web bundle install
-    docker-compose run --rm web bundle exec rake db:create
-    docker-compose run --rm web bundle exec rake db:migrate
+    docker compose run --rm web bundle install
+    docker compose run --rm web bundle exec rake db:create
+    docker compose run --rm web bundle exec rake db:migrate
 
 ### 5. Run it!
 
 You should be able to start everything with:
 
-    docker-compose up
+    docker compose up
 
 This will start up 5 containers: a web process to hit with your browser, a
 worker process to consume jobs, a postgres data store, a redis cache, and a
@@ -125,7 +125,7 @@ but that kind of sucks for rerunning. Run your javascript tests from the command
 
     docker-compose run --rm web bundle exec rake jasmine:ci
 
-Finally, you can run your cucumber tests, but it's kind of hacky.  For linux
+Finally, you can run your cucumber tests, but it's kind of hacky. For linux
 (which the container is) you need to wrap a cucumber run in "xvfb-run" for
 capybara-webkit to work correctly, but something in that process is
 making output redirection not work right, so you won't see the output if you
