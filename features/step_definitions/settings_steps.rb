@@ -54,4 +54,3 @@ end
 Then /^I should see the omit from final grade checkbox is checked$/ do
   page.find_by_id('omit-checkbox')['checked']
 end
-

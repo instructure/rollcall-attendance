@@ -41,6 +41,10 @@ describe SyncAccountRelationships do
 
       allow(CanvasOauth::CanvasApiExtensions).to receive(:build).and_return(canvas)
       allow(canvas).to receive(:get_account).and_return({})
+      SyncAccountRelationships.get_roll_call_account(
+        canvas_account_id: valid_params[:account_id],
+        tool_consumer_instance_guid: valid_params[:tool_consumer_instance_guid]
+      ).update!(last_sync_on: 6.minutes.ago)
     end
 
     it "updates accounts with parent account id" do

@@ -36,7 +36,7 @@ class SecureResqueServer < Resque::Server
   use Rack::Auth::Basic, "Restricted Area" do |provided_user, provided_pass|
     config_file = Rails.root.join('config/resque.yml')
 
-    if File.exists?(config_file)
+    if File.exist?(config_file)
       config = YAML::load(File.open(config_file))[Rails.env]
       user = config['username']
       pass = config['password']

@@ -69,7 +69,7 @@ describe Pagination do
           total_entries: 100
         }
       }
-      expect(collection).to eql expected
+      expect(collection).to eq expected
     end
 
     it 'adjusts based on input params' do
@@ -83,7 +83,7 @@ describe Pagination do
           total_entries: 100
         }
       }
-      expect(collection).to eql expected
+      expect(collection).to eq expected
     end
   end
 end

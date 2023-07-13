@@ -18,7 +18,7 @@
 module RedisCache
 
   def redis
-    Redis.current
+    $REDIS
   end
 
   def redis_cache_key(*params)

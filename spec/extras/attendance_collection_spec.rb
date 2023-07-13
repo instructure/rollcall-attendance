@@ -181,7 +181,7 @@ describe "AttendanceCollection" do
 
       it "returns the time the student's attendance for the section was last updated if there are no badges" do
         collection.add_status(status)
-        expect(collection_items.first.last_updated_at).to eq now
+        expect(collection_items.first.last_updated_at).to eq status.updated_at
       end
 
       context "when the student has at least one badge for the current date" do

@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_27_154640) do
-
+ActiveRecord::Schema[7.0].define(version: 2019_11_18_151647) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,8 +19,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.bigint "course_id"
     t.integer "badge_id"
     t.date "class_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.bigint "teacher_id"
     t.string "tool_consumer_instance_guid"
     t.index ["course_id", "class_date", "tool_consumer_instance_guid"], name: "index_awards_on_course_date_tciguid"
@@ -34,8 +33,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.string "icon"
     t.string "color"
     t.bigint "course_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "account_id"
     t.string "tool_consumer_instance_guid"
     t.index ["account_id", "tool_consumer_instance_guid"], name: "index_badges_on_account_id_and_tool_consumer_instance_guid"
@@ -44,9 +43,9 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
 
   create_table "cached_accounts", id: :serial, force: :cascade do |t|
     t.bigint "parent_account_id"
-    t.datetime "last_sync_on"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "last_sync_on", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "tool_consumer_instance_guid"
     t.bigint "account_id", null: false
     t.index ["account_id", "tool_consumer_instance_guid"], name: "index_cached_accounts_on_account_id_and_tciguid"
@@ -56,9 +55,9 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
   create_table "canvas_oauth_authorizations", id: :serial, force: :cascade do |t|
     t.bigint "canvas_user_id"
     t.string "token"
-    t.datetime "last_used_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "last_used_at", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "tool_consumer_instance_guid", null: false
     t.index ["canvas_user_id", "tool_consumer_instance_guid"], name: "index_canvas_oauth_auths_on_user_id_and_tciguid"
   end
@@ -66,8 +65,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
   create_table "course_configs", id: :serial, force: :cascade do |t|
     t.bigint "course_id"
     t.float "tardy_weight"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "view_preference"
     t.string "tool_consumer_instance_guid"
     t.boolean "omit_from_final_grade", default: false, null: false
@@ -78,8 +77,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.string "canvas_url"
     t.string "nonce"
     t.text "provider_params"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["nonce", "created_at"], name: "index_lti_provider_launches_on_nonce_and_created_at"
   end
 
@@ -88,8 +87,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.bigint "section_id"
     t.date "class_date"
     t.text "assignments"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "tool_consumer_instance_guid"
     t.index ["section_id", "class_date", "tool_consumer_instance_guid"], name: "index_seating_charts_on_section_date_tciguid"
   end
@@ -98,8 +97,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.bigint "student_id"
     t.bigint "section_id"
     t.date "class_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "attendance", limit: 20
     t.bigint "course_id"
     t.bigint "account_id"
@@ -109,6 +108,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_154640) do
     t.index ["account_id", "tool_consumer_instance_guid"], name: "index_statuses_on_account_id_and_tool_consumer_instance_guid"
     t.index ["course_id", "tool_consumer_instance_guid"], name: "index_statuses_on_course_id_and_tool_consumer_instance_guid"
     t.index ["section_id", "class_date", "tool_consumer_instance_guid"], name: "index_statuses_on_section_date_tciguid"
+    t.index ["student_id", "section_id", "class_date", "tool_consumer_instance_guid"], name: "index_statuses_uniquely", unique: true
     t.index ["student_id", "tool_consumer_instance_guid"], name: "index_statuses_on_student_id_and_tool_consumer_instance_guid"
   end
 

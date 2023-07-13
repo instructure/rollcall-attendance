@@ -66,7 +66,7 @@ class StatusesController < ApplicationController
         not_acceptable
       end
     rescue ActiveRecord::RecordNotUnique
-      Rails.logger.error "Ruplicate record: #{e.to_s}"
+      Rails.logger.error "Exception creating attendance: Duplicate record #{params[:status].inspect}"
     rescue => e
       Rails.logger.error "Exception creating attendance: #{e.to_s}"
     end

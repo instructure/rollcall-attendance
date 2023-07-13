@@ -20,7 +20,7 @@ config_file = Rails.root.join('config/redis.yml')
 redis_uri = if ENV['REDIS_URL']
               Rails.logger.info "Initializing Redis from REDIS_URL env var: #{ENV['REDIS_URL']}"
               ENV['REDIS_URL']
-            elsif File.exists?(config_file)
+            elsif File.exist?(config_file)
               Rails.logger.info "Initializing Redis from #{config_file}"
               YAML::load(File.open(config_file))[Rails.env]['uri']
             else
@@ -31,4 +31,3 @@ redis_uri = if ENV['REDIS_URL']
 
 uri = URI.parse(redis_uri)
 $REDIS = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-Redis.current = $REDIS

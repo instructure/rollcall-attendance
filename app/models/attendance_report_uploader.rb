@@ -40,7 +40,7 @@ class AttendanceReportUploader
   def self.s3_config
     @config ||= begin
       config_file = File.join(Rails.root, 'config/s3.yml')
-      if File.exists?(config_file)
+      if File.exist?(config_file)
         erb = ERB.new(File.read(config_file)).result
         conf = YAML.load(erb)[Rails.env].deep_symbolize_keys
         conf.merge(conf.delete(:connection))

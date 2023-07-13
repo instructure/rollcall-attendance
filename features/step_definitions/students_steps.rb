@@ -43,7 +43,7 @@ When /^I scroll to the bottom of the page$/ do
 end
 
 Then /^I should see a total number of days for which attendance was taken$/ do
-  find('.student-chart-title').should have_content '6 Days Total'
+  find('.student-chart-title').should have_content "6\nDays Total"
 end
 
 Then /^I should see the total number of individual statuses$/ do
@@ -54,7 +54,7 @@ Then /^I should see the total number of individual statuses$/ do
 end
 
 Then /^I should see my current grade$/ do
-  find('.submission-grade-container').should have_content 'C+ Current Score'
+  find('.submission-grade-container').should have_content "C+\nCurrent Score"
 end
 
 Then /^I should see days marked late or absent$/ do

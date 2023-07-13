@@ -29,7 +29,7 @@ class CanvasAssignmentUpdater
   @retry_limit = 5
 
   # just catch lock timeouts
-  @retry_exceptions = [Redis::Lock::LockTimeout]
+  @retry_exceptions = [Redlock::LockError]
 
   # expire key after `retry_delay` plus 1 hour
   @expire_retry_key_after = 3600

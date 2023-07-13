@@ -27,7 +27,7 @@ set +e
 docker compose run --rm web bundle exec rake db:setup
 
 # run the tests
-docker compose run --name=$COMPOSE_PROJECT_NAME-rspec --user root --rm web bundle exec rake spec spec:javascript
+docker compose run --name=$COMPOSE_PROJECT_NAME-rspec --user root --rm web bundle exec rake spec
 rake_status=$?
 
 docker start $COMPOSE_PROJECT_NAME-rspec

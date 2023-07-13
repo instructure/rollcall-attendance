@@ -20,6 +20,7 @@ Feature: Attendance
   Background:
     Given I am a teacher with 2 sections and 2 students
     When I go to take attendance
+    Then I should see a list of my sections
 
   @javascript
   Scenario: Clicking a student's name toggles their presence

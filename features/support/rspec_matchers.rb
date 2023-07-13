@@ -23,11 +23,11 @@ module WaitSteps
   matcher :become_true do
     match do |block|
       begin
-        Timeout.timeout(Capybara.default_wait_time) do
+        Timeout.timeout(Capybara.default_max_wait_time) do
           sleep(0.1) until value = block.call
           value
         end
-      rescue TimeoutError
+      rescue Timeout::Error
         false
       end
     end

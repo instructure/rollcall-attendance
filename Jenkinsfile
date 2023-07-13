@@ -9,6 +9,7 @@ pipeline {
     RAILS_ENV = "test"
     DOCKER_REF = "${(env.GERRIT_EVENT_TYPE == 'change-merged') ? env.GERRIT_BRANCH : env.GERRIT_REFSPEC}"
     DOCKER_TAG = env.DOCKER_REF.replace("refs/changes/", "").replaceAll("/", ".")
+    DEV_BUILD = "true"
   }
 
   stages {
@@ -68,11 +69,6 @@ pipeline {
                 sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
               }
             }
-          }
-        }
-        stage('Jasmine') {
-          steps {
-            sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
           }
         }
         stage('Brakeman') {

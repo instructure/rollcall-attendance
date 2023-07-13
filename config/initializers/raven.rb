@@ -20,7 +20,7 @@ if Rails.env.production?
 
   load_config_for_env = lambda do
     path = File.join(Rails.root, 'config', 'sentry.yml')
-    return unless File.exists?(path)
+    return unless File.exist?(path)
 
     config = YAML.load_file(path)[Rails.env]
     config.try(:with_indifferent_access)

@@ -26,7 +26,7 @@ describe AttendanceAssignment do
     let(:guid) { "guid" }
 
     before do
-      @course_config = CourseConfig.create!(
+      @course_config = create(:course_config,
         course_id: cid,
         tool_consumer_instance_guid: guid,
         omit_from_final_grade: true

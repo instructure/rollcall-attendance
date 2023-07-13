@@ -16,7 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 path = File.join(Rails.root, 'config', 'mail.yml')
-if File.exists?(path)
+if File.exist?(path)
   mail_config = YAML.load_file(path)[Rails.env].deep_symbolize_keys
   smtp_settings = mail_config[:smtp]
   default_options = mail_config[:default_options]
@@ -32,7 +32,7 @@ else
   smtp_settings[:domain] = ENV['SMTP_DOMAIN']
   smtp_settings[:enable_starttls_auto] = ENV['SMTP_ENABLE_STARTTLS_AUTO']
   smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
-  
+
   default_options[:outgoing_address] = ENV['OUTGOING_ADDRESS']
 
   smtp_settings.delete_if { |k,v| v.blank? }
@@ -50,4 +50,3 @@ if smtp_settings.present?
 end
 
 ActionMailer::Base.default_options = { from: default_options[:outgoing_address] || "Roll Call <notifications@instructure.com>" }
-

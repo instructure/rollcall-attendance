@@ -141,14 +141,13 @@ describe AttendanceAssignment do
   end
 
   describe "update_cached_assignment_if_needed" do
-
-    let!(:course_config) {
-      CourseConfig.create!(
-        course_id: course_id,
+    before(:each) do
+      course_config = create(
+        :course_config,
         tool_consumer_instance_guid: tool_consumer_instance_guid,
         omit_from_final_grade: true
       )
-    }
+    end
 
     let(:assignment) { { 'id' => '123', 'omit_from_final_grade' => true} }
 
@@ -167,7 +166,7 @@ describe AttendanceAssignment do
 
     it "doesn't update cache if assignment is missing omit_from_final_grade and course config's is false" do
       expect(attendance_assignment).not_to receive(:cache_assignment).with(assignment.to_json)
-      course_config.update!(omit_from_final_grade: false)
+      CourseConfig.find_by(tool_consumer_instance_guid: tool_consumer_instance_guid, course_id: course_id).update!(omit_from_final_grade: false)
       attendance_assignment.update_cached_assignment_if_needed({ 'id' => '123' })
     end
 

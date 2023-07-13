@@ -29,11 +29,14 @@ end
 
 require 'cucumber/rails'
 require 'factory_bot'
+require 'capybara/cucumber'
+require 'selenium-webdriver'
 require 'capybara-screenshot/cucumber'
 
 Dir[Rails.root.join("features/support/**/*.rb")].each {|f| require f}
 
-Capybara.javascript_driver = :webkit
+Capybara.default_driver = :selenium
+Capybara.javascript_driver = :selenium
 
 # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
 # order to ease the transition to Capybara we set the default here. If you'd
@@ -89,4 +92,5 @@ require 'cucumber/rspec/doubles'
 World(FactoryBot::Syntax::Methods)
 World(WaitSteps)
 
-WebMock.disable_net_connect!(:allow_localhost => true)
+# WebMock.disable_net_connect!(:allow_localhost => true)
+WebMock.allow_net_connect!

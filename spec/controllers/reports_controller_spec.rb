@@ -122,7 +122,7 @@ describe ReportsController do
 
   describe "Perform POST request on #create" do
     after(:each) do
-      Redis.current.del("abc123:report:0:foo@bar.com::")
+      $REDIS.del("abc123:report:0:foo@bar.com::")
     end
 
     it "generates a report for the given course" do
