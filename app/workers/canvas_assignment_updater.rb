@@ -22,11 +22,11 @@ class CanvasAssignmentUpdater
   @queue = :canvas_assignment_updates
 
   # directly enqueue job when lock occurred
-  @retry_delay = 0
+  @retry_delay = 5
 
   # we don't need the limit because at some point the lock should be cleared
   # and because we are only catching LockTimeouts
-  @retry_limit = 10000
+  @retry_limit = 5
 
   # just catch lock timeouts
   @retry_exceptions = [Redis::Lock::LockTimeout]
