@@ -26,10 +26,10 @@ class GradeUpdater
 
   # we don't need the limit because at some point the lock should be cleared
   # and because we are only catching LockTimeouts
-  @retry_limit = 5
+  @retry_limit = 0
 
   # just catch lock timeouts
-  @retry_exceptions = [Redis::Lock::LockTimeout]
+  # @retry_exceptions = [Redis::Lock::LockTimeout]
 
   def self.retry_identifier(params)
     params = params.with_indifferent_access

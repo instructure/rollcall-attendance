@@ -32,7 +32,7 @@ class AttendanceAssignment
 
     return assignment if assignment
 
-    Redis::Lock.new(lock_key, :expiration => 120, :timeout => 0.5).lock do
+    Redis::Lock.new(lock_key, :expiration => 120, :timeout => 1).lock do
       # expiration and timeout are in seconds
       assignment = fetch || create
     end

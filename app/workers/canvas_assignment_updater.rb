@@ -26,10 +26,10 @@ class CanvasAssignmentUpdater
 
   # we don't need the limit because at some point the lock should be cleared
   # and because we are only catching LockTimeouts
-  @retry_limit = 5
+  @retry_limit = 0
 
   # just catch lock timeouts
-  @retry_exceptions = [Redis::Lock::LockTimeout]
+  # @retry_exceptions = [Redis::Lock::LockTimeout]
 
   def self.retry_identifier(params)
     params = params.with_indifferent_access
@@ -39,30 +39,36 @@ class CanvasAssignmentUpdater
   def self.perform(params)
     params = params.with_indifferent_access
 
-    canvas = CanvasOauth::CanvasApiExtensions.build(
-      params[:canvas_url],
-      params[:user_id],
-      params[:tool_consumer_instance_guid]
-    )
-
-    attendance_assignment = AttendanceAssignment.new(
-      canvas,
-      params[:course_id],
-      params[:tool_launch_url],
-      params[:tool_consumer_instance_guid]
-    )
-    canvas_assignment = attendance_assignment.fetch_or_create
-
-    if canvas_response_has_no_errors?(canvas_assignment)
-      fresh_assignment = canvas.update_assignment(
-        params[:course_id],
-        canvas_assignment["id"],
-        params[:options]
+    begin
+      canvas = CanvasOauth::CanvasApiExtensions.build(
+        params[:canvas_url],
+        params[:user_id],
+        params[:tool_consumer_instance_guid]
       )
 
-      if canvas_response_has_no_errors?(fresh_assignment)
-        attendance_assignment.update_cached_assignment_if_needed(fresh_assignment)
+      attendance_assignment = AttendanceAssignment.new(
+        canvas,
+        params[:course_id],
+        params[:tool_launch_url],
+        params[:tool_consumer_instance_guid]
+      )
+      canvas_assignment = attendance_assignment.fetch_or_create
+
+      if canvas_response_has_no_errors?(canvas_assignment)
+        fresh_assignment = canvas.update_assignment(
+          params[:course_id],
+          canvas_assignment["id"],
+          params[:options]
+        )
+
+        if canvas_response_has_no_errors?(fresh_assignment)
+          attendance_assignment.update_cached_assignment_if_needed(fresh_assignment)
+        end
       end
+    rescue => e
+      msg = "Exception updating assignment: #{e.to_s} \nwith params:#{params.to_s}"
+      Rails.logger.error msg
+      raise
     end
   end
 
