@@ -14,13 +14,14 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker-compose build --pull'
-        sh 'docker-compose up -d db'
+        sh 'docker compose build --pull'
+        sh 'docker compose up -d db'
       }
     }
+
     stage('Prepare') {
       steps {
-        sh 'docker-compose run --rm -T web bundle exec rake db:setup'
+        sh 'docker compose run --rm -T web bundle exec rake db:setup'
       }
     }
     stage('Test') {
@@ -29,24 +30,54 @@ pipeline {
           stages {
             stage('RSpec') {
               steps {
-                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
+                sh 'docker compose run --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
+              }
+              post {
+                always {
+                  script {
+                    // Build-specific coverage
+                    sh 'docker cp $COMPOSE_PROJECT_NAME-rspec:/usr/src/app/coverage coverage'
+                    archiveArtifacts 'coverage/**'
+
+                    publishHTML target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : 'coverage',
+                            reportFiles          : 'index.html',
+                            reportName           : 'API Coverage Report'
+                    ]
+                    // publish coverage to code-coverage.inseng.net/rollcall/coverage
+                    uploadCoverage([
+                            uploadSource: '/coverage',
+                            uploadDest  : 'rollcall/coverage'
+                    ])
+
+                  }
+                }
+              }
+            }
+            stage('Test coverage') {
+              steps {
+                sh 'docker stop $COMPOSE_PROJECT_NAME-rspec'
+                sh 'docker compose run --rm -T -e ENABLE_COVERAGE=true web bundle exec rake spec'
               }
             }
             stage('Cucumber') {
               steps {
-                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
+                sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
               }
             }
           }
         }
         stage('Jasmine') {
           steps {
-            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
+            sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
           }
         }
         stage('Brakeman') {
           steps {
-            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-brakeman web bundle exec brakeman'
+            sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-brakeman web bundle exec brakeman'
           }
         }
         stage('Synk') {
@@ -70,7 +101,7 @@ pipeline {
 
   post {
     cleanup {
-      sh 'docker-compose down --remove-orphans --rmi all'
+      sh 'docker compose down --remove-orphans --rmi all'
     }
   }
 }

@@ -109,33 +109,33 @@ Rollcall has three test suites (RSpec, Cucumber, & Jasmine).
 
 Make sure your test database is in the right state before trying to run them:
 
-    docker-compose run --rm web bundle exec rake db:test:prepare
+    docker compose run --rm web bundle exec rake db:test:prepare
 
 Now you can run your rspec tests in the web container like this:
 
-    docker-compose run --rm web bundle exec rake spec
+    docker compose run --rm web bundle exec rake spec
 
-You can watch your jasmine specs run by starting your docker-compose config, and then navigating to the `./jasmine` directory:
+You can watch your jasmine specs run by starting your docker compose config, and then navigating to the `./jasmine` directory:
 
-    docker-compose up
+    docker compose up
 
 And then visit in your browser: `http://rollcall.docker/jasmine`
 
 but that kind of sucks for rerunning. Run your javascript tests from the command line like this:
 
-    docker-compose run --rm web bundle exec rake jasmine:ci
+    docker compose run --rm web bundle exec rake jasmine:ci
 
 Finally, you can run your cucumber tests, but it's kind of hacky. For linux
 (which the container is) you need to wrap a cucumber run in "xvfb-run" for
 capybara-webkit to work correctly, but something in that process is
 making output redirection not work right, so you won't see the output if you
-just run "docker-compose run --rm web xvfb-run bundle exec cucumber".
+just run "docker compose run --rm web xvfb-run bundle exec cucumber".
 
-We've found you can get around this by telling docker-compose you want it to run
+We've found you can get around this by telling docker compose you want it to run
 a bash script, and having the bash script kick off the xvfb-run command,
 so run this to see your cuke output:
 
-    docker-compose run --rm web bash bin/cucumber
+    docker compose run --rm web bash bin/cucumber
 
 #### Running the Whole Suite
 
@@ -151,7 +151,7 @@ the jasmine tests, and the cukes. Failures in any should exit the script with a 
 You can enable or disable the avatars service in Canvas via the Rails console in `canvas-lms`:
 
     # from the canvas-lms directory
-    docker-compose run --rm web bundle exec rails c
+    docker compose run --rm web bundle exec rails c
 
     Account.find_each { |a| a.enable_service(:avatars) ; a.save }
     - or -

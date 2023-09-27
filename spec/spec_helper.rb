@@ -17,10 +17,13 @@
 #
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] = 'test'
+require 'simplecov'
 
-if ENV['COVERAGE']
-  require 'simplecov'
-  SimpleCov.start('rails')
+SimpleCov.start 'rails' do
+  enable_coverage :line
+  if ENV['ENABLE_COVERAGE'] == 'true'
+    SimpleCov.minimum_coverage line: 75
+  end
 end
 
 require File.expand_path("../../config/environment", __FILE__)
@@ -30,7 +33,7 @@ require 'shoulda'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

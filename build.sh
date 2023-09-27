@@ -3,19 +3,19 @@
 set -e
 
 docker --version
-docker-compose --version
-
+docker compose --version
+export COMPOSE_PROJECT_NAME=rollcall
 export COMPOSE_FILE=docker-compose.yml:docker-compose.test.yml
 export RAILS_ENV=test
 
 # clean up containers
-docker-compose rm -fv
+docker compose rm -fv
 
 # build the containers
-docker-compose build
+docker compose build
 
 # start the containers
-docker-compose up -d db redis
+docker compose up -d db redis
 
 # wait for postgres to start accepting connections
 # TODO: actively check in a loop with a shorter sleep
@@ -24,17 +24,22 @@ sleep 5
 set +e
 
 # create and migrate the database
-docker-compose run --rm web bundle exec rake db:setup
+docker compose run --rm web bundle exec rake db:setup
 
 # run the tests
-docker-compose run --user root --rm web bundle exec rake spec spec:javascript
+docker compose run --name=$COMPOSE_PROJECT_NAME-rspec --user root --rm web bundle exec rake spec spec:javascript
 rake_status=$?
 
-docker-compose run --user root --rm web bundle exec brakeman
+docker start $COMPOSE_PROJECT_NAME-rspec
+
+docker exec -e ENABLE_COVERAGE=true $COMPOSE_PROJECT_NAME-rspec bundle exec rake spec
+rake_status=$?
+
+docker compose run --user root --rm web bundle exec brakeman
 brake_status=$?
 
 # run cucumber tests
-docker-compose run --rm web bash bin/cucumber
+docker compose run --rm web bash bin/cucumber
 cuke_status=$?
 
 echo $rake_status
@@ -47,6 +52,6 @@ else
   test_status=0
 fi
 
-docker-compose stop
+docker compose stop
 
 exit $test_status
