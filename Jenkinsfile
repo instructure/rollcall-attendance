@@ -71,6 +71,11 @@ pipeline {
             }
           }
         }
+        stage('Jasmine') {
+          steps {
+            sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
+          }
+        }
         stage('Brakeman') {
           steps {
             sh 'docker compose run --rm -T --name=$COMPOSE_PROJECT_NAME-brakeman web bundle exec brakeman'

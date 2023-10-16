@@ -69,7 +69,10 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0.3'
   gem 'rspec-its'
   gem 'rspec-collection_matchers'
-  gem 'guard-jasmine', '1.19.2'
+  gem 'jasmine-core','2.99.2'
+  gem 'jasmine-rails'
+  gem 'phantomjs'
+  gem 'guard-jasmine'
   # We can relax this brakeman dependency after we have deployed a hybrid
   # cookie serializer and allowed a chance for cookies to be stored as JSON.
   gem 'brakeman', '6.0.1', require: false
