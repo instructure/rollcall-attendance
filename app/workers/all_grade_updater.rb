@@ -26,10 +26,13 @@ class AllGradeUpdater
 
   # we don't need the limit because at some point the lock should be cleared
   # and because we are only catching LockTimeouts
-  @retry_limit = 0
+  @retry_limit = 5
 
   # just catch lock timeouts
-  # @retry_exceptions = [Redis::Lock::LockTimeout]
+  @retry_exceptions = [Redis::Lock::LockTimeout]
+
+  # expire key after `retry_delay` plus 1 hour
+  @expire_retry_key_after = 3600
 
   def self.retry_identifier(params)
     params = params.with_indifferent_access
@@ -47,21 +50,10 @@ class AllGradeUpdater
 
       assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
       if canvas_assignment = assignment.fetch_or_create
-        params[:student_ids].each do |student_id|
-          begin
-            assignment.submit_grade(
-              canvas_assignment['id'],
-              student_id
-            )
-          rescue => e
-            msg = "Exception submitting student #{student_id} for assignment #{canvas_assignment['id']} grade: #{e.to_s} \nwith params:#{params.to_s}"
-            Rails.logger.error msg
-            raise
-          end
-        end
+        assignment.submit_grades(canvas_assignment['id'], params[:student_ids])
       end
     rescue => e
-      msg = "Exception submitting grades: #{e.to_s} \nwith params:#{params.to_s}"
+      msg = "Exception submitting grades: #{e.to_s} with params:#{params.to_s}"
       Rails.logger.error msg
       raise
     end

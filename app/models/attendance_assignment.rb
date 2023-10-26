@@ -32,7 +32,7 @@ class AttendanceAssignment
 
     return assignment if assignment
 
-    Redis::Lock.new(lock_key, :expiration => 120, :timeout => 1).lock do
+    Redis::Lock.new(lock_key, :expiration => 120, :timeout => 2).lock do
       # expiration and timeout are in seconds
       assignment = fetch || create
     end
@@ -102,12 +102,7 @@ class AttendanceAssignment
 
   def submit_grade(assignment_id, student_id)
     if assignment_id.present?
-      grade = StudentCourseStats.new(
-        student_id,
-        course_id,
-        active_section_ids,
-        tool_consumer_instance_guid
-      ).grade
+      grade = get_student_grade(student_id)
       begin
         canvas.grade_assignment(
           course_id,
@@ -131,6 +126,29 @@ class AttendanceAssignment
     end
   end
 
+  def get_assignment_grades(student_ids)
+    graded_data = []
+    student_ids.each do |student_id|
+      graded_data << ["grade_data[#{student_id}][posted_grade]", get_student_grade(student_id)]
+    end
+    graded_data
+  end
+
+  def get_student_grade(student_id)
+    StudentCourseStats.new(
+      student_id,
+      course_id,
+      active_section_ids,
+      tool_consumer_instance_guid
+    ).grade
+  end
+
+  def submit_grades(assignment_id, student_ids)
+    grades_form = URI.encode_www_form(get_assignment_grades(student_ids))
+    url = "/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions/update_grades"
+    canvas.authenticated_post(url, { body: grades_form })
+  end
+
   def redis
     Redis.current
   end
@@ -149,7 +167,7 @@ class AttendanceAssignment
 
   def cache_assignment(assign_json)
     expiration = 15.minutes.seconds.to_i
-    redis.set(cache_key, assign_json, ex: expiration)
+    redis.setex(cache_key, expiration, assign_json)
   end
 
   def active_section_ids

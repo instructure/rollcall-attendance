@@ -105,13 +105,13 @@ module Authorization
 
   end
 
-  def load_and_agregate_sections(course_id)
+  def load_and_agregate_sections(course_id, includes=[])
     page = 1
     sections = []
 
     loop do
       sections_fetched = []
-      query_options = { query: { per_page: 50, page: page } }
+      query_options = { query: { include: includes, per_page: 50, page: page } }
 
       sections_fetched = canvas.authenticated_get("/api/v1/courses/#{course_id}/sections", query_options)
 
@@ -127,14 +127,14 @@ module Authorization
     sections
   end
 
-  def load_and_authorize_sections(course_id, tool_consumer_instance_guid)
+  def load_and_authorize_sections(course_id, tool_consumer_instance_guid, includes = [])
     if load_and_authorize_course(course_id, tool_consumer_instance_guid)
 
       object = get_object(
         tool_consumer_instance_guid,
-        :sections_no_students,
+        includes.empty? ? :sections_no_students : :sections_w_students,
         course_id,
-        lambda { load_and_agregate_sections(course_id) }
+        lambda { load_and_agregate_sections(course_id, includes) }
       )
 
       Section.list_from_params(object)  unless object.empty?

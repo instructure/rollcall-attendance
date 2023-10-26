@@ -110,7 +110,7 @@ Given /^I am a teacher with (\d+) sections? and (\d+) (cross-shard )?students(?:
   to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
 
   # Send the section list with no more data
-  stub_request(:get, "http://test.canvas/api/v1/courses/1/sections?&page=1&per_page=50").
+  stub_request(:get, "http://test.canvas/api/v1/courses/1/sections?include%5B%5D=&page=1&per_page=50").
   with(:headers => {'Authorization'=>'Bearer'}).
   to_return(:status => 200, :body => create_sections(sections.to_i, students.to_i), headers: {'Content-Type' => 'application/json'})
 
