@@ -28,7 +28,7 @@ gem 'thin', '~> 1.0'
 gem 'ims-lti', '~> 1.0', require: 'ims'
 gem 'lti_provider_engine', '~> 1.2.0', require: 'lti_provider'
 gem 'canvas_oauth_engine', '~> 2.2.0', require: 'canvas_oauth'
-gem 'httparty', '~> 0.15'
+gem 'httparty', '~> 0.21'
 
 gem 'aws-sdk-s3', '~> 1.0'
 gem 'redis', '~> 4.0'
