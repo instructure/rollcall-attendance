@@ -30,7 +30,7 @@ class SectionsController < ApplicationController
       section_id = load_and_authorize_sections(
         params[:course_id],
         tool_consumer_instance_guid
-      ).first.id
+      )&.first&.id
     end
 
     if section_id

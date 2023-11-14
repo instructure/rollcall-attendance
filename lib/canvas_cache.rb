@@ -37,7 +37,7 @@ module CanvasCache
   end
 
   def cached_sections(course_id)
-    cached_response redis_key(:sections, course_id), lambda { canvas.get_sections(course_id) }
+    load_and_authorize_sections(course_id, tool_consumer_instance_guid)
   end
 
   def cached_course(course_id)
@@ -67,7 +67,7 @@ module CanvasCache
   def refresh_course_with_sections!(course_id, tool_consumer_instance_guid)
     return unless redis
 
-    key = redis_cache_key(tool_consumer_instance_guid, 'sections_no_students', course_id, user_id)
+    key = redis_cache_key(tool_consumer_instance_guid, :sections_no_students, course_id, user_id)
     redis.del key
 
     load_and_authorize_sections(course_id, tool_consumer_instance_guid)
@@ -85,7 +85,6 @@ module CanvasCache
   def refresh_course!(course_id)
     return unless redis
     cache_response redis_key(:course, course_id), canvas.get_course(course_id)
-    cache_response redis_key(:sections, course_id), canvas.get_sections(course_id)
     cached_sections(course_id).each do |section|
       key = redis_key(:section, section['id'])
       # we may not have permission to load every section in the course, so

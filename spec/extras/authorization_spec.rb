@@ -122,7 +122,6 @@ describe Authorization do
     context "when course has sections" do
       before do
         allow(object).to receive(:load_and_authorize_course).with(1, :tool_consumer_instance_guid).and_return(true)
-        allow(object).to receive(:load_and_agregate_sections).and_return([{id: 1}, {id: 2}])
         allow(object).to receive(:get_object).and_return([{id: 1}, {id: 2}])
       end
 
@@ -134,7 +133,6 @@ describe Authorization do
     context "when course doesn't have sections" do
       before do
         allow(object).to receive(:load_and_authorize_course).with(1, :tool_consumer_instance_guid).and_return(true)
-        allow(object).to receive(:load_and_agregate_sections).and_return([])
         allow(object).to receive(:get_object).and_return({})
       end
 

@@ -112,7 +112,7 @@ describe AttendanceAssignment do
     end
 
     it "grades the assignment through canvas" do
-      allow(canvas).to receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
+      allow(attendance_assignment).to receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
       expect(canvas).to receive(:grade_assignment).with(course_id, 'assignment id', 'student id',
         submission: { posted_grade: '75%', submission_type: 'basic_lti_launch', url: 'http://localhost:3001' })
       attendance_assignment.submit_grade('assignment id', 'student id')
@@ -120,14 +120,14 @@ describe AttendanceAssignment do
 
     it "updates an unmarked grade in canvas" do
       allow(StudentCourseStats).to receive_message_chain(:new, :grade) { '' }
-      allow(canvas).to receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
+      allow(attendance_assignment).to receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
       expect(canvas).to receive(:grade_assignment).with(course_id, 'assignment id', 'student id',
         submission: { posted_grade: '', submission_type: 'basic_lti_launch', url: 'http://localhost:3001' })
       attendance_assignment.submit_grade('assignment id', 'student id')
     end
 
     it "fails gracefully when the user is not authorized to update grades" do
-      allow(canvas).to receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
+      allow(attendance_assignment).to  receive(:get_sections).with(course_id).and_return([{ "id" => 1 }])
       expect(canvas).to receive(:grade_assignment).and_raise(CanvasOauth::CanvasApi::Unauthorized)
       expect { attendance_assignment.submit_grade('assignment id', 'student id')}.to_not raise_error
     end
@@ -135,7 +135,7 @@ describe AttendanceAssignment do
 
   describe "active_section_ids" do
     it "returns a list of section ids from canvas" do
-      allow(canvas).to receive(:get_sections).with(course_id).and_return([{"id" => 1}, {"id" => 3}])
+      allow(attendance_assignment).to receive(:get_sections).with(course_id).and_return([{"id" => 1}, {"id" => 3}])
       expect(attendance_assignment.active_section_ids).to eq([1, 3])
     end
   end

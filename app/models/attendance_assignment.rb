@@ -17,6 +17,7 @@
 
 class AttendanceAssignment
   include CanvasCache
+  include RedisCache
 
   attr_accessor :canvas, :course_id, :tool_launch_url, :tool_consumer_instance_guid
 
@@ -119,7 +120,7 @@ class AttendanceAssignment
            active_section_ids: active_section_ids,
            tool_consumer_instance_guid: tool_consumer_instance_guid
         }
-        msg = "Exception when submitting grade: #{e.to_s} \nwith params:#{params.to_s}"
+        msg = "Exception when submitting grade: #{e.to_s} with params:#{params.to_s}"
         Rails.logger.error msg
         raise
       end
@@ -172,8 +173,14 @@ class AttendanceAssignment
 
   def active_section_ids
     @active_sections_ids ||= begin
-      sections = cached_sections(course_id)
-      sections.map { |s| s["id"] }
+      sections = get_sections(course_id)
+      sections.pluck("id")
     end
+  end
+
+  def get_sections(course_id)
+    key = redis_cache_key(tool_consumer_instance_guid, :sections_no_students, course_id)
+    request = lambda { @canvas.paginated_get("/api/v1/courses/#{course_id}/sections") }
+    redis_cache_response key, request
   end
 end

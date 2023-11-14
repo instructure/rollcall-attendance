@@ -55,7 +55,7 @@ class GradeUpdater
         params[:student_id]
       )
     rescue => e
-      msg = "Exception submitting grade: #{e.to_s} \nwith params:#{params.to_s}"
+      msg = "Exception submitting grade: #{e.to_s} with params:#{params.to_s}"
       Rails.logger.error msg
       raise
     end

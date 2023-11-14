@@ -69,7 +69,7 @@ class CourseConfigsController < ApplicationController
   end
 
   def course_sections(config)
-    load_and_authorize_sections(config.course_id, config.tool_consumer_instance_guid, ['students', 'enrollments'])
+    load_and_authorize_sections(config.course_id, config.tool_consumer_instance_guid, ['students'])
   end
 
   def course_config_params

@@ -35,7 +35,7 @@ class StatusesController < ApplicationController
         not_acceptable
       end
     rescue => e
-      Rails.logger.error "Exception: #{e.class.name} - #{e.message}"
+      Rails.logger.error "Exception: #{e.class.name} - #{e.message}. Params: #{params.inspect}"
       not_acceptable
     end
   end
@@ -66,9 +66,9 @@ class StatusesController < ApplicationController
         not_acceptable
       end
     rescue ActiveRecord::RecordNotUnique
-      Rails.logger.error "Exception creating attendance: Duplicate record #{params[:status].inspect}"
+      Rails.logger.error "Exception creating attendance: Duplicate record. Params: #{params.inspect}"
     rescue => e
-      Rails.logger.error "Exception creating attendance: #{e.to_s}"
+      Rails.logger.error "Exception creating attendance: #{e.to_s}. Params: #{params.inspect}"
     end
   end
 
