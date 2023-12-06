@@ -33,7 +33,7 @@ class AttendanceAssignment
 
     return assignment if assignment
     lock_manager = Redlock::Client.new([redis.id])
-    lock_manager.lock(lock_key, 2.in_milliseconds) do |locked|
+    lock_manager.lock!(lock_key, 2.in_milliseconds) do |locked|
       # expiration and timeout are in seconds
       assignment = fetch || create
     end
