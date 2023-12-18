@@ -289,6 +289,8 @@ GEM
     nio4r (2.5.9)
     nokogiri (1.15.4-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.15.4-x86_64-linux)
+      racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -369,7 +371,7 @@ GEM
       tilt
     redis (5.0.8)
       redis-client (>= 0.17.0)
-    redis-client (0.18.0)
+    redis-client (0.19.0)
       connection_pool
     redis-namespace (1.11.0)
       redis (>= 4)
@@ -389,7 +391,7 @@ GEM
     resque-retry (1.8.1)
       resque (>= 1.25, < 3.0)
       resque-scheduler (>= 4.0, < 6.0)
-    resque-scheduler (4.10.0)
+    resque-scheduler (4.10.2)
       mono_logger (~> 1.0)
       redis (>= 3.3)
       resque (>= 1.27)
@@ -522,6 +524,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   aws-sdk-s3 (~> 1.0)
@@ -570,7 +573,7 @@ DEPENDENCIES
   responders (= 3.0.1)
   resque (~> 2.0)
   resque-retry (~> 1.0)
-  resque-scheduler (~> 4.0)
+  resque-scheduler (~> 4.10)
   resque-sentry (~> 1.0)
   rexml (~> 3.2.4)
   rspec-collection_matchers

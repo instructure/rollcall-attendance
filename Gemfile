@@ -34,7 +34,7 @@ gem 'redis', '~> 5.0'
 gem 'redlock', '~> 2.0'
 gem 'resque', '~> 2.0'
 gem 'resque-retry', '~> 1.0'
-gem 'resque-scheduler', '~> 4.0'
+gem 'resque-scheduler', '~> 4.10'
 # rufus-scheduler 3.5.x breaks resque-scheduler 4.3.1
 gem 'rufus-scheduler', '~> 3.9'
 gem 'resque-sentry', '~> 1.0'
