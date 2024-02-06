@@ -38,7 +38,9 @@ class GradeUpdater
     params = params.with_indifferent_access
     params[:identifier]
   end
-
+  def self.redis
+    $REDIS
+  end
   def self.perform(params)
     params = params.with_indifferent_access
     begin
@@ -50,10 +52,20 @@ class GradeUpdater
 
       assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
       canvas_assignment = assignment.fetch_or_create
-      assignment.submit_grade(
-        canvas_assignment['id'],
-        params[:student_id]
-      )
+
+      lock_key = "grade_updater.guid_#{params[:tool_consumer_instance_guid]}" \
+        ".assignment_id_#{canvas_assignment['id']}" \
+        ".student_id_#{params[:student_id]}" \
+        ".grade_#{assignment.get_student_grade(params[:student_id])}"
+
+      lock_manager = Redlock::Client.new([redis.id])
+      lock_manager.lock!(lock_key, 60) do |locked|
+        # expiration and timeout are in seconds
+          assignment.submit_grade(
+          canvas_assignment['id'],
+          params[:student_id])
+      end
+
     rescue => e
       msg = "Exception submitting grade: #{e.to_s} with params:#{params.to_s}"
       Rails.logger.error msg
