@@ -32,10 +32,16 @@ class AttendanceAssignment
     assignment = fetch_from_cache
 
     return assignment if assignment
-    lock_manager = Redlock::Client.new([redis.id])
-    lock_manager.lock!(lock_key, 2.in_milliseconds) do |locked|
-      # expiration and timeout are in seconds
-      assignment = fetch || create
+
+    begin
+      lock_manager = Redlock::Client.new([redis.id], redis_timeout: 2)
+      lock_manager.lock!(lock_key, 120) do |locked|
+        # If we blocked on getting our lock, it was probably because another process was doinig this lookup. Because the
+        # redis cache fetch is way faster than talking to canvas, let's do that again first.
+        assignment = fetch_from_cache || fetch || create
+      end
+    rescue Redlock::LockError => e
+      raise AssignmentRetrievalException, "Failed to acquire lock for assignment retrieval: #{e}"
     end
 
     cache_assignment(assignment.to_json) if assignment

@@ -27,8 +27,7 @@ class GradeUpdater
   # Only retry this once if it fails. (Was once 10000, then 5, now we'll do 1. 1 is the default, but we'll be explicit.)
   @retry_limit = 1
 
-  # just catch lock timeouts
-  @retry_exceptions = [Redlock::LockError]
+  @retry_exceptions = [Redlock::LockError, AssignmentRetrievalException]
 
   # expire key after `retry_delay` plus 1 hour
   @expire_retry_key_after = 3600
@@ -54,6 +53,7 @@ class GradeUpdater
       assignment = AttendanceAssignment.new(canvas, params[:course_id], params[:tool_launch_url], params[:tool_consumer_instance_guid])
       canvas_assignment = assignment.fetch_or_create
 
+      # TODO: once we're sure that we found root cause for beating up canvas, we can remove this whole lock strategy
       lock_key = "grade_updater.guid_#{params[:tool_consumer_instance_guid]}" \
         ".assignment_id_#{canvas_assignment['id']}" \
         ".student_id_#{params[:student_id]}"
