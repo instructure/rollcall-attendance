@@ -21,12 +21,11 @@ class GradeUpdater
 
   @queue = :grade_updates
 
-  # directly enqueue job when lock occurred
-  @retry_delay = 5
+  # wait a 60 seconds before we try again
+  @retry_delay = 60
 
-  # we don't need the limit because at some point the lock should be cleared
-  # and because we are only catching LockTimeouts
-  @retry_limit = 5
+  # Only retry this once if it fails. (Was once 10000, then 5, now we'll do 1. 1 is the default, but we'll be explicit.)
+  @retry_limit = 1
 
   # just catch lock timeouts
   @retry_exceptions = [Redlock::LockError]
@@ -38,9 +37,11 @@ class GradeUpdater
     params = params.with_indifferent_access
     params[:identifier]
   end
+
   def self.redis
     $REDIS
   end
+
   def self.perform(params)
     params = params.with_indifferent_access
     begin
@@ -55,17 +56,21 @@ class GradeUpdater
 
       lock_key = "grade_updater.guid_#{params[:tool_consumer_instance_guid]}" \
         ".assignment_id_#{canvas_assignment['id']}" \
-        ".student_id_#{params[:student_id]}" \
-        ".grade_#{assignment.get_student_grade(params[:student_id])}"
+        ".student_id_#{params[:student_id]}"
 
-      lock_manager = Redlock::Client.new([redis.id])
-      lock_manager.lock!(lock_key, 60) do |locked|
-        # expiration and timeout are in seconds
-          assignment.submit_grade(
-          canvas_assignment['id'],
-          params[:student_id])
+      begin
+        lock_manager = Redlock::Client.new([redis.id], retry_count: 0)
+        lock_manager.lock!(lock_key, 60) do |locked|
+          # expiration and timeout are in seconds
+            assignment.submit_grade(
+              canvas_assignment['id'],
+              params[:student_id]
+            )
+        end
+      rescue Redlock::LockError => e
+        # We're swallowing the lock error here as its ok, we'll assume the thing that has this lock is doing its job.
+        Rails.logger.error ("Failed to acquire lock for #{lock_key} with params:#{params.to_s}")
       end
-
     rescue => e
       msg = "Exception submitting grade: #{e.to_s} with params:#{params.to_s}"
       Rails.logger.error msg
