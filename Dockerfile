@@ -1,5 +1,4 @@
-FROM instructure/ruby-passenger:3.3
-
+FROM --platform=linux/amd64 instructure/ruby-passenger:3.3
 ARG DEV_BUILD='false'
 ENV APP_HOME /usr/src/app/
 
