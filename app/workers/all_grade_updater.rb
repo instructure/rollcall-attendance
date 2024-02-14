@@ -29,7 +29,7 @@ class AllGradeUpdater
   @retry_limit = 5
 
   # just catch lock timeouts
-  @retry_exceptions = [Redlock::LockError]
+  @retry_exceptions = [Redlock::LockError, AssignmentRetrievalException]
 
   # expire key after `retry_delay` plus 1 hour
   @expire_retry_key_after = 3600
