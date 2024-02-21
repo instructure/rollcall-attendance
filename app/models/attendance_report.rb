@@ -142,12 +142,19 @@ class AttendanceReport
     else
       report = @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[users]' => true)
       report.each do |student|
-        student = Student.new(
-            id: student['canvas_user_id'].to_i,
-            name: student['first_name'] + ' ' + student['last_name'],
-            sis_id: student['user_id'])
+        if hash.key?(student['canvas_user_id'].to_i)
+          existing_student = hash[student['canvas_user_id'].to_i]
+      
+          # If sis_id is not set in the existing Student object, update it
+          existing_student.sis_id = student['user_id'] unless student['user_id'].empty? && !existing_student.sis_id.blank?
+        else
+          student = Student.new(
+              id: student['canvas_user_id'].to_i,
+              name: student['first_name'] + ' ' + student['last_name'],
+              sis_id: student['user_id'])
 
-        hash[student.id] = student
+          hash[student.id] = student
+        end
       end
     end
 
