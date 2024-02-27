@@ -22,7 +22,7 @@ source "https://rubygems.org"
 gem "bootsnap", "~> 1.0", require: false
 gem "bundler", ">= 2.4.16"
 gem "rack", "~> 2.1"
-gem "rails", "7.0.7"
+gem "rails", "7.0.8.1"
 
 gem "thin", "~> 1.7.0"
 
