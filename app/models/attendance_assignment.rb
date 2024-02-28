@@ -38,8 +38,8 @@ class AttendanceAssignment
 
       # retry delay is in milliseconds, redis_timeout is in seconds... MADNESS
       lock_manager = Redlock::Client.new([redis.id], retry_delay: 1_000, redis_timeout: 1)
-      lock_manager.lock!(lock_key, 120) do
-        # If we blocked on getting our lock, it was probably because another process was doinig this lookup. Because the
+      lock_manager.lock!(lock_key, 120_000) do
+        # If we blocked on getting our lock, it was probably because another process was doing this lookup. Because the
         # redis cache fetch is way faster than talking to canvas, let's do that again first.
         assignment = fetch_from_cache || fetch || create
       end
