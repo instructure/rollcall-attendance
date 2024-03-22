@@ -33,7 +33,6 @@ module ReadinessCheck
     components = Probe.new.add_components(
       ReadinessCheck::PostgreSql.new,
       ReadinessCheck::Redis.new,
-      ReadinessCheck::ResqueJobs.new,
       ReadinessCheck::S3.new
     )
   end

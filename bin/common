@@ -1,0 +1,121 @@
+# shellcheck disable=SC2148 # ignore no shebang
+# shellcheck disable=SC2034 # ignore unused variables
+# shellcheck disable=SC2120 # ignore no args passed
+# shellcheck disable=SC2028 # ignore unexpanded escape sequences
+# shellcheck disable=SC1003 # ignore escape sequences
+
+# helper functions for other scripts
+
+OSNAME=$(uname | tr "[:upper:]" "[:lower:]")
+ARCH=$(uname -m)
+DOCKER_RUN_CONTAINER="web"
+
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+function notice() {
+  echo "--> ${BOLD}$*${NORMAL}"
+}
+
+ORIGINAL_RAILS_ENV="${RAILS_ENV:-development}"
+function set_rails_env() {
+  if [[ -z $1 ]]; then
+    RAILS_ENV=$ORIGINAL_RAILS_ENV
+  else
+    RAILS_ENV=$1
+  fi
+}
+# shellcheck disable=2119
+set_rails_env
+
+function install_git_hooks() {
+  notice "Installing git hooks"
+  cp bin/pre-commit .git/hooks
+}
+
+function create_feature_state_config() {
+  notice "Creating feature state config in config/feature_state.yml"
+  cp api/config/feature_state.yml.example api/config/feature_state.yml
+}
+
+function generate_docker_override_os () {
+  sed -E  "s/# (.*# ${OSNAME}$)/\\1/"
+}
+
+function generate_docker_override_filesystem () {
+  if [ -z "${IGNORE_FILESYSTEM_OVERRIDE}" ]; then
+    sed -E  "s/# (.*# ${OSNAME}:fs)/\\1/"
+  else
+    cat
+  fi
+}
+
+function get_override_file() {
+  local result=$1
+  local myresult="docker-compose.dev.override.yml"
+  eval "$result='$myresult'"
+}
+
+function generate_docker_override() {
+  if [ -e docker-compose.override.yml ]; then
+    echo "We found an existing docker-compose.override.yml"
+    echo ""
+    echo "You'll want to merge that file with the version controlled
+  docker-compose.dev.override.yml file to make sure you've got
+  the most recent changes"
+    echo ""
+  else
+    echo "we are building the development example override file to docker-compose.override.yml for you"
+    local override_file
+    get_override_file override_file
+    generate_docker_override_os < "$override_file" | \
+      generate_docker_override_filesystem > docker-compose.override.yml
+  fi
+}
+
+function os_linux_specific_setup() {
+  DIRS=(api/tmp ui/node_modules ui/coverage/ui)
+
+  for DIR in "${DIRS[@]}"; do
+    mkdir -p "${DIR}"
+  done
+}
+
+os_specific_setup() {
+  echo Configuring for "${OSNAME}"
+  case ${OSNAME} in
+    linux)
+      os_linux_specific_setup
+      ;;
+  esac
+}
+
+function set_compose_command() {
+  if [[ ! $(docker compose > /dev/null 2>&1) ]]; then
+    compose_command="docker compose"
+  elif [[ ! $(type docker-compose > /dev/null 2>&1) ]]; then
+    compose_command="docker-compose"
+  else
+    notice "Unable to identify docker compose command. Is docker installed and confgured?"
+    exit 101
+  fi
+  notice using compose command: "${compose_command}"
+}
+
+function docker_compose() {
+  if [[ -z $compose_command ]]; then
+    set_compose_command
+  fi
+  $compose_command "$@"
+}
+
+function docker_compose_run() {
+  docker_compose run --rm -e RAILS_ENV="$RAILS_ENV" $DOCKER_RUN_CONTAINER "$@"
+}
+
+function docker_rake () {
+  docker_compose_run bundle exec rake "$@"
+}
+
+function welcome() {
+  echo "ROLLCALL"
+}

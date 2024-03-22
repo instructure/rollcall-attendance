@@ -18,10 +18,12 @@
 require 'spec_helper'
 
 describe Report do
+
   describe "#generate" do
-    it "enqueues an Attendance Report in Resque" do
-      expect(Resque).to receive(:enqueue).with(AttendanceReportGenerator, kind_of(Hash))
-      Report.new.generate
+    let(:canvas_url) { 'http://test.canvas' }
+    let(:email) { 'test@test.canvas' }
+    it "enqueues an Attendance Report in inst-jobs" do
+      expect { Report.new(user_id: 1, canvas_url: canvas_url, email: email).generate }.to change { Delayed::Job.count }.by 1
     end
   end
 

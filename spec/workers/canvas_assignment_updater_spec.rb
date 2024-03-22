@@ -48,7 +48,9 @@ describe CanvasAssignmentUpdater do
       allow(AttendanceAssignment).to receive(:new).and_return(attendance_assignment)
       allow(attendance_assignment).to receive(:fetch_or_create).and_return(canvas_assignment)
       expect(attendance_assignment).to receive(:update_cached_assignment_if_needed).with(canvas_assignment)
-      CanvasAssignmentUpdater.perform(params)
+
+      assignment_updater = CanvasAssignmentUpdater.new(params)
+      assignment_updater.update
     end
   end
 end

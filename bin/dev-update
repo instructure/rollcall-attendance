@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+source bin/common
+welcome
+
+notice "Starting Roll Call Update"
+
+notice "Building Docker Images"
+docker_compose build --pull
+
+notice "Running Bundle Install"
+docker_compose_run bundle install --with test development --without production
+
+notice "Migrating Databases (${RAILS_ENV})"
+docker_rake db:migrate
+
+set_rails_env test
+notice "Migrating Databases (${RAILS_ENV})"
+docker_rake db:migrate
+set_rails_env

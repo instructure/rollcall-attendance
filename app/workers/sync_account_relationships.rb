@@ -16,33 +16,27 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class SyncAccountRelationships
-  extend ResqueStats
-
-  @queue = :sync_account_relationships
-
-  # SyncAccountRelationships.perform({
-  #   canvas_url: 'https://example.instructure.com/',
-  #   user_id: 1,
-  #   account_id: 2
-  #   tool_consumer_instance_guid: 'blah'
-  # })
-  def self.perform(params)
-    params = params.with_indifferent_access
+  
+  def initialize(params)
+    @params = params.with_indifferent_access
+  end
+   
+  def sync
     primary_roll_call_account = get_roll_call_account(
-      canvas_account_id: params[:account_id],
-      tool_consumer_instance_guid: params[:tool_consumer_instance_guid]
+      canvas_account_id: @params[:account_id],
+      tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]
     )
 
     # exit before making any more Canvas API calls if the account is fresh
     return if primary_roll_call_account.fresh?
 
     canvas = CanvasOauth::CanvasApiExtensions.build(
-      params[:canvas_url],
-      params[:user_id],
-      params[:tool_consumer_instance_guid]
+      @params[:canvas_url],
+      @params[:user_id],
+      @params[:tool_consumer_instance_guid]
     )
 
-    primary_canvas_account = canvas.get_account(params[:account_id])
+    primary_canvas_account = canvas.get_account(@params[:account_id])
     primary_roll_call_account.parent_account_id = primary_canvas_account['parent_account_id']
     primary_roll_call_account.save!
 
@@ -54,7 +48,7 @@ class SyncAccountRelationships
       accounts << get_roll_call_account(
         canvas_account_id: canvas_account['id'],
         parent_account_id: canvas_account['parent_account_id'],
-        tool_consumer_instance_guid: params[:tool_consumer_instance_guid]
+        tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]
       )
     end
 
@@ -65,7 +59,7 @@ class SyncAccountRelationships
     }.each(&:destroy)
   end
 
-  def self.get_roll_call_account(canvas_account_id:, parent_account_id: nil, tool_consumer_instance_guid:)
+  def get_roll_call_account(canvas_account_id:, parent_account_id: nil, tool_consumer_instance_guid:)
     account = CachedAccount.where(
       account_id: canvas_account_id,
       tool_consumer_instance_guid: tool_consumer_instance_guid

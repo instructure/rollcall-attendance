@@ -18,7 +18,7 @@
 require 'spec_helper'
 
 describe AttendanceReportGenerator do
-  describe "perform" do
+  describe "generate" do
     let(:user_id) { 1 }
     let(:account_id) { 2 }
     let(:canvas_url) { 'http://test.canvas' }
@@ -46,20 +46,23 @@ describe AttendanceReportGenerator do
     it "creates a new Canvas instance using the token associated with the passed in user ID" do
       expect(CanvasOauth::CanvasApi).to receive(:new).with(canvas_url, 'token', anything(), anything())
       allow(CanvasOauth::Authorization).to receive(:fetch_token).with(user_id, tool_consumer_instance_guid).and_return('token')
-      AttendanceReportGenerator.perform(valid_params)
+      report = AttendanceReportGenerator.new(valid_params)
+      report.generate
     end
 
     it "creates an attendance report" do
       canvas = double
       allow(CanvasOauth::CanvasApi).to receive(:new) { canvas }
       expect(AttendanceReport).to receive(:new).with(canvas, valid_params)
-      AttendanceReportGenerator.perform(valid_params)
+      report = AttendanceReportGenerator.new(valid_params)
+      report.generate
     end
 
     it "sends an attendance report mailer" do
       allow(AttendanceReportGenerator).to receive(:s3_url).and_return('http://foobar.com/file.csv')
       expect(ReportMailer).to receive(:attendance_report).with(email, "http://foobar.com/file.csv", nil)
-      AttendanceReportGenerator.perform(valid_params)
+      report = AttendanceReportGenerator.new(valid_params)
+      report.generate
     end
 
     it "sends along SIS error messages to the user" do
@@ -67,7 +70,8 @@ describe AttendanceReportGenerator do
       expect(report).to receive(:to_csv).and_raise(AttendanceReport::SisFilterNotFound)
       allow(AttendanceReport).to receive(:new).and_return(report)
       expect(ReportMailer).to receive(:attendance_report).with(email, nil, "AttendanceReport::SisFilterNotFound")
-      AttendanceReportGenerator.perform(valid_params)
+      report = AttendanceReportGenerator.new(valid_params)
+      report.generate
     end
 
     it "raises an exception when a field is missing" do

@@ -56,6 +56,7 @@ services:
       - db
       - redis
       - minio
+    command: bundle exec inst_jobs run
     environment:
       <<: *ENV
       ROLLCALL_ROLE: 'worker'

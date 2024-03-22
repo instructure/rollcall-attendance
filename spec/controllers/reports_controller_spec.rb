@@ -20,6 +20,7 @@ require 'spec_helper'
 describe ReportsController do
   let(:course_id) { 123 }
   let(:tool_consumer_instance_guid) { 'abc123' }
+  let(:canvas_url) { 'http://test.canvas' }
 
   let :valid_attrs do
     {
@@ -33,6 +34,7 @@ describe ReportsController do
   end
 
   before do
+    session[:canvas_url] = canvas_url
     canvas = double
     allow(canvas).to receive_messages(get_user_profile: {
       "primary_email" => "foo@bar.com"
@@ -126,8 +128,9 @@ describe ReportsController do
     end
 
     it "generates a report for the given course" do
-      expect(Resque).to receive(:enqueue).with(AttendanceReportGenerator, kind_of(Hash))
-      post :create, params: { course_id: course_id, report: valid_attrs }
+      expect do
+        post :create, params: { course_id: course_id, report: valid_attrs }
+      end.to change { Delayed::Job.count }.by 1
     end
 
     it "sets the flash notice" do

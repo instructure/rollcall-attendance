@@ -16,22 +16,16 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AttendanceReportGenerator
-  extend ResqueStats
+  
+  def initialize(params)
+    @params = params.with_indifferent_access
 
-  @queue = :attendance_reports
+    check_params!
+  end
 
-  def self.perform(params)
-    params = params.with_indifferent_access
-
-    check_params!(params)
-
+  def generate
     begin
-      canvas = CanvasOauth::CanvasApiExtensions.build(
-        params[:canvas_url],
-        params[:user_id],
-        params[:tool_consumer_instance_guid]
-      )
-      report = AttendanceReport.new(canvas, params)
+      report = AttendanceReport.new(canvas, @params)
       csv_string = report.to_csv
       filename = "attendance-#{SecureRandom.uuid}.csv"
       url = AttendanceReportUploader.s3_url(filename, csv_string)
@@ -39,24 +33,37 @@ class AttendanceReportGenerator
       message = e.message
     rescue => e
       Rails.logger.error "Exception: #{e.class.name} - #{e.message}"
-      notify_user_of_error(params[:email])
+      notify_user_of_error(@params[:email])
       raise e
     end
 
-    ReportMailer.attendance_report(params[:email], url, message).deliver_now
+    send_report(@params[:email], url, message)
   end
 
-  def self.check_params!(params)
+  def canvas
+    @canvas ||= CanvasOauth::CanvasApiExtensions.build(
+      @params[:canvas_url],
+      @params[:user_id],
+      @params[:tool_consumer_instance_guid]
+    )
+  end
+
+  def send_report(email, url, message)
+    ReportMailer.attendance_report(email, url, message).deliver_now
+  end
+  
+  private
+  def check_params!
     required = [:user_id, :canvas_url, :email]
     required.each do |key|
-      if params[key].blank?
-        notify_user_of_error(params[:email])
+      if @params[key].blank?
+        notify_user_of_error(@params[:email])
         raise "Required field #{key} is blank - unable to generate Attendance Report"
       end
     end
   end
 
-  def self.notify_user_of_error(email)
+  def notify_user_of_error(email)
     unless email.blank?
       error_message = "There was a problem generating your report. We have been notified of this issue and apologize for the inconvenience."
       ReportMailer.attendance_report(email, nil, error_message).deliver_now

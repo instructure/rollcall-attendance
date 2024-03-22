@@ -4,7 +4,7 @@
 if [ "$ROLLCALL_ROLE" == "worker" ]; then
   echo "Starting worker"
   export COUNT=${WORKER_COUNT:-1}
-  exec bundle exec rake resque:workers
+  exec bundle exec inst_jobs run
 else
   echo "Starting web server"
   exec /usr/src/entrypoint

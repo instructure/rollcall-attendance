@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2019_11_18_151647) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_28_050242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,65 @@ ActiveRecord::Schema[7.0].define(version: 2019_11_18_151647) do
     t.string "tool_consumer_instance_guid"
     t.boolean "omit_from_final_grade", default: false, null: false
     t.index ["course_id", "tool_consumer_instance_guid"], name: "index_course_configs, uniquely", unique: true
+  end
+
+  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
+    t.integer "priority", default: 0
+    t.integer "attempts", default: 0
+    t.text "handler"
+    t.text "last_error"
+    t.string "queue", limit: 255, null: false
+    t.datetime "run_at", precision: nil, null: false
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
+    t.string "locked_by", limit: 255
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "tag", limit: 255
+    t.integer "max_attempts"
+    t.string "strand", limit: 255
+    t.boolean "next_in_strand", default: true, null: false
+    t.string "source", limit: 255
+    t.integer "max_concurrent", default: 1, null: false
+    t.datetime "expires_at", precision: nil
+    t.integer "strand_order_override", default: 0, null: false
+    t.string "singleton"
+    t.index ["locked_by"], name: "index_delayed_jobs_on_locked_by", where: "(locked_by IS NOT NULL)"
+    t.index ["queue", "priority", "run_at", "id"], name: "get_delayed_jobs_index", where: "((locked_at IS NULL) AND next_in_strand)"
+    t.index ["run_at", "tag"], name: "index_delayed_jobs_on_run_at_and_tag"
+    t.index ["singleton"], name: "index_delayed_jobs_on_singleton_not_running", unique: true, where: "((singleton IS NOT NULL) AND ((locked_by IS NULL) OR ((locked_by)::text = 'on hold'::text)))"
+    t.index ["singleton"], name: "index_delayed_jobs_on_singleton_running", unique: true, where: "((singleton IS NOT NULL) AND (locked_by IS NOT NULL) AND ((locked_by)::text <> 'on hold'::text))"
+    t.index ["strand", "id"], name: "index_delayed_jobs_on_strand"
+    t.index ["strand", "next_in_strand", "id"], name: "n_strand_index", where: "(strand IS NOT NULL)"
+    t.index ["strand", "strand_order_override", "id"], name: "next_in_strand_index", where: "(strand IS NOT NULL)"
+    t.index ["tag"], name: "index_delayed_jobs_on_tag"
+  end
+
+  create_table "failed_jobs", id: :serial, force: :cascade do |t|
+    t.integer "priority", default: 0
+    t.integer "attempts", default: 0
+    t.string "handler", limit: 512000
+    t.text "last_error"
+    t.string "queue", limit: 255
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
+    t.string "locked_by", limit: 255
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "tag", limit: 255
+    t.integer "max_attempts"
+    t.string "strand", limit: 255
+    t.bigint "original_job_id"
+    t.string "source", limit: 255
+    t.datetime "expires_at", precision: nil
+    t.integer "strand_order_override", default: 0, null: false
+    t.string "singleton"
+    t.bigint "requeued_job_id"
+    t.index ["failed_at"], name: "index_failed_jobs_on_failed_at"
+    t.index ["singleton"], name: "index_failed_jobs_on_singleton", where: "(singleton IS NOT NULL)"
+    t.index ["strand"], name: "index_failed_jobs_on_strand", where: "(strand IS NOT NULL)"
+    t.index ["tag"], name: "index_failed_jobs_on_tag"
   end
 
   create_table "lti_provider_launches", id: :serial, force: :cascade do |t|

@@ -22,6 +22,7 @@ describe StatusesController do
   let(:sections) { [section] }
   let(:user_id) { 5 }
   let(:tool_consumer_instance_guid) { 'abc123' }
+  let(:canvas_url) { 'http://test.canvas' }
 
   before do
     allow(controller).to receive(:require_lti_launch)
@@ -30,7 +31,8 @@ describe StatusesController do
     allow(controller).to receive(:submit_grade!)
     allow(controller).to receive(:user_id).and_return(user_id)
     allow(controller).to receive(:can_grade)
-    session[:tool_consumer_instance_guid] = 'abc123'
+    session[:tool_consumer_instance_guid] = tool_consumer_instance_guid
+    session[:canvas_url] = canvas_url
   end
 
   describe "index" do
@@ -102,13 +104,15 @@ describe StatusesController do
       delete :destroy, params: { id: 1 }, format: :json
     end
   end
-
+  
   describe "submit_grade!" do
     before { allow(controller).to receive(:submit_grade!).and_call_original }
 
     it "queues up a grade update" do
-      expect(Resque).to receive(:enqueue).with(GradeUpdater, kind_of(Hash))
-      controller.send(:submit_grade!, Status.new(student_id: 1, section_id: 2, course_id: 3))
+      status = build(:status)
+      expect do
+        controller.send(:submit_grade!, status)
+      end.to change { Delayed::Job.count }.by 1
     end
   end
 end

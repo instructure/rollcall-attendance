@@ -18,6 +18,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] = 'test'
 require 'simplecov'
+require 'delayed/testing'
 
 SimpleCov.start 'rails' do
   enable_coverage :line
@@ -36,6 +37,7 @@ require 'shoulda'
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
+  Delayed::Testing.clear_all!
   config.include FactoryBot::Syntax::Methods
   config.before :each do
     allow_any_instance_of(Aws::S3::Bucket).to receive(:put_object).

@@ -16,33 +16,13 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class GradeUpdater
-  extend Resque::Plugins::Retry
-  extend ResqueStats
 
-  @queue = :grade_updates
-
-  # wait a 60 seconds before we try again
-  @retry_delay = 60
-
-  # Only retry this once if it fails. (Was once 10000, then 5, now we'll do 1. 1 is the default, but we'll be explicit.)
-  @retry_limit = 1
-
-  @retry_exceptions = [Redlock::LockError, AssignmentRetrievalException]
-
-  # expire key after `retry_delay` plus 1 hour
-  @expire_retry_key_after = 3600
-
-  def self.retry_identifier(params)
-    params = params.with_indifferent_access
-    params[:identifier]
+  def initialize(params)
+    @params = params
   end
 
-  def self.redis
-    $REDIS
-  end
-
-  def self.perform(params)
-    params = params.with_indifferent_access
+  def submit_grade
+    params = @params.with_indifferent_access
     begin
       canvas = CanvasOauth::CanvasApiExtensions.build(
         params[:canvas_url],
@@ -76,5 +56,11 @@ class GradeUpdater
       Rails.logger.error msg
       raise
     end
+  end
+  
+  private
+  
+  def redis
+    $REDIS
   end
 end

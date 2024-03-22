@@ -41,7 +41,8 @@ describe SyncAccountRelationships do
 
       allow(CanvasOauth::CanvasApiExtensions).to receive(:build).and_return(canvas)
       allow(canvas).to receive(:get_account).and_return({})
-      SyncAccountRelationships.get_roll_call_account(
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account_relationship.get_roll_call_account(
         canvas_account_id: valid_params[:account_id],
         tool_consumer_instance_guid: valid_params[:tool_consumer_instance_guid]
       ).update!(last_sync_on: 6.minutes.ago)
@@ -56,7 +57,8 @@ describe SyncAccountRelationships do
       end
 
       valid_params[:account_id] = @account2.account_id
-      SyncAccountRelationships.perform(valid_params)
+      account_relationships = SyncAccountRelationships.new(valid_params)
+      account_relationships.sync
       cached_account = CachedAccount.where(
         account_id: @account2.account_id,
         tool_consumer_instance_guid: tool_consumer_instance_guid
@@ -77,7 +79,8 @@ describe SyncAccountRelationships do
       )
 
       valid_params[:account_id] = @account1.account_id
-      SyncAccountRelationships.perform(valid_params)
+      account_relationships = SyncAccountRelationships.new(valid_params)
+      account_relationships.sync
 
       expect(@account1.descendants).to include @account2, @account3
     end
@@ -94,7 +97,8 @@ describe SyncAccountRelationships do
       )
 
       valid_params[:account_id] = @account1.account_id
-      SyncAccountRelationships.perform(valid_params)
+      account_relationships = SyncAccountRelationships.new(valid_params)
+      account_relationships.sync
 
       expect(@account1.descendants).to contain_exactly(@account2, @account3)
     end
@@ -108,20 +112,23 @@ describe SyncAccountRelationships do
     it "does not ask for canvas subaccounts if recently run" do
       allow(canvas).to receive(:get_account_sub_accounts).and_return([])
       expect(canvas).to receive(:get_account_sub_accounts).once
-      SyncAccountRelationships.perform(valid_params)
-      SyncAccountRelationships.perform(valid_params)
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account_relationship.sync
+      account_relationship.sync
     end
 
     it "asks for canvas subaccounts if not recently run" do
       allow(canvas).to receive(:get_account_sub_accounts).and_return([])
       expect(canvas).to receive(:get_account_sub_accounts).twice
-
-      SyncAccountRelationships.perform(valid_params)
-      SyncAccountRelationships.get_roll_call_account(
+      
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account_relationship.sync
+      account_relationship.get_roll_call_account(
         canvas_account_id: valid_params[:account_id],
         tool_consumer_instance_guid: valid_params[:tool_consumer_instance_guid]
       ).update!(last_sync_on: 6.minutes.ago)
-      SyncAccountRelationships.perform(valid_params)
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account_relationship.sync
     end
   end
 
@@ -132,7 +139,8 @@ describe SyncAccountRelationships do
     end
 
     it "finds existing accounts" do
-      account = SyncAccountRelationships.get_roll_call_account(
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account = account_relationship.get_roll_call_account(
         canvas_account_id: @account1.account_id,
         tool_consumer_instance_guid: tool_consumer_instance_guid
       )
@@ -147,7 +155,8 @@ describe SyncAccountRelationships do
       @account2.destroy!
 
       expect(CachedAccount.exists?(@account2.id)).to eq(false)
-      account = SyncAccountRelationships.get_roll_call_account(
+      account_relationship = SyncAccountRelationships.new(valid_params)
+      account = account_relationship.get_roll_call_account(
         canvas_account_id: @account2.account_id,
         tool_consumer_instance_guid: tool_consumer_instance_guid
       )

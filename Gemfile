@@ -34,14 +34,14 @@ gem "lti_provider_engine", "~> 1.2.3", require: "lti_provider"
 gem "aws-sdk-s3", "~> 1.0"
 gem "redis", "~> 5.0"
 gem "redlock", "~> 2.0"
-gem "resque", "~> 2.0"
-gem "resque-retry", "~> 1.0"
-gem "resque-scheduler", "~> 4.0"
-# rufus-scheduler 3.5.x breaks resque-scheduler 4.3.1
+gem "sinatra"
+gem "sinatra-contrib", require: false
+gem "inst-jobs"
+
+# gem "inst-jobs-statsd"
 gem "chronic", "~> 0.10"
 gem "json", "~> 2.0"
 gem "responders", "3.0.1"
-gem "resque-sentry", "~> 1.0"
 gem "rufus-scheduler", "~> 3.9"
 
 gem "inst_statsd", "~> 2.1.4"

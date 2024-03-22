@@ -62,13 +62,15 @@ describe CourseConfigsController do
         tool_launch_url: "http://test.host/launch",
         user_id: 5
       }
-      expect(Resque).to receive(:enqueue).with(CanvasAssignmentUpdater, params)
-      put :update, params: {id: 1, course_config: {omit_from_final_grade: false}}, format: :json
+      expect do
+        put :update, params: {id: 1, course_config: {omit_from_final_grade: false}}, format: :json
+      end.to change { Delayed::Job.count }.by 1
     end
 
     it "does not update the canvas assignment when course config params does not include omit_from_final_grade" do
-      expect(Resque).not_to receive(:enqueue).with(CanvasAssignmentUpdater, any_args)
-      put :update, params: {id: 1, course_config: {}}, format: :json
+      expect do
+        put :update, params: {id: 1, course_config: {}}, format: :json
+      end.not_to change { Delayed::Job.count }
     end
   end
 
@@ -84,8 +86,9 @@ describe CourseConfigsController do
         student_ids: [1, 2],
         tool_consumer_instance_guid: tci_guid
       }
-      expect(Resque).to receive(:enqueue).with(AllGradeUpdater, hash_including(grade_params))
-      controller.send(:resubmit_all_grades!, CourseConfig.new(course_id: course_id))
+      expect do
+        controller.send(:resubmit_all_grades!, CourseConfig.new(course_id: course_id))
+      end.to change { Delayed::Job.count }.by 1
     end
   end
 end

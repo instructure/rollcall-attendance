@@ -30,13 +30,18 @@ describe GradeUpdater do
         with(canvas_assignment['id'], student_id)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
-      GradeUpdater.perform(
+      grade_params = {
         canvas_url: 'http://test.canvas',
         user_id: 1,
         student_id: student_id,
+        section_id: section_id,
         course_id: 4,
-        tool_consumer_instance_guid: tci_guid
-      )
+        tool_consumer_instance_guid: tci_guid,
+        tool_launch_url: "http://test.host/launch"
+      }
+
+      grade_updater = GradeUpdater.new(grade_params)
+      grade_updater.submit_grade
     end
   end
 end

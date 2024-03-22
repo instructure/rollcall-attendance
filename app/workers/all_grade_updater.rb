@@ -16,31 +16,12 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AllGradeUpdater
-  extend Resque::Plugins::Retry
-  extend ResqueStats
-
-  @queue = :grade_updates
-
-  # directly enqueue job when lock occurred
-  @retry_delay = 5
-
-  # we don't need the limit because at some point the lock should be cleared
-  # and because we are only catching LockTimeouts
-  @retry_limit = 5
-
-  # just catch lock timeouts
-  @retry_exceptions = [Redlock::LockError, AssignmentRetrievalException]
-
-  # expire key after `retry_delay` plus 1 hour
-  @expire_retry_key_after = 3600
-
-  def self.retry_identifier(params)
-    params = params.with_indifferent_access
-    params[:identifier]
+  def initialize(params)
+    @params = params
   end
 
-  def self.perform(params)
-    params = params.with_indifferent_access
+  def submit_grades
+    params = @params.with_indifferent_access
     begin
       canvas = CanvasOauth::CanvasApiExtensions.build(
         params[:canvas_url],

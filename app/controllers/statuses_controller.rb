@@ -109,11 +109,15 @@ class StatusesController < ApplicationController
       section_id: status.section_id,
       course_id: status.course_id,
       tool_consumer_instance_guid: status.tool_consumer_instance_guid,
-      identifier: SecureRandom.hex(32),
       tool_launch_url: launch_url
     }
 
-    Resque.enqueue(GradeUpdater, grade_params)
+    grade_updater = GradeUpdater.new(grade_params)
+    strand_name = "tool_consumer_instance_guid:"
+    strand_name << status.tool_consumer_instance_guid
+    strand_name << ":course_id:#{status.course_id}"
+
+    grade_updater.delay(n_strand: strand_name).submit_grade
   end
 
   def render_status(status)

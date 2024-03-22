@@ -36,8 +36,7 @@ describe HomeController do
   end
 
   describe 'readiness' do
-    let(:method) { [ReadinessCheck::Redis,
-      ReadinessCheck::ResqueJobs]}
+    let(:method) { [ReadinessCheck::Redis]}
 
     it 'returns a JSON in a specific format' do
       allow(controller).to receive(:app_healthy?).and_return(true)
@@ -71,7 +70,6 @@ describe HomeController do
       allow(controller).to receive(:app_healthy?).and_return(true)
       allow(controller).to receive(:status_unhealthy?).and_return(false)
       allow(ReadinessCheck::Redis).to receive(:method).and_return(true)
-      allow(ReadinessCheck::ResqueJobs).to receive(:method).and_return(true)
 
       get :readiness
       expect(response).to have_http_status(:ok)
@@ -79,7 +77,6 @@ describe HomeController do
 
     it 'returns 503 if components are unhealthy' do
       allow(ReadinessCheck::Redis).to receive(:method).and_return(false)
-      allow(ReadinessCheck::ResqueJobs).to receive(:method).and_return(false)
       allow(controller).to receive(:app_healthy?).and_return(true)
       allow(controller).to receive(:status_unhealthy?).and_return(true)
 

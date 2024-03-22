@@ -1,0 +1,16 @@
+<%
+  # The number of workers that should run per container in total
+  total_worker_count = ENV.fetch('DELAYED_JOB_WORKERS', '10').to_i
+%>
+
+development:
+  workers:
+  - workers: 1
+
+test:
+  workers:
+  - workers: 1
+
+production:
+  workers:
+  - workers: <%= total_worker_count %>

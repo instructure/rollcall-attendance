@@ -17,8 +17,8 @@
 
 require 'spec_helper'
 
-describe GradeUpdater do
-  describe "perform" do
+describe AllGradeUpdater do
+  describe "submit_grades" do
     let(:section_id) { 1 }
     let(:student_ids) { [2] }
     let(:canvas_assignment) { { 'id' => 3, 'omit_from_final_grade' => false } }
@@ -30,13 +30,17 @@ describe GradeUpdater do
         with(canvas_assignment['id'], student_ids)
       allow(AttendanceAssignment).to receive(:new).and_return(assignment)
 
-      AllGradeUpdater.perform(
+      grade_params = {
         canvas_url: 'http://test.canvas',
         user_id: 1,
-        student_ids: student_ids,
         course_id: 4,
-        tool_consumer_instance_guid: tci_guid
-      )
+        student_ids: student_ids,
+        tool_consumer_instance_guid: tci_guid,
+        identifier: SecureRandom.hex(32),
+        tool_launch_url: "http://test.host/launch"
+      }
+      course_grade_updater = AllGradeUpdater.new(grade_params)
+      course_grade_updater.submit_grades
     end
   end
 end

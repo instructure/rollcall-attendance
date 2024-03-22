@@ -58,7 +58,8 @@ class CourseConfigsController < ApplicationController
       user_id: user_id
     }
 
-    Resque.enqueue(CanvasAssignmentUpdater, updater_params)
+    assignment_updater = CanvasAssignmentUpdater.new(updater_params)
+    assignment_updater.delay(queue: "canvas_assignment_updates", max_attempts: 5).update
   end
 
   def authorized_to_update_config?(config)
@@ -90,6 +91,12 @@ class CourseConfigsController < ApplicationController
       identifier: SecureRandom.hex(32),
       tool_launch_url: launch_url
     }
-    Resque.enqueue(AllGradeUpdater, grade_params)
+    course_grade_updater = AllGradeUpdater.new(grade_params)
+
+    strand_name = "tool_consumer_instance_guid:#{tool_consumer_instance_guid}"
+    strand_name << ":course_id:#{config.course_id}"
+    singleton_name = "AllGradeUpdater:" << strand_name
+
+    course_grade_updater.delay(n_strand: strand_name, singleton: singleton_name).submit_grades
   end
 end

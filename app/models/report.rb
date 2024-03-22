@@ -99,7 +99,11 @@ class Report
   end
 
   def generate
-    Resque.enqueue(AttendanceReportGenerator, report_params)
+    report = AttendanceReportGenerator.new(report_params)
+    
+    singleton_name = ["Report", user_id, email, start_date, end_date].join(":")
+
+    report.delay(singleton: singleton_name).generate
   end
 
   def report_params

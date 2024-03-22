@@ -16,31 +16,13 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class CanvasAssignmentUpdater
-  extend Resque::Plugins::Retry
-  extend ResqueStats
 
-  @queue = :canvas_assignment_updates
-
-  # directly enqueue job when lock occurred
-  @retry_delay = 5
-
-  # we don't need the limit because at some point the lock should be cleared
-  # and because we are only catching LockTimeouts
-  @retry_limit = 5
-
-  # just catch lock timeouts
-  @retry_exceptions = [Redlock::LockError]
-
-  # expire key after `retry_delay` plus 1 hour
-  @expire_retry_key_after = 3600
-
-  def self.retry_identifier(params)
-    params = params.with_indifferent_access
-    params[:identifier]
+  def initialize(params)
+    @params = params
   end
 
-  def self.perform(params)
-    params = params.with_indifferent_access
+  def update
+    params = @params.with_indifferent_access
 
     begin
       canvas = CanvasOauth::CanvasApiExtensions.build(
@@ -77,7 +59,7 @@ class CanvasAssignmentUpdater
 
   protected
 
-  def self.canvas_response_has_no_errors?(response)
+  def canvas_response_has_no_errors?(response)
     !!response && response["errors"].blank?
   end
 end

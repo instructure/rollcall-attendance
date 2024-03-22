@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-require "resque/server"
+require 'delayed/server'
 
 InstructureRollcall::Application.routes.draw do
   resources :seating_charts, only: [:show, :create]
@@ -53,9 +53,9 @@ InstructureRollcall::Application.routes.draw do
   get 'readiness', to: 'home#readiness'
   root to: 'home#index'
 
-  mount SecureResqueServer.new, at: "/resque"
   mount LtiProvider::Engine, at: "/"
   mount CanvasOauth::Engine, at: "/canvas_oauth"
 
   mount JasmineRails::Engine => "/specs" if defined?(JasmineRails)
+  mount Delayed::Server.new => '/jobs'
 end
