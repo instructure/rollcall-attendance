@@ -29,6 +29,7 @@ describe BadgesController do
     allow(controller).to receive(:load_and_authorize_account) { |account_id| CachedAccount.new if account_id }
     allow(controller).to receive(:can_grade)
     session[:tool_consumer_instance_guid] = "abc123"
+    session[:course_id] = course_id
   end
 
   describe "index" do
@@ -86,6 +87,20 @@ describe BadgesController do
       expect(response.code).to eq('204')
     end
 
+    it "destroys an account badge correctly if session is for an account" do
+      badge = create(:badge, account_id: course_id, course_id: nil)
+      session[:course_id] = nil
+      delete :destroy, params: { id: badge.id }, format: :json
+      expect(Badge.count).to eq(0)
+    end
+
+    it "does not update a badge when the session is for a different course" do
+      session[:course_id] = 123123
+      delete :destroy, params: { id: badge.id }, format: :json
+      expect(Badge.count).to eq(1)
+      expect(response.code).to eq('406')
+    end
+
     it "does not destroy a badge when unauthorized" do
       allow(controller).to receive(:load_and_authorize_course) { false }
       delete :destroy, params: { id: badge.id }, format: :json
@@ -100,6 +115,19 @@ describe BadgesController do
     it "updates a badge assuming the course ID matches that of the logged in user" do
       put :update, params: { id: badge.id, badge: { name: 'new name' } }, format: :json
       expect(badge.reload.name).to eq('new name')
+    end
+
+    it "updates an account badge correctly if session is for an account" do
+      badge = create(:badge, account_id: course_id, course_id: nil)
+      session[:course_id] = nil
+      put :update, params: { id: badge.id, badge: { name: 'new name' } }, format: :json
+      expect(badge.reload.name).to eq('new name')
+    end
+
+    it "does not update a badge when the session is for a different course" do
+      session[:course_id] = 123123
+      put :update, params: { id: badge.id, badge: { name: 'new name' } }, format: :json
+      expect(badge.reload.name).not_to eq('new name')
     end
 
     it "does not update a badge when authorization fails" do

@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
 
   def stub_session
     session[:canvas_url] = "http://test.canvas"
+    session[:course_id] = current_course_id
     session[:user_id] = 2
     session[:tool_consumer_instance_guid] = 'abc123'
     session[:user_roles] = 'urn:lti:role:ims/lis/Instructor'

@@ -72,7 +72,7 @@ class BadgesController < ApplicationController
   end
 
   def update
-    badge = Badge.find(params[:id])
+    badge = Badge.find_by(id: params[:id], course_id: session[:course_id])
     if badge &&
     (
       (
@@ -99,7 +99,7 @@ class BadgesController < ApplicationController
   end
 
   def destroy
-    badge = Badge.find(params[:id])
+    badge = Badge.find_by(id: params[:id], course_id: session[:course_id])
 
     if badge &&
     (
