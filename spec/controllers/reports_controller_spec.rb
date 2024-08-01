@@ -107,15 +107,26 @@ describe ReportsController do
         allow(controller).to receive(:load_and_authorize_account) { CachedAccount.new }
       end
 
-      it "does not call the canvas api if chached" do
+      it "does not call the canvas api if cached" do
         allow(redis).to receive(:get).and_return('{"id":1, "name":"School Name"}')
         expect(canvas).not_to receive(:get_account)
+        allow(controller).to receive(:get_subaccounts).and_return([])
+
+        get :new, params: { account_id: account_id }
+      end
+
+      it "does not call the canvas api to get subaccounts if cached" do
+        allow(controller).to receive(:get_account).and_return({"id" => 1, "name" => "School Name" })
+        allow(redis).to receive(:get).and_return('[{"id":2, "name":"Subaccount 1"}, {"id":3, "name":"Subaccount 2"}]')
+        expect(canvas).not_to receive(:get_subaccounts)
+
         get :new, params: { account_id: account_id }
       end
 
       it "fetches from api if not cached" do
         allow(redis).to receive(:get).and_return(nil)
         allow(controller).to receive(:get_account).and_return({"id" => 1, "name" => "School Name" })
+        allow(controller).to receive(:get_subaccounts).and_return([])
 
         get :new, params: { account_id: account_id }
       end

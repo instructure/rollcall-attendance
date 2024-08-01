@@ -106,6 +106,10 @@ describe RedisCache do
         expect(object.fetch_from_api(key, request)).to eq("{}")
       end
 
+      it "returns the default value if is modified" do
+        expect(object.fetch_from_api(key, request, "[]")).to eq("[]")
+      end
+
       it "does not save in redis" do
         expect(object).not_to receive(:cache_value)
         object.fetch_from_api(key, request)
@@ -127,7 +131,7 @@ describe RedisCache do
 
     context "when response is not cached" do
       it "fetches response form API" do
-        expect(object).to receive(:fetch_from_api).with(key,request).and_return(request_response)
+        expect(object).to receive(:fetch_from_api).with(key,request,'{}').and_return(request_response)
         object.redis_cache_response(key, request)
       end
 

@@ -24,6 +24,7 @@ class AttendanceReport
     @params = params
     @canvas = canvas
     @account = find_account
+    @subaccounts = find_subaccounts
     @filters = @params[:filters] || {}
     begin
       account_relationship = SyncAccountRelationships.new(@params)
@@ -42,6 +43,20 @@ class AttendanceReport
       account_id: account_id,
       tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]
     ).first_or_create
+  end
+
+  def find_subaccounts
+    return [] unless @params[:account_id] && @params[:subaccount_ids]
+
+    @params[:subaccount_ids].map do |subaccount_id|
+      CachedAccount.where(
+        account_id: subaccount_id,
+        parent_account_id: @params[:account_id],
+        tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]
+      ).first_or_create
+    end
+
+
   end
 
   def course_filter
@@ -116,45 +131,15 @@ class AttendanceReport
         'parameters[courses]' => true,
         'parameters[include_deleted]' => true
       }
-      @canvas.get_report(@account.account_id, :provisioning_csv, params).each do |course|
-        course = Course.new(
-          id: course['canvas_course_id'].to_i,
-          sis_id: course['course_id'],
-          course_code: course['short_name'],
-          name: course['long_name']
-        )
-        hash[course.id] = course
-      end
-    end
-
-    hash
-  end
-
-  def get_users
-    hash = {}
-
-    if course_filter
-      @canvas.get_all_course_users(course_filter.id).each do |user|
-        student = Student.new(id: user['id'],
-                              name: user['name'])
-
-        hash[student.id] = student
-      end
-    else
-      report = @canvas.get_report(@account.account_id, :provisioning_csv, 'parameters[users]' => true)
-      report.each do |student|
-        if hash.key?(student['canvas_user_id'].to_i)
-          existing_student = hash[student['canvas_user_id'].to_i]
-      
-          # If sis_id is not set in the existing Student object, update it
-          existing_student.sis_id = student['user_id'] unless student['user_id'].empty? && !existing_student.sis_id.blank?
-        else
-          student = Student.new(
-              id: student['canvas_user_id'].to_i,
-              name: student['first_name'] + ' ' + student['last_name'],
-              sis_id: student['user_id'])
-
-          hash[student.id] = student
+      ([@account] + @subaccounts).each do |account|
+        @canvas.get_report(account.account_id, :provisioning_csv, params).each do |course|
+          course = Course.new(
+            id: course['canvas_course_id'].to_i,
+            sis_id: course['course_id'],
+            course_code: course['short_name'],
+            name: course['long_name']
+          )
+          hash[course.id] = course
         end
       end
     end
@@ -162,27 +147,79 @@ class AttendanceReport
     hash
   end
 
-  def get_teacher_enrollments
-    hash = {}
-
+  def get_users
+    students = []
     if course_filter
-      @canvas.get_course_teachers_and_tas(course_filter.id).each do |user|
-        hash[course_filter.id] = user['id']
+      @canvas.get_all_course_users(course_filter.id).each do |user|
+        students << Student.new(id: user['id'],
+                                name: user['name'])
       end
     else
-      params = {
-        'parameters[enrollments]' => true,
-        'parameters[enrollment_filter]' => 'TeacherEnrollment,TaEnrollment',
-        'parameters[enrollment_states]' => 'active'
-      }
-      report = @canvas.get_report(@account.account_id, :provisioning_csv, params)
-      report.each do |teacher|
-        hash[teacher['canvas_course_id'].to_i] = teacher['canvas_user_id'].to_i
+      ([@account] + @subaccounts).each do |account|
+        students += get_users_by_account(account)
       end
     end
 
-    hash
+    students_to_hash(students)
   end
+
+  def students_to_hash(students)
+    students.group_by(&:id).transform_values do |grouped_students|
+      student = grouped_students.first
+      student.sis_id = grouped_students.find { |s| s.sis_id.present? }&.sis_id if student.sis_id.blank?
+      student
+    end
+  end
+
+  def get_users_by_account(account)
+    students = []
+    report = @canvas.get_report(account.account_id, :provisioning_csv, 'parameters[users]' => true)
+    report.each do |student|
+      students << Student.new(
+        id: student['canvas_user_id'].to_i,
+        name: student['first_name'] + ' ' + student['last_name'],
+        sis_id: student['user_id'])
+    end
+
+    students
+  end
+
+  def get_teacher_enrollments
+    teacher_enrollments = []
+
+    if course_filter
+      @canvas.get_course_teachers_and_tas(course_filter.id).each do |user|
+        teacher_enrollments << { course_id: course_filter.id, user_id: user['id'] }
+      end
+    else
+      ([@account] + @subaccounts).each do |account|
+        teacher_enrollments += get_teacher_enrollments_by_account(account)
+      end
+    end
+
+    teacher_enrollments_to_hash(teacher_enrollments)
+  end
+
+  def teacher_enrollments_to_hash(teacher_enrollments)
+    teacher_enrollments.map { |e| [e[:course_id], e[:user_id]] }.to_h
+  end
+
+  def get_teacher_enrollments_by_account(account)
+    params = {
+      'parameters[enrollments]' => true,
+      'parameters[enrollment_filter]' => 'TeacherEnrollment,TaEnrollment',
+      'parameters[enrollment_states]' => 'active'
+    }
+
+    teacher_enrollments = []
+    report = @canvas.get_report(account.account_id, :provisioning_csv, params)
+    report.each do |teacher|
+      teacher_enrollments << { course_id: teacher['canvas_course_id'].to_i, user_id: teacher['canvas_user_id'].to_i }
+    end
+
+    teacher_enrollments
+  end
+
 
   def header
     header = ["Course ID", "SIS Course ID", "Course Code", "Course Name", "Section Name", "Section ID", "SIS Section ID"]

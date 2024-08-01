@@ -345,6 +345,46 @@ describe AttendanceReport do
         expect(canvas).not_to receive(:get_report)
         report.get_courses
       end
+
+      context "when the subaccounts is added" do
+        subject(:report) do
+          AttendanceReport.new(
+            canvas,
+            {
+              account_id: @account.account_id,
+              subaccount_ids: [subaccount.account_id],
+              tool_consumer_instance_guid: 'abc123'
+            }
+          )
+        end
+
+        let(:subaccount) do
+          create(
+            :cached_account,
+            parent_account_id: @account.account_id,
+            tool_consumer_instance_guid: tci_guid
+          )
+        end
+
+        let(:multi_api_result) do
+          [{
+            'id' => '123',
+            'sis_course_id' => 'sis_c_id',
+            'course_code' => 'TECH101',
+            'name' => 'Techmology 101'
+          }]
+        end
+
+        before do
+          allow(canvas).to receive(:get_report).and_return(multi_api_result)
+          allow(report).to receive(:course_filter).and_return(nil)
+        end
+
+        it "include subaccount courses" do
+          expect(canvas).to receive(:get_report).exactly(2).times
+          report.get_courses
+        end
+      end
     end
 
     describe "#get_users"  do

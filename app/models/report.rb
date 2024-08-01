@@ -27,6 +27,7 @@ class Report
     :canvas_url,
     :user_id,
     :account_id,
+    :subaccount_ids,
     :email,
     :start_date,
     :end_date,
@@ -58,6 +59,7 @@ class Report
       :canvas_url,
       :user_id,
       :account_id,
+      :subaccount_ids,
       :email,
       :start_date,
       :end_date,
@@ -109,6 +111,7 @@ class Report
   def report_params
     attrs = attributes.slice(
       :account_id,
+      :subaccount_ids,
       :course_id,
       :canvas_url,
       :email,

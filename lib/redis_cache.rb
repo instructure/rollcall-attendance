@@ -37,19 +37,19 @@ module RedisCache
     redis.setex key, expiration, value
   end
 
-  def redis_cache_response(key, request)
+  def redis_cache_response(key, request, default = '{}')
     response_cached_value = cached_value(key)
 
-    JSON.parse(response_cached_value || fetch_from_api(key, request))
+    JSON.parse(response_cached_value || fetch_from_api(key, request, default))
   end
 
-  def fetch_from_api(key, request)
+  def fetch_from_api(key, request, default = '{}')
     response = request.call
 
-    return "{}" if response.blank?
+    return default if response.blank?
 
     if response.class == HTTParty::Response
-      return "{}" if response.body.blank?
+      return default if response.body.blank?
       response = response.body
     else
       response = response.to_json

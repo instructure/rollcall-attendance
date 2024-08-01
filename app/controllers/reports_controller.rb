@@ -56,6 +56,7 @@ class ReportsController < ApplicationController
       # object
       if account = load_and_authorize_account(@report.account_id.to_i, tool_consumer_instance_guid)
         @canvas_account_json = get_account(account.account_id)
+        @report.subaccount_ids = get_subaccounts(account.account_id)
       end
     end
 
@@ -91,5 +92,11 @@ class ReportsController < ApplicationController
     key = redis_cache_key(tool_consumer_instance_guid, :account, account_id)
     request = lambda { canvas.get_account(account_id) }
     redis_cache_response key, request
+  end
+
+  def get_subaccounts(account_id)
+    key = redis_cache_key(tool_consumer_instance_guid, :subaccount, account_id)
+    request = lambda { canvas.get_account_sub_accounts(account_id) }
+    redis_cache_response(key, request, "[]").map{|a| a['id']}
   end
 end
