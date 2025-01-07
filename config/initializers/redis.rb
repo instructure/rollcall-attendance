@@ -29,5 +29,4 @@ redis_uri = if ENV['REDIS_URL']
               default_uri
             end
 
-uri = URI.parse(redis_uri)
-$REDIS = Redis.new(host: uri.host, port: uri.port, password: uri.password)
+$REDIS = Redis.new(url: redis_uri)
