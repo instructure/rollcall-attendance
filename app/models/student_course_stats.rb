@@ -30,7 +30,8 @@ class StudentCourseStats
       presences: presences,
       tardies: tardies,
       absences: absences,
-      attendance_grade: grade
+      attendance_grade: grade,
+      last_attended_date: last_attended_date
     }
   end
 
@@ -69,6 +70,15 @@ class StudentCourseStats
     @score ||= if attendances > 0
       (presences + tardy_weight * tardies) / attendances
     end
+  end
+
+  def last_attended_date
+    @last_attended_date ||= Status
+      .where(student_id: student_id, section_id: section_ids, course_id: course_id, tool_consumer_instance_guid: tool_consumer_instance_guid, attendance: ['present', 'late'])
+      .order(class_date: :desc)
+      .limit(1)
+      .pluck(:class_date)
+      .first
   end
 
   private
