@@ -23,6 +23,8 @@ class   InstructureRollcall.Views.Badges.EditView extends Backbone.View
   events:
     "click .option-icon" : "chooseIcon"
     "click .option-color" : "chooseColor"
+    "keydown .option-icon" : "keyChooseIcon"
+    "keydown .option-color" : "keyChooseColor"
     "click .save-button" : "save"
 
   initialize: ->
@@ -35,6 +37,21 @@ class   InstructureRollcall.Views.Badges.EditView extends Backbone.View
         @model.trigger 'sync'
       error: =>
         alert "Please fill out all of the fields and try again"
+
+  isSpaceOrEnter: (event) =>
+    key = event.key || event.code
+    keyCode = event.which || event.keyCode
+    return ['Enter', ' ', 'Spacebar'].indexOf(key) >= 0 || keyCode == 13 || keyCode == 32
+
+  keyChooseIcon: (event) =>
+    if @isSpaceOrEnter(event)
+      event.preventDefault()
+      @chooseIcon(event)
+
+  keyChooseColor: (event) =>
+    if @isSpaceOrEnter(event)
+      event.preventDefault()
+      @chooseColor(event)
 
   chooseIcon: (event) =>
     event.preventDefault()
