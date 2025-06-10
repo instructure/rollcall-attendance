@@ -1,0 +1,138 @@
+---
+version: '3.3'
+services:
+  db:
+    image: postgres:13.10-alpine
+    platform: linux/arm64
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    labels:
+      - traefik.enable=true
+
+  redis:
+    image: redis:7.0-alpine
+    platform: linux/arm64
+    labels:
+      - traefik.enable=true
+
+  minio:
+    image: minio/minio
+    platform: linux/arm64
+    command: /bin/sh -c "mkdir -p /data/bucket && minio server /data"
+    entrypoint: ''
+    environment:
+      MINIO_DOMAIN: minio.rollcall-attendance.inseng.test
+      MINIO_ACCESS_KEY: dev-access-key
+      MINIO_SECRET_KEY: dev-secret-key
+      VIRTUAL_HOST: s3.rollcall.inseng.test
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.minio-rollcall-service.loadbalancer.server.port=9000
+      - traefik.http.routers.minio-rollcall-attendance.rule=Host(`bucket.minio.rollcall-attendance.inseng.test`)
+      - traefik.http.routers.minio-rollcall-attendance.service=minio-rollcall-service
+  
+  web:
+    build:
+      context: "."
+      dockerfile: "inst-cli/docker-compose/Dockerfile"
+      args:
+        DEV_BUILD: 'true'
+    links:
+      - db
+      - redis
+      - minio
+    env_file: .env
+    environment:
+      RAILS_ENV: development
+      ROLLCALL_ROLE: web
+      VIRTUAL_HOST: rollcall.inseng.test
+      DATABASE_URL: postgres://postgres:password@db:5432/rollcall_dev
+      REDIS_URL: redis://redis:6379
+      SECRET_KEY_BASE: GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC
+      RESQUE_USER: admin
+      RESQUE_PASS: changeme
+      AWS_ACCESS_KEY_ID: dev-access-key
+      AWS_SECRET_ACCESS_KEY: dev-secret-key
+      AWS_REGION: us-east-1
+      AWS_BUCKET: bucket
+      AWS_S3_ENDPOINT: http://minio.rollcall-attendance.inseng.test
+      LTI_KEY: '12345'
+      LTI_SECRET: secret
+      LTI_REQUIRE_CANVAS: 'true'
+      HEAP_ENABLED: 'true'
+      HEAP_ANALYTICS_APP_ID: '123'
+      DEV_BUILD: 'true'
+    volumes:
+      - .:/usr/src/app
+      - ./tmp:/usr/src/app/tmp
+      - ../../2-traefik/certs/ca:/usr/local/share/ca-certificates:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.rollcall.rule=Host(`rollcall.inseng.test`)
+      - traefik.http.routers.rollcall.entrypoints=web,websecure
+      - traefik.http.services.rollcall.loadbalancer.server.port=80
+      - traefik.http.routers.rollcall.middlewares=rollcall-strip
+      - traefik.http.middlewares.rollcall-strip.stripprefix.prefixes=/
+      - traefik.http.routers.rollcall-secure.rule=Host(`rollcall.inseng.test`)
+      - traefik.http.routers.rollcall-secure.tls=true
+      - traefik.http.routers.rollcall-secure.entrypoints=websecure
+    networks:
+      default:
+        aliases:
+          - rollcall.inseng.test
+          - rollcall.attendance.inseng.test
+
+  work:
+    build:
+      context: "."
+      dockerfile: "inst-cli/docker-compose/Dockerfile"
+      args:
+        DEV_BUILD: 'true'
+    links:
+      - db
+      - redis
+      - minio
+    command: bundle exec inst_jobs run
+    env_file: .env
+    environment:
+      RAILS_ENV: development
+      ROLLCALL_ROLE: worker
+      VIRTUAL_HOST: rollcall.inseng.test
+      DATABASE_URL: postgres://postgres:password@db:5432/rollcall_dev
+      REDIS_URL: redis://redis:6379
+      SECRET_KEY_BASE: GSOC6DGMsvlLtDkaAagn7HBtxO4FJZECVYVuceZV7LMGMaYTIBXbK5OLa3UC
+      RESQUE_USER: admin
+      RESQUE_PASS: changeme
+      AWS_ACCESS_KEY_ID: dev-access-key
+      AWS_SECRET_ACCESS_KEY: dev-secret-key
+      AWS_REGION: us-east-1
+      AWS_BUCKET: bucket
+      AWS_S3_ENDPOINT: http://minio.rollcall-attendance.inseng.test
+      LTI_KEY: '12345'
+      LTI_SECRET: secret
+      LTI_REQUIRE_CANVAS: 'true'
+      HEAP_ENABLED: 'true'
+      HEAP_ANALYTICS_APP_ID: '123'
+      QUEUE: "*"
+      DEV_BUILD: 'true'
+    volumes:
+      - .:/usr/src/app
+      - ./tmp:/usr/src/app/tmp
+      - ../../2-traefik/certs/ca:/usr/local/share/ca-certificates:ro
+    labels:
+      - traefik.enable=true
+    # networks:
+    #   - inst_shared
+
+networks:
+  default:
+    external: true
+    name: inst_shared
+
+volumes:
+  postgres_data:
+  tmp:

@@ -3,6 +3,7 @@ log/*
 .bundle/*
 node_modules/*
 tmp/*
+inst-cli/*
 Dockerfile
 docker-compose.yml
 docker-compose.test.yml

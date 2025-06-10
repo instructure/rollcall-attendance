@@ -45,3 +45,6 @@ config/mail.yml
 
 # Ignore the maintenance page trigger file
 /public/down.txt
+
+# Ignore local Docker Compose configuration
+/docker-compose.local.yml
