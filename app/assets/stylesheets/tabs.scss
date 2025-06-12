@@ -1,0 +1,48 @@
+// Accessible tab styles
+.sections-list[role="tablist"] {
+  [role="tab"] {
+    // Style for all tabs
+    a {
+      outline: none; // We'll add our own focus styles
+    }
+
+    // Focus styles
+    &:focus {
+      outline: 2px solid $present-color;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
+    // Remove focus ring when using mouse
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    // Keyboard focus styles
+    &:focus-visible {
+      outline: 2px solid $present-color;
+      outline-offset: -2px;
+    }
+
+    // Selected state
+    &[aria-selected="true"] {
+      background: $present-color-lightest;
+      border-color: $present-color;
+
+      a {
+        color: $present-color-dark;
+        font-weight: bold;
+      }
+    }
+
+    // Hover state
+    &:hover {
+      background: lighten($present-color-lightest, 5%);
+
+      a {
+        color: $present-color-dark;
+      }
+    }
+  }
+}

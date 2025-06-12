@@ -16,12 +16,22 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 %>
 <section class="last">
-  <ul class="unstyled-list sections-list clearfix" role="tablist">
-    <li role="tab" <%= params[:action] == "new" ? 'class="active-section" aria-selected="true"'.html_safe : nil %>>
-      <%= link_to "Generate report", new_report_path(account_id: @account_id || @canvas_account_json['id'])  %>
+  <ul class="unstyled-list sections-list clearfix" role="tablist" aria-label="Report options">
+    <li role="tab" 
+        id="generate-report-tab"
+        tabindex="<%= params[:action] == "new" ? "0" : "-1" %>"
+        aria-controls="generate-report-panel"
+        aria-labelledby="generate-report-link"
+        <%= params[:action] == "new" ? 'class="active-section" aria-selected="true"'.html_safe : 'aria-selected="false"'.html_safe %>>
+      <%= link_to "Generate report", new_report_path(account_id: @account_id || @canvas_account_json['id']), id: "generate-report-link" %>
     </li>
-    <li role="tab" <%= params[:action] == "badges" ? 'class="active-section" aria-selected="true"'.html_safe : nil %>>
-      <%= link_to "Manage badges", badges_account_path(id: @account_id || @canvas_account_json['id']) %>
+    <li role="tab"
+        id="manage-badges-tab"
+        tabindex="<%= params[:action] == "badges" ? "0" : "-1" %>"
+        aria-controls="manage-badges-panel"
+        aria-labelledby="manage-badges-link"
+        <%= params[:action] == "badges" ? 'class="active-section" aria-selected="true"'.html_safe : 'aria-selected="false"'.html_safe %>>
+      <%= link_to "Manage badges", badges_account_path(id: @account_id || @canvas_account_json['id']), id: "manage-badges-link" %>
     </li>
   </ul>
 </section>

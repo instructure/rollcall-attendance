@@ -17,7 +17,7 @@
 %>
 <%= render "accounts/tabs" %>
 
-<div class="pad-box">
+<div class="pad-box" role='tabpanel' aria-labelledby='generate-report-tab' id='generate-report-panel'>
   <% if notice %>
     <div class="alert-notification"><i class="icon icon-info"></i><%= notice %></div>
   <% end %>
