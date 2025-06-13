@@ -19,6 +19,8 @@
 
 source "https://rubygems.org"
 
+gem 'logger'
+gem 'nokogiri', '>= 1.18.3'
 gem "bootsnap", "~> 1.0", require: false
 gem "bundler", ">= 2.4.16"
 gem "rack", "~> 2.1"
@@ -61,7 +63,7 @@ gem "react-rails", "~> 1.7"
 gem "rexml", "~> 3.2.4"
 gem "sass-rails", "~> 5.0.0"
 gem "uglifier", "~> 4.0"
-gem "webdrivers", "5.3.1"
+gem "webdrivers"
 gem "will_paginate", "~> 4.0.0"
 
 group :development, :test do
