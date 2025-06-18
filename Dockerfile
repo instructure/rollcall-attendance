@@ -10,7 +10,6 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg m
   mariadb-client-10.3 \
   postgresql-client-13 \
   nodejs \
-  npm \
   && ([ "$DEV_BUILD" = 'true' ] \
   && apt-get install -y \
   libqt4-dev \
@@ -46,15 +45,6 @@ RUN apt-get update && apt-get install -y build-essential g++\
   patch git \
   bzip2 xz-utils \
   phantomjs
-
-RUN apt-get update && apt-get install -y \
-  ca-certificates \
-  bzip2 \
-  fontconfig \
-  libfontconfig1 \
-  libfreetype6 \
-  && npm install -g phantomjs-prebuilt@2.1.16 --unsafe-perm \
-  && ln -sf /usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs /usr/local/bin/
 
 USER docker
 
