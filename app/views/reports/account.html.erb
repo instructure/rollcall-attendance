@@ -87,6 +87,12 @@
           <% errors = nil %>
         </div>
       </div>
+      <div class="block-box one-half first-box ">
+        <div class="form-input checkbox-input include-subaccounts-container">
+          <%= form.check_box :include_sub_accounts %>
+          <%= form.label :include_sub_accounts, "Include sub-accounts" %>
+        </div>
+      </div>
     </div>
 
     <h3><strong>3. Tell us where we should send the report</strong></h3>

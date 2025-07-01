@@ -100,3 +100,15 @@ section {
     padding: 0;
   }
 }
+
+.include-subaccounts-container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-width / 4;
+
+  padding-top: $spacing-width / 2;
+
+  label {
+    margin-bottom: 0;
+  }
+}

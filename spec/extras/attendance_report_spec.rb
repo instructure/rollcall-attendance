@@ -353,7 +353,8 @@ describe AttendanceReport do
             {
               account_id: @account.account_id,
               subaccount_ids: [subaccount.account_id],
-              tool_consumer_instance_guid: 'abc123'
+              tool_consumer_instance_guid: 'abc123',
+              include_sub_accounts: true
             }
           )
         end
@@ -418,7 +419,8 @@ describe AttendanceReport do
         any_args,
         {
           "parameters[courses]" => true,
-          "parameters[include_deleted]" => true
+          "parameters[include_deleted]" => true,
+          "parameters[skip_message]" => true
         }
       ).and_return([])
       report.get_courses

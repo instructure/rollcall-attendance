@@ -46,7 +46,7 @@ class AttendanceReport
   end
 
   def find_subaccounts
-    return [] unless @params[:account_id] && @params[:subaccount_ids]
+    return [] unless @params[:account_id] && @params[:subaccount_ids] && include_sub_accounts?
 
     @params[:subaccount_ids].map do |subaccount_id|
       CachedAccount.where(
@@ -55,8 +55,10 @@ class AttendanceReport
         tool_consumer_instance_guid: @params[:tool_consumer_instance_guid]
       ).first_or_create
     end
+  end
 
-
+  def include_sub_accounts?
+    @params[:include_sub_accounts] && [true, 'true', '1', 1].include?(@params[:include_sub_accounts])
   end
 
   def course_filter
@@ -129,7 +131,8 @@ class AttendanceReport
     else
       params = {
         'parameters[courses]' => true,
-        'parameters[include_deleted]' => true
+        'parameters[include_deleted]' => true,
+        'parameters[skip_message]' => true
       }
       ([@account] + @subaccounts).each do |account|
         @canvas.get_report(account.account_id, :provisioning_csv, params).each do |course|
@@ -173,7 +176,12 @@ class AttendanceReport
 
   def get_users_by_account(account)
     students = []
-    report = @canvas.get_report(account.account_id, :provisioning_csv, 'parameters[users]' => true)
+    params = {
+      'parameters[users]' => true,
+      'parameters[skip_message]' => true
+    }
+
+    report = @canvas.get_report(account.account_id, :provisioning_csv, params)
     report.each do |student|
       students << Student.new(
         id: student['canvas_user_id'].to_i,
@@ -208,7 +216,8 @@ class AttendanceReport
     params = {
       'parameters[enrollments]' => true,
       'parameters[enrollment_filter]' => 'TeacherEnrollment,TaEnrollment',
-      'parameters[enrollment_states]' => 'active'
+      'parameters[enrollment_states]' => 'active',
+      'parameters[skip_message]' => true
     }
 
     teacher_enrollments = []

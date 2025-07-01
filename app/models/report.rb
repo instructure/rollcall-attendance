@@ -34,6 +34,7 @@ class Report
     :sis_student_id,
     :sis_course_id,
     :tool_consumer_instance_guid,
+    :include_sub_accounts,
     :canvas
 
   validates_presence_of :email
@@ -65,7 +66,8 @@ class Report
       :end_date,
       :sis_student_id,
       :sis_course_id,
-      :tool_consumer_instance_guid
+      :tool_consumer_instance_guid,
+      :include_sub_accounts
     ].each do |attr|
       attrs[attr] = send(attr)
     end
@@ -102,7 +104,7 @@ class Report
 
   def generate
     report = AttendanceReportGenerator.new(report_params)
-    
+
     singleton_name = ["Report", user_id, email, start_date, end_date].join(":")
 
     report.delay(singleton: singleton_name).generate
@@ -116,7 +118,8 @@ class Report
       :canvas_url,
       :email,
       :user_id,
-      :tool_consumer_instance_guid
+      :tool_consumer_instance_guid,
+      :include_sub_accounts
     )
     attrs[:filters] = filters
     attrs
