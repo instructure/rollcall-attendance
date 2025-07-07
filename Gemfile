@@ -38,9 +38,8 @@ gem "redis", "~> 5.0"
 gem "redlock", "~> 2.0"
 gem "sinatra"
 gem "sinatra-contrib", require: false
-gem "inst-jobs"
+gem "inst-jobs-statsd"
 
-# gem "inst-jobs-statsd"
 gem "chronic", "~> 0.10"
 gem "json", "~> 2.0"
 gem "responders", "3.0.1"
