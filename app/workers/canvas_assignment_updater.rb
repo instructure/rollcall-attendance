@@ -16,6 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class CanvasAssignmentUpdater
+  UPDATE_N_STRAND = /^CanvasAssignmentUpdater#update::.*::.*$/
 
   def initialize(params)
     @params = params
@@ -55,6 +56,16 @@ class CanvasAssignmentUpdater
       Rails.logger.error msg
       raise
     end
+  end
+
+  def enqueue!
+    self.delay(n_strand: strand_name, max_attempts: 5).update
+  end
+
+  private
+
+  def strand_name
+    "CanvasAssignmentUpdater#update::#{@params[:tool_consumer_instance_guid]}::#{@params[:course_id]}"
   end
 
   protected

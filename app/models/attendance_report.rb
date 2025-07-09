@@ -28,7 +28,7 @@ class AttendanceReport
     @filters = @params[:filters] || {}
     begin
       account_relationship = SyncAccountRelationships.new(@params)
-      account_relationship.delay(queue: "sync_account_relationships").sync
+      account_relationship.enqueue!
     rescue CanvasOauth::CanvasApi::Unauthorized => e
       Rails.logger.error e
     end

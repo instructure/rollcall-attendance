@@ -16,11 +16,12 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class SyncAccountRelationships
-  
+  SYNC_N_STRAND = /^SyncAccountRelationships#sync::.*::.*$/
+
   def initialize(params)
     @params = params.with_indifferent_access
   end
-   
+
   def sync
     primary_roll_call_account = get_roll_call_account(
       canvas_account_id: @params[:account_id],
@@ -69,4 +70,15 @@ class SyncAccountRelationships
 
     account
   end
+
+  def enqueue!
+    self.delay(n_strand: strand_name).sync
+  end
+
+  private
+
+  def strand_name
+    "SyncAccountRelationships#sync::#{@params[:tool_consumer_instance_guid]}::#{@params[:account_id]}"
+  end
+
 end

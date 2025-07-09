@@ -16,6 +16,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class GradeUpdater
+  SUBMIT_GRADE_N_STRAND = /^tool_consumer_instance_guid:(.*):course_id:(.*)$/
 
   def initialize(params)
     @params = params
@@ -57,9 +58,20 @@ class GradeUpdater
       raise
     end
   end
-  
+
+  def enqueue!
+    self.delay(n_strand: strand_name).submit_grade
+  end
+
   private
-  
+
+    def strand_name
+    strand_name = "tool_consumer_instance_guid:"
+    strand_name << @params[:tool_consumer_instance_guid]
+    strand_name << ":course_id:#{@params[:course_id]}"
+    strand_name
+  end
+
   def redis
     $REDIS
   end

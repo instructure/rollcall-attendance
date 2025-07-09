@@ -113,11 +113,7 @@ class StatusesController < ApplicationController
     }
 
     grade_updater = GradeUpdater.new(grade_params)
-    strand_name = "tool_consumer_instance_guid:"
-    strand_name << status.tool_consumer_instance_guid
-    strand_name << ":course_id:#{status.course_id}"
-
-    grade_updater.delay(n_strand: strand_name).submit_grade
+    grade_updater.enqueue!
   end
 
   def render_status(status)

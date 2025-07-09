@@ -59,7 +59,7 @@ class CourseConfigsController < ApplicationController
     }
 
     assignment_updater = CanvasAssignmentUpdater.new(updater_params)
-    assignment_updater.delay(queue: "canvas_assignment_updates", max_attempts: 5).update
+    assignment_updater.enqueue!
   end
 
   def authorized_to_update_config?(config)
@@ -92,11 +92,6 @@ class CourseConfigsController < ApplicationController
       tool_launch_url: launch_url
     }
     course_grade_updater = AllGradeUpdater.new(grade_params)
-
-    strand_name = "tool_consumer_instance_guid:#{tool_consumer_instance_guid}"
-    strand_name << ":course_id:#{config.course_id}"
-    singleton_name = "AllGradeUpdater:" << strand_name
-
-    course_grade_updater.delay(n_strand: strand_name, singleton: singleton_name).submit_grades
+    course_grade_updater.enqueue!
   end
 end

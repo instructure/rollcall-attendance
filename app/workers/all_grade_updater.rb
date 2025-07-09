@@ -16,6 +16,9 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class AllGradeUpdater
+  SUBMIT_GRADES_N_STRAND = /^tool_consumer_instance_guid:.*:course_id:.*$/
+  SUBMIT_GRADES_SINGLETON = /^AllGradeUpdater:tool_consumer_instance_guid:.*:course_id:.*$/
+
   def initialize(params)
     @params = params
   end
@@ -38,5 +41,21 @@ class AllGradeUpdater
       Rails.logger.error msg
       raise
     end
+  end
+
+  def enqueue!
+    self.delay(n_strand: strand_name, singleton: singleton_name).submit_grades
+  end
+
+  private
+
+  def strand_name
+    strand_name = "tool_consumer_instance_guid:#{@params[:tool_consumer_instance_guid]}"
+    strand_name << ":course_id:#{@params[:course_id]}"
+    strand_name
+  end
+
+  def singleton_name
+    "AllGradeUpdater:" << strand_name
   end
 end

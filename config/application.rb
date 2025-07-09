@@ -20,6 +20,7 @@ require File.expand_path('../boot', __FILE__)
 require 'logger'
 require 'rails/all'
 require 'active_record'
+require_relative './initializers/inst_jobs'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -52,6 +53,10 @@ module InstructureRollcall
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
 
     config.autoload_paths += %w[lib]
+
+    initializer 'application' do
+      Initializers::InstJobs.new
+    end
 
     # Our deploy tooling exports a DATABASE_URL like:
     # mysql://user:pass@db:port/database, so handle that
