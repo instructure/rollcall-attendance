@@ -17,6 +17,7 @@
 
 class SyncAccountRelationships
   SYNC_N_STRAND = /^SyncAccountRelationships#sync::.*::.*$/
+  SYNC_SINGLETON = /^SyncAccountRelationships#sync::.*::.*$/
 
   def initialize(params)
     @params = params.with_indifferent_access
@@ -72,12 +73,16 @@ class SyncAccountRelationships
   end
 
   def enqueue!
-    self.delay(n_strand: strand_name).sync
+    self.delay(n_strand: strand_name, singleton: singleton_name).sync
   end
 
   private
 
   def strand_name
+    "SyncAccountRelationships#sync::#{@params[:tool_consumer_instance_guid]}::#{@params[:account_id]}"
+  end
+
+  def singleton_name
     "SyncAccountRelationships#sync::#{@params[:tool_consumer_instance_guid]}::#{@params[:account_id]}"
   end
 
