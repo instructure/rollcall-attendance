@@ -19,3 +19,4 @@ InstStatsd::DefaultTracking.track_sql
 InstStatsd::DefaultTracking.track_cache
 InstStatsd::DefaultTracking.track_active_record
 InstStatsd::RequestTracking.enable
+InstStatsd::DefaultTracking.track_jobs
