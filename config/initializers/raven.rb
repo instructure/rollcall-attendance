@@ -40,8 +40,13 @@ if Rails.env.production?
   elsif ENV['SENTRY_DSN']
     Raven.configure do |config|
       config.silence_ready = true
-      config.tags = { site: ENV['CG_ENVIRONMENT'] }
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+      config.tags = { 
+        site: ENV['CG_ENVIRONMENT'],
+        cg_environment: ENV.fetch('CG_ENVIRONMENT', 'unspecified'),
+        cg_pool: ENV.fetch('CG_INSTANCE_POOL_NAME', 'unspecified'),
+        aws_region: ENV.fetch('AWS_REGION', 'unspecified'),
+      }
     end
   end
 end
