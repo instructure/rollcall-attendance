@@ -60,7 +60,10 @@ class StatusesController < ApplicationController
           account_id: course.account_id
         )
 
-        submit_grade!(status) if status.save
+        if status.save
+          submit_grade!(status)
+          handle_last_attended_date(status)
+        end
         render_status(status)
       else
         not_acceptable
@@ -75,9 +78,14 @@ class StatusesController < ApplicationController
   def update
     if status = Status.find_by(id: params[:id])
       if load_and_authorize_section(status.section_id, status.tool_consumer_instance_guid)
+        previous_attendance = status.attendance
         status.attendance = status_params[:attendance]
         status.teacher_id = user_id
-        submit_grade!(status) if status.save
+
+        if status.save
+          submit_grade!(status)
+          handle_last_attended_date(status, previous_attendance)
+        end
         render_status(status)
       else
         not_acceptable
@@ -90,7 +98,13 @@ class StatusesController < ApplicationController
   def destroy
     if status = Status.find_by(id: params[:id])
       if load_and_authorize_section(status.section_id, status.tool_consumer_instance_guid)
-        submit_grade!(status) if status.destroy
+        previous_attendance = status.attendance
+
+        if status.destroy
+          submit_grade!(status)
+          handle_last_attended_date(status, previous_attendance, recalculate: true)
+        end
+
         render_status(status)
       else
         not_acceptable
@@ -129,5 +143,33 @@ class StatusesController < ApplicationController
       teacher_id: user_id,
       fixed: true
     })
+  end
+
+  def handle_last_attended_date(status, previous_attendance = nil, recalculate: false)
+    if recalculate || (previous_attendance && ['present', 'late'].include?(previous_attendance) && !['present', 'late'].include?(status.attendance))
+      update_last_attended_date(status, recalculate: true)
+    elsif ['present', 'late'].include?(status.attendance)
+      update_last_attended_date(status)
+    end
+  end
+
+  def update_last_attended_date(status, recalculate: false)
+    last_date = if recalculate
+      StudentCourseStats.new(
+        status.student_id, 
+        status.course_id, 
+        status.section_id, 
+        status.tool_consumer_instance_guid
+      ).last_attended_date
+    else
+      status.class_date
+    end
+
+    submit_last_attended_date(status.course_id, status.student_id, last_date) if last_date
+  end
+
+  def submit_last_attended_date(course_id, student_id, date)
+    url = "#{canvas_url}/api/v1/courses/#{course_id}/users/#{student_id}/last_attended?date=#{date}"
+    canvas.authenticated_put(url, {})
   end
 end
