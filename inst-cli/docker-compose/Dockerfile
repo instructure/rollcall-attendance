@@ -8,7 +8,7 @@ ARG DEV_BUILD='false'
 ENV APP_HOME=/usr/src/app/
 
 USER root
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+RUN echo "deb http://apt-archive.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
   && curl --silent https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
   && apt-get update -y \
   && apt-get install -y \
