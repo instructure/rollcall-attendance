@@ -17,10 +17,7 @@
 
 config_file = Rails.root.join('config/redis.yml')
 
-redis_uri = if ENV['REDIS1_URL']
-              Rails.logger.info "Initializing Redis from REDIS1_URL env var: #{ENV['REDIS1_URL']}"
-              ENV['REDIS1_URL']
-            elsif ENV['REDIS_URL']
+redis_uri = if ENV['REDIS_URL']
               Rails.logger.info "Initializing Redis from REDIS_URL env var: #{ENV['REDIS_URL']}"
               ENV['REDIS_URL']
             elsif File.exist?(config_file)
